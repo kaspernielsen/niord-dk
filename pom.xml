@@ -12,6 +12,10 @@
     <name>Niord DK Parent</name>
     <packaging>pom</packaging>
 
+    <properties>
+        <poi.version>3.13</poi.version>
+    </properties>
+
     <modules>
         <module>niord-dk-web</module>
         <module>niord-dk-aton-import</module>

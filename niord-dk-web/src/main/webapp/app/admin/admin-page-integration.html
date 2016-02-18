@@ -6,9 +6,31 @@
     <uib-tabset class="framed-tabs">
 
         <!-- AtoN Import -->
-        <uib-tab heading="AtoN Import">
-            <div ng-controller="AtonIntegrationCtrl">
+        <uib-tab>
+            <tab-heading>
                 AtoN Import
+            </tab-heading>
+            <div ng-controller="AtonIntegrationCtrl" class="row">
+
+                <div class="col-sm-12 col-md-6" style="margin-top: 20px">
+                    <span class="pull-left" style="padding-right: 20px"><img src="/img/admin-aton.png" height="38"></span>
+                    Please upload an "AFMyndighed_TableToExcel.xls" file.<br>
+                    All lights will be excluded from the import.
+                </div>
+
+                <div class="col-sm-12 col-md-6" style="margin-top: 20px">
+                    <file-upload url="atonUploadUrl"
+                                 drop-text="or drop .xls file here" multiple="false"
+                                 file-types="'xls'" auto-upload="false" remove-after-upload="true"
+                                 success="xlsFileUploaded(result)"
+                                 error="xlsFileUploadError(status, statusText)"></file-upload>
+                </div>
+
+                <div class="col-sm-12 col-md-12" style="margin-top: 20px">
+                    <label class="control-label" for="importResult">AtoN Import Result</label>
+                    <textarea ng-model="importResult" id="importResult" class="form-control input-sm" style="font-size: 10px;" rows="3" readonly></textarea>
+                </div>
+
 
             </div>
         </uib-tab>

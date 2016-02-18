@@ -14,7 +14,6 @@
     <packaging>war</packaging>
 
     <properties>
-        <poi.version>3.13</poi.version>
         <tika.version>1.11</tika.version>
     </properties>
 
@@ -49,13 +48,13 @@
         </dependency>
 
 
-        <!-- Word document extraction - just for tests -->
+        <!-- Word and Excel document extraction -->
         <dependency>
             <groupId>org.apache.poi</groupId>
             <artifactId>poi</artifactId>
             <version>${poi.version}</version>
-            <scope>test</scope>
         </dependency>
+
         <dependency>
             <groupId>org.apache.poi</groupId>
             <artifactId>poi-scratchpad</artifactId>
