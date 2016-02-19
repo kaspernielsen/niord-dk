@@ -22,9 +22,11 @@ import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
-import org.niord.core.model.Aton;
+import org.niord.core.model.AtonNode;
 import org.niord.core.repo.RepositoryService;
 import org.niord.core.service.AtonService;
+import org.niord.model.vo.aton.AtonNodeVo;
+import org.niord.model.vo.aton.AtonOsmVo;
 import org.slf4j.Logger;
 
 import javax.ejb.Stateless;
@@ -37,6 +39,9 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
 import java.io.InputStream;
 import java.util.*;
 
@@ -94,14 +99,12 @@ public class AtonImportRestService {
     private void importAtoN(InputStream inputStream, String fileName, StringBuilder txt) throws Exception {
         log.info("Extracting AtoNs from Excel sheet " + fileName);
 
-        List<Aton> atons = new ArrayList<>();
+        List<AtonNode> atons = new ArrayList<>();
 
         // Create Workbook instance holding reference to .xls file
         HSSFWorkbook workbook = new HSSFWorkbook(inputStream);
         // Get first/desired sheet from the workbook
         HSSFSheet sheet = workbook.getSheetAt(0);
-
-        int x = 0;
 
         // Get row iterator
         Iterator<Row> rowIterator = sheet.iterator();
@@ -109,59 +112,31 @@ public class AtonImportRestService {
 
         // Get the column indexes of the relevant columns
         Map<String, Integer> colIndex = new HashMap<>();
-        updateColumnIndex(headerRow, colIndex, "AFMSTATION");
-        updateColumnIndex(headerRow, colIndex, "AFM_NAVN");
-        updateColumnIndex(headerRow, colIndex, "AFUFORKORTELSE");
-        updateColumnIndex(headerRow, colIndex, "BESKRIVELSE");
-        updateColumnIndex(headerRow, colIndex, "LATTITUDE");
-        updateColumnIndex(headerRow, colIndex, "LONGITUDE");
-        updateColumnIndex(headerRow, colIndex, "KARAKNR");
-        updateColumnIndex(headerRow, colIndex, "EJER");
+        Arrays.stream(AfmAtonImportHelper.FIELDS).forEach(f -> updateColumnIndex(headerRow, colIndex, f));
 
         // Extract the AtoNs
+        int row = 0, errors = 0;
         while (rowIterator.hasNext()) {
-            Row row = rowIterator.next();
-            Aton aton = new Aton();
+            AfmAtonImportHelper importHelper = new AfmAtonImportHelper(colIndex, rowIterator.next());
 
-            aton.setAtonUid(row.getCell(colIndex.get("AFMSTATION")).getStringCellValue());
-            aton.setName(row.getCell(colIndex.get("AFM_NAVN")).getStringCellValue());
-            aton.setCode(row.getCell(colIndex.get("AFUFORKORTELSE")).getStringCellValue());
-            aton.setDescription(row.getCell(colIndex.get("BESKRIVELSE")).getStringCellValue());
-            aton.setOwner(row.getCell(colIndex.get("EJER")).getStringCellValue());
-            aton.setLat(row.getCell(colIndex.get("LATTITUDE")).getNumericCellValue());
-            aton.setLon(row.getCell(colIndex.get("LONGITUDE")).getNumericCellValue());
-
-
-            // In this simplified "type" mapping, we map the "karaknr" field to the value 1-3.
-            // "karaknr" values:
-            // 0: AIS
-            // 1: Fyr
-            // 2: Bifyr, tågelys, advarselslys, retningsfyr, hindringslys, m.v.
-            // 3: Båker, Signalmaster
-            // 4: RACONS
-            // 5: Lystønder
-            // 6: Vagere
-            // 7: Stager i bund
-            // 8: Radiofyr
-            // 9: Tågesignaler
-
-            String karaknr = String.valueOf(Math.round(row.getCell(colIndex.get("KARAKNR")).getNumericCellValue()));
-            if (karaknr.contains("5")) {
-                aton.setType(2);
-            } else if (karaknr.contains("6") || karaknr.contains("7")) {
-                aton.setType(3);
-            } else {
-                aton.setType(1);
+            try {
+                AtonNode aton = importHelper.afm2osm();
+                atons.add(aton);
+            } catch (Exception e) {
+                txt.append(String.format("Error parsing row %d: %s%n", row, e.getMessage()));
+                log.warn("Error parsing row " + row + ": " + e);
+                errors++;
             }
-
-            atons.add(aton);
+            row++;
         }
 
         // Update the AtoN database
         //atonService.replaceAtons(atons);
 
         log.info("Extracted " + atons.size() + " AtoNs from " + fileName);
-        txt.append("Extracted " + atons.size() + " AtoNs from " + fileName);
+        txt.append(String.format("Parsed %d AtoN rows in file %s. Imported %d. Errors: %d%n", row, fileName, atons.size(), errors));
+
+        printResult(atons);
     }
 
     /** Determines the column index of the given column name */
@@ -176,6 +151,27 @@ public class AtonImportRestService {
             index++;
         }
         return false;
+    }
+
+
+    /** Prints the result to the command line */
+    private void printResult(List<AtonNode> atons) {
+
+        AtonOsmVo osm = new AtonOsmVo();
+        osm.setVersion(1.0f);
+        osm.setNodes(atons.stream()
+            .map(AtonNode::toVo)
+            .toArray(AtonNodeVo[]::new));
+
+        try {
+            JAXBContext jaxbContext = JAXBContext.newInstance(AtonOsmVo.class);
+            Marshaller marshaller = jaxbContext.createMarshaller();
+            marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+            marshaller.marshal(osm, System.out);
+        } catch (JAXBException e) {
+            e.printStackTrace();
+        }
+
     }
 
 }
