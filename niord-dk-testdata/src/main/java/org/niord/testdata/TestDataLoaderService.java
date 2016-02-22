@@ -20,6 +20,7 @@ import java.util.List;
  */
 @Singleton
 @Startup
+@SuppressWarnings("unused")
 public class TestDataLoaderService extends BaseService {
 
     @Inject
@@ -75,6 +76,7 @@ public class TestDataLoaderService extends BaseService {
         public void computeGeometry() {
             if (lowerLeftLatitude != null && lowerLeftLongitude != null &&
                     upperRightLatitude != null && upperRightLongitude != null) {
+                // Construct a GeoJson polygon from the extent
                 double[][] coordinates = {
                         { lowerLeftLongitude, lowerLeftLatitude },
                         { upperRightLongitude, lowerLeftLatitude },
