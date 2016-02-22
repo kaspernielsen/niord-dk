@@ -12,13 +12,28 @@
             </tab-heading>
             <div ng-controller="AtonIntegrationCtrl" class="row">
 
-                <div class="col-sm-12 col-md-6" style="margin-top: 20px">
-                    <span class="pull-left" style="padding-right: 20px"><img src="/img/admin-aton.png" height="38"></span>
-                    Please upload an "AFMyndighed_TableToExcel.xls" file.<br>
-                    All lights will be excluded from the import.
+                <div class="col-sm-12 col-md-10 col-lg-8" style="margin-top: 20px">
+                    <p>Please upload the following files:</p>
+                    <dl class="dl-horizontal">
+
+                        <dt>AFMyndighed_TableToExcel.xls</dt>
+                        <dd>List of all AtoNs. Upload before the remaining files.</dd>
+
+                        <dt>Fyr2013.xls</dt>
+                        <dd>List of lights used in the Fyrliste publication.</dd>
+
+                        <dt>AIS2013.xls</dt>
+                        <dd>List of AIS transponders used in the Fyrliste publication.</dd>
+
+                        <dt>DGPS2013.xls</dt>
+                        <dd>List of DGPS transmitters used in the Fyrliste publication.</dd>
+
+                        <dt>Racon2013.xls</dt>
+                        <dd>List of RACONs used in the Fyrliste publication.</dd>
+                    </dl>
                 </div>
 
-                <div class="col-sm-12 col-md-6" style="margin-top: 20px">
+                <div class="col-sm-12 col-md-10 col-lg-8" style="margin-top: 20px">
                     <file-upload url="atonUploadUrl"
                                  drop-text="or drop .xls file here" multiple="false"
                                  file-types="'xls'" auto-upload="false" remove-after-upload="true"
@@ -26,7 +41,7 @@
                                  error="xlsFileUploadError(status, statusText)"></file-upload>
                 </div>
 
-                <div class="col-sm-12 col-md-12" style="margin-top: 20px">
+                <div class="col-sm-12 col-md-10 col-lg-8" style="margin-top: 20px">
                     <label class="control-label" for="importResult">AtoN Import Result</label>
                     <textarea ng-model="importResult" id="importResult" class="form-control input-sm" style="font-size: 10px;" rows="3" readonly></textarea>
                 </div>

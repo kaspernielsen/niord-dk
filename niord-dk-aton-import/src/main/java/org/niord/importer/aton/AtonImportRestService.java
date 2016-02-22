@@ -50,6 +50,7 @@ import java.util.*;
  */
 @Path("/import/atons")
 @Stateless
+@SuppressWarnings("unused")
 public class AtonImportRestService {
 
     @Inject
@@ -76,18 +77,33 @@ public class AtonImportRestService {
         ServletFileUpload upload = new ServletFileUpload(factory);
         List<FileItem> items = upload.parseRequest(request);
 
+        StringBuilder txt = new StringBuilder();
+
         for (FileItem item : items) {
             if (!item.isFormField()) {
-                // AtoN
-                if (item.getName().toLowerCase().endsWith(".xls")) {
-                    StringBuilder txt = new StringBuilder();
+                String name = item.getName().toLowerCase();
+                System.out.println("XXXX " + name);
+
+                // AtoN Import
+                if (name.startsWith("afmmyndighed_table") && name.endsWith(".xls")) {
                     importAtoN(item.getInputStream(), item.getName(), txt);
-                    return txt.toString();
+
+                } else if (name.startsWith("fyr") && name.endsWith(".xls")) {
+                    importLights(item.getInputStream(), item.getName(), txt);
+
+                } else if (name.startsWith("ais") && name.endsWith(".xls")) {
+                    importAis(item.getInputStream(), item.getName(), txt);
+
+                } else if (name.startsWith("dgps") && name.endsWith(".xls")) {
+                    importDgps(item.getInputStream(), item.getName(), txt);
+
+                } else if (name.startsWith("racon") && name.endsWith(".xls")) {
+                    importRacons(item.getInputStream(), item.getName(), txt);
                 }
             }
         }
 
-        return "No valid PDF uploaded";
+        return txt.toString();
     }
 
     /**
@@ -101,18 +117,9 @@ public class AtonImportRestService {
 
         List<AtonNode> atons = new ArrayList<>();
 
-        // Create Workbook instance holding reference to .xls file
-        HSSFWorkbook workbook = new HSSFWorkbook(inputStream);
-        // Get first/desired sheet from the workbook
-        HSSFSheet sheet = workbook.getSheetAt(0);
-
-        // Get row iterator
-        Iterator<Row> rowIterator = sheet.iterator();
-        Row headerRow = rowIterator.next();
-
         // Get the column indexes of the relevant columns
         Map<String, Integer> colIndex = new HashMap<>();
-        Arrays.stream(AfmAtonImportHelper.FIELDS).forEach(f -> updateColumnIndex(headerRow, colIndex, f));
+        Iterator<Row> rowIterator = parseHeaderRow(inputStream, colIndex, AfmAtonImportHelper.FIELDS);
 
         // Extract the AtoNs
         int row = 0, errors = 0;
@@ -123,8 +130,8 @@ public class AtonImportRestService {
                 AtonNode aton = importHelper.afm2osm();
                 atons.add(aton);
             } catch (Exception e) {
-                txt.append(String.format("Error parsing row %d: %s%n", row, e.getMessage()));
-                log.warn("Error parsing row " + row + ": " + e);
+                txt.append(String.format("Error parsing AtoN row %d: %s%n", row, e.getMessage()));
+                log.warn("Error parsing AtoN row " + row + ": " + e);
                 errors++;
             }
             row++;
@@ -137,6 +144,103 @@ public class AtonImportRestService {
         txt.append(String.format("Parsed %d AtoN rows in file %s. Imported %d. Errors: %d%n", row, fileName, atons.size(), errors));
 
         printResult(atons);
+    }
+
+
+    /**
+     * Extracts the lights from the Excel sheet
+     * @param inputStream the Excel sheet input stream
+     * @param fileName the name of the PDF file
+     * @param txt a log of the import
+     */
+    private void importLights(InputStream inputStream, String fileName, StringBuilder txt) throws Exception {
+        log.info("Extracting lights from Excel sheet " + fileName);
+
+        List<AtonNode> atons = new ArrayList<>();
+
+        // Get the column indexes of the relevant columns
+        Map<String, Integer> colIndex = new HashMap<>();
+        Iterator<Row> rowIterator = parseHeaderRow(inputStream, colIndex, AfmAtonImportHelper.FIELDS);
+
+        // Extract the AtoNs
+        int row = 0, errors = 0;
+        while (rowIterator.hasNext()) {
+            AfmAisImportHelper importHelper = new AfmAisImportHelper(colIndex, rowIterator.next());
+
+            try {
+                AtonNode aton = importHelper.afm2osm();
+
+                // TODO: Lookup and merge with AtoN
+
+                atons.add(aton);
+            } catch (Exception e) {
+                txt.append(String.format("Error parsing light row %d: %s%n", row, e.getMessage()));
+                log.warn("Error parsing light row " + row + ": " + e);
+                errors++;
+            }
+            row++;
+        }
+
+        // Update the AtoN database
+        //atonService.replaceAtons(atons);
+
+        log.info("Extracted " + atons.size() + " AtoNs from " + fileName);
+        txt.append(String.format("Parsed %d AtoN rows in file %s. Imported %d. Errors: %d%n", row, fileName, atons.size(), errors));
+
+        printResult(atons);
+    }
+
+    /**
+     * Extracts the AIS from the Excel sheet
+     * @param inputStream the Excel sheet input stream
+     * @param fileName the name of the PDF file
+     * @param txt a log of the import
+     */
+    private void importAis(InputStream inputStream, String fileName, StringBuilder txt) throws Exception {
+    }
+
+
+    /**
+     * Extracts the DGPS transmitters from the Excel sheet
+     * @param inputStream the Excel sheet input stream
+     * @param fileName the name of the PDF file
+     * @param txt a log of the import
+     */
+    private void importDgps(InputStream inputStream, String fileName, StringBuilder txt) throws Exception {
+    }
+
+
+    /**
+     * Extracts the RACONs from the Excel sheet
+     * @param inputStream the Excel sheet input stream
+     * @param fileName the name of the PDF file
+     * @param txt a log of the import
+     */
+    private void importRacons(InputStream inputStream, String fileName, StringBuilder txt) throws Exception {
+    }
+
+
+    /**
+     * Opens the Excel sheet, reads in the header row and build a map of the column indexes for the given header fields.
+     * @param inputStream the Excel sheet
+     * @param colIndex the column index map
+     * @param fields the fields to determine column indexes for
+     * @return the Excel row iterator pointing to the first data row
+     */
+    private Iterator<Row> parseHeaderRow(InputStream inputStream, Map<String, Integer> colIndex, String[] fields) throws Exception {
+        // Create Workbook instance holding reference to .xls file
+        HSSFWorkbook workbook = new HSSFWorkbook(inputStream);
+        // Get first/desired sheet from the workbook
+        HSSFSheet sheet = workbook.getSheetAt(0);
+
+        // Get row iterator
+        Iterator<Row> rowIterator = sheet.iterator();
+        Row headerRow = rowIterator.next();
+
+        // Get the column indexes of the relevant columns
+        Arrays.stream(fields).forEach(f -> updateColumnIndex(headerRow, colIndex, f));
+
+        return rowIterator;
     }
 
     /** Determines the column index of the given column name */
