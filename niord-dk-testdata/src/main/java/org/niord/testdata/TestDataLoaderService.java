@@ -76,11 +76,11 @@ public class TestDataLoaderService extends BaseService {
             if (lowerLeftLatitude != null && lowerLeftLongitude != null &&
                     upperRightLatitude != null && upperRightLongitude != null) {
                 double[][] coordinates = {
-                        { lowerLeftLatitude, lowerLeftLongitude },
-                        { upperRightLatitude, lowerLeftLongitude },
-                        { upperRightLatitude, upperRightLongitude },
-                        { lowerLeftLatitude, upperRightLongitude },
-                        { lowerLeftLatitude, lowerLeftLongitude }
+                        { lowerLeftLongitude, lowerLeftLatitude },
+                        { upperRightLongitude, lowerLeftLatitude },
+                        { upperRightLongitude, upperRightLatitude },
+                        { lowerLeftLongitude, upperRightLatitude },
+                        { lowerLeftLongitude, lowerLeftLatitude }
                 };
                 setGeometry(new PolygonVo(new double[][][] { coordinates }));
             }
