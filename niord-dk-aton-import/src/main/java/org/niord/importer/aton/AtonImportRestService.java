@@ -22,13 +22,21 @@ import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
+import org.jboss.security.annotation.SecurityDomain;
 import org.niord.core.model.AtonNode;
+import org.niord.core.model.User;
 import org.niord.core.repo.RepositoryService;
+import org.niord.core.sequence.DefaultSequence;
+import org.niord.core.sequence.Sequence;
+import org.niord.core.sequence.SequenceService;
 import org.niord.core.service.AtonService;
+import org.niord.core.service.UserService;
 import org.niord.model.vo.aton.AtonNodeVo;
 import org.niord.model.vo.aton.AtonOsmVo;
 import org.slf4j.Logger;
 
+import javax.annotation.security.PermitAll;
+import javax.annotation.security.RolesAllowed;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.servlet.ServletContext;
@@ -50,8 +58,12 @@ import java.util.*;
  */
 @Path("/import/atons")
 @Stateless
+@SecurityDomain("keycloak")
+@PermitAll
 @SuppressWarnings("unused")
 public class AtonImportRestService {
+
+    private final static Sequence AFM_SEQUENCE = new DefaultSequence("AFM_ATON_VERSION", 1);
 
     @Inject
     Logger log;
@@ -61,6 +73,12 @@ public class AtonImportRestService {
 
     @Inject
     AtonService atonService;
+
+    @Inject
+    UserService userService;
+
+    @Inject
+    SequenceService sequenceService;
 
     /**
      * Imports an uploaded AtoN Excel file
@@ -72,7 +90,9 @@ public class AtonImportRestService {
     @Path("/upload-xls")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces("text/plain")
+    @RolesAllowed("admin")
     public String importXls(@Context HttpServletRequest request) throws Exception {
+
         FileItemFactory factory = RepositoryService.newDiskFileItemFactory(servletContext);
         ServletFileUpload upload = new ServletFileUpload(factory);
         List<FileItem> items = upload.parseRequest(request);
@@ -120,11 +140,13 @@ public class AtonImportRestService {
         // Get the column indexes of the relevant columns
         Map<String, Integer> colIndex = new HashMap<>();
         Iterator<Row> rowIterator = parseHeaderRow(inputStream, colIndex, AfmAtonImportHelper.FIELDS);
+        User user = userService.currentUser();
+        int changeset = (int)sequenceService.getNextValue(AFM_SEQUENCE);
 
         // Extract the AtoNs
         int row = 0, errors = 0;
         while (rowIterator.hasNext()) {
-            AfmAtonImportHelper importHelper = new AfmAtonImportHelper(colIndex, rowIterator.next());
+            AfmAtonImportHelper importHelper = new AfmAtonImportHelper(user, changeset, colIndex, rowIterator.next());
 
             try {
                 AtonNode aton = importHelper.afm2osm();
@@ -161,11 +183,13 @@ public class AtonImportRestService {
         // Get the column indexes of the relevant columns
         Map<String, Integer> colIndex = new HashMap<>();
         Iterator<Row> rowIterator = parseHeaderRow(inputStream, colIndex, AfmAtonImportHelper.FIELDS);
+        User user = userService.currentUser();
+        int changeset = (int)sequenceService.getNextValue(AFM_SEQUENCE);
 
         // Extract the AtoNs
         int row = 0, errors = 0;
         while (rowIterator.hasNext()) {
-            AfmAisImportHelper importHelper = new AfmAisImportHelper(colIndex, rowIterator.next());
+            AfmAisImportHelper importHelper = new AfmAisImportHelper(user, changeset, colIndex, rowIterator.next());
 
             try {
                 AtonNode aton = importHelper.afm2osm();

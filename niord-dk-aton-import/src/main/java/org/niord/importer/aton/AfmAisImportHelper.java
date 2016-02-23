@@ -2,6 +2,7 @@ package org.niord.importer.aton;
 
 import org.apache.poi.ss.usermodel.Row;
 import org.niord.core.model.AtonNode;
+import org.niord.core.model.User;
 
 import java.util.Map;
 
@@ -14,8 +15,8 @@ public class AfmAisImportHelper extends BaseAtonImportHelper {
             "TBD" };
 
     /** Constructor **/
-    public AfmAisImportHelper(Map<String, Integer> colIndex, Row row) {
-        super(colIndex, row);
+    public AfmAisImportHelper(User user, int changeset, Map<String, Integer> colIndex, Row row) {
+        super(user, changeset, colIndex, row);
     }
 
 

@@ -2,6 +2,7 @@ package org.niord.importer.aton;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
+import org.niord.core.model.User;
 
 import java.util.Date;
 import java.util.Map;
@@ -15,11 +16,15 @@ public abstract class BaseAtonImportHelper {
     public static final String CUST_TAG_LIGHT_NUMBER        = "seamark_x:light_number";
     public static final String CUST_TAG_INT_LIGHT_NUMBER    = "seamark_x:int_light_number";
 
-    protected Map<String, Integer> colIndex;
-    protected Row row;
+    final protected User user;
+    final protected int changeset;
+    final protected Map<String, Integer> colIndex;
+    final protected Row row;
 
     /** Constructor **/
-    public BaseAtonImportHelper(Map<String, Integer> colIndex, Row row) {
+    public BaseAtonImportHelper(User user, int changeset, Map<String, Integer> colIndex, Row row) {
+        this.user = user;
+        this.changeset = changeset;
         this.colIndex = colIndex;
         this.row = row;
     }
