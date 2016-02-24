@@ -153,7 +153,7 @@ public class AtonImportRestService {
                 atons.add(aton);
             } catch (Exception e) {
                 txt.append(String.format("Error parsing AtoN row %d: %s%n", row, e.getMessage()));
-                log.warn("Error parsing AtoN row " + row + ": " + e);
+                log.warn("Error parsing AtoN row " + row + ": " + e, e);
                 errors++;
             }
             row++;
