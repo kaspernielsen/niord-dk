@@ -23,13 +23,14 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.jboss.security.annotation.SecurityDomain;
+import org.niord.core.batch.BatchEntity;
+import org.niord.core.batch.BatchService;
 import org.niord.core.model.AtonNode;
 import org.niord.core.model.User;
 import org.niord.core.repo.RepositoryService;
 import org.niord.core.sequence.DefaultSequence;
 import org.niord.core.sequence.Sequence;
 import org.niord.core.sequence.SequenceService;
-import org.niord.core.service.AtonService;
 import org.niord.core.service.UserService;
 import org.niord.model.vo.aton.AtonNodeVo;
 import org.niord.model.vo.aton.AtonOsmVo;
@@ -72,7 +73,7 @@ public class AtonImportRestService {
     ServletContext servletContext;
 
     @Inject
-    AtonService atonService;
+    BatchService batchService;
 
     @Inject
     UserService userService;
@@ -160,7 +161,13 @@ public class AtonImportRestService {
         }
 
         // Update the AtoN database
-        atonService.updateAtons(atons);
+        //atonService.updateAtons(atons);
+
+        // Start batch job to import AtoNs
+        BatchEntity batchJob = new BatchEntity();
+        batchJob.setName("dk-aton-import");
+        batchJob.writeDeflatedData(atons);
+        batchService.startBatchJob(batchJob);
 
         log.info("Extracted " + atons.size() + " AtoNs from " + fileName);
         txt.append(String.format("Parsed %d AtoN rows in file %s. Imported %d. Errors: %d%n", row, fileName, atons.size(), errors));
@@ -279,15 +286,20 @@ public class AtonImportRestService {
         return false;
     }
 
+    /** Converts the list of AtoNs to an OSM Json representation **/
+    private AtonOsmVo toOsm(List<AtonNode> atons) {
+        AtonOsmVo osm = new AtonOsmVo();
+        osm.setVersion(1.0f);
+        osm.setNodes(atons.stream()
+                .map(AtonNode::toVo)
+                .toArray(AtonNodeVo[]::new));
+        return osm;
+    }
 
     /** Prints the result to the command line */
     private void printResult(List<AtonNode> atons) {
 
-        AtonOsmVo osm = new AtonOsmVo();
-        osm.setVersion(1.0f);
-        osm.setNodes(atons.stream()
-            .map(AtonNode::toVo)
-            .toArray(AtonNodeVo[]::new));
+        AtonOsmVo osm = toOsm(atons);
 
         try {
             JAXBContext jaxbContext = JAXBContext.newInstance(AtonOsmVo.class);
