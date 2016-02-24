@@ -3,6 +3,7 @@ package org.niord.importer.aton;
 import org.apache.commons.lang.StringUtils;
 import org.apache.poi.ss.usermodel.Row;
 import org.niord.core.model.AtonNode;
+import org.niord.core.model.AtonTag;
 import org.niord.core.model.User;
 
 import java.util.Arrays;
@@ -78,9 +79,9 @@ public class AfmAtonImportHelper extends BaseAtonImportHelper {
         aton.setChangeset(changeset);
         aton.setVersion(1);     // Unknown version
 
-        aton.updateTag(CUST_TAG_ATON_UID, stringValue("AFMSTATION"));
+        aton.updateTag(AtonTag.CUST_TAG_ATON_UID, stringValue("AFMSTATION"));
         if (StringUtils.isNotBlank(stringValue("FYRLBNR_DK"))) {
-            aton.updateTag(CUST_TAG_LIGHT_NUMBER, stringValue("FYRLBNR_DK"));
+            aton.updateTag(AtonTag.CUST_TAG_LIGHT_NUMBER, stringValue("FYRLBNR_DK"));
         }
 
         generateAton(

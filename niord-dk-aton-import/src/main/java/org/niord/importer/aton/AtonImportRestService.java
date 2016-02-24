@@ -160,12 +160,10 @@ public class AtonImportRestService {
         }
 
         // Update the AtoN database
-        //atonService.replaceAtons(atons);
+        atonService.updateAtons(atons);
 
         log.info("Extracted " + atons.size() + " AtoNs from " + fileName);
         txt.append(String.format("Parsed %d AtoN rows in file %s. Imported %d. Errors: %d%n", row, fileName, atons.size(), errors));
-
-        printResult(atons);
     }
 
 
@@ -206,7 +204,7 @@ public class AtonImportRestService {
         }
 
         // Update the AtoN database
-        //atonService.replaceAtons(atons);
+        //atonService.updateAtons(atons);
 
         log.info("Extracted " + atons.size() + " AtoNs from " + fileName);
         txt.append(String.format("Parsed %d AtoN rows in file %s. Imported %d. Errors: %d%n", row, fileName, atons.size(), errors));
