@@ -23,7 +23,6 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.jboss.security.annotation.SecurityDomain;
-import org.niord.core.batch.BatchEntity;
 import org.niord.core.batch.BatchService;
 import org.niord.core.model.AtonNode;
 import org.niord.core.model.User;
@@ -107,19 +106,19 @@ public class AtonImportRestService {
 
                 // AtoN Import
                 if (name.startsWith("afmmyndighed_table") && name.endsWith(".xls")) {
-                    importAtoN(item.getInputStream(), item.getName(), txt);
+                    importAtoN(item.getInputStream(), item.getName(), item.getContentType(), txt);
 
                 } else if (name.startsWith("fyr") && name.endsWith(".xls")) {
-                    importLights(item.getInputStream(), item.getName(), txt);
+                    importLights(item.getInputStream(), item.getName(), item.getContentType(), txt);
 
                 } else if (name.startsWith("ais") && name.endsWith(".xls")) {
-                    importAis(item.getInputStream(), item.getName(), txt);
+                    importAis(item.getInputStream(), item.getName(), item.getContentType(), txt);
 
                 } else if (name.startsWith("dgps") && name.endsWith(".xls")) {
-                    importDgps(item.getInputStream(), item.getName(), txt);
+                    importDgps(item.getInputStream(), item.getName(), item.getContentType(), txt);
 
                 } else if (name.startsWith("racon") && name.endsWith(".xls")) {
-                    importRacons(item.getInputStream(), item.getName(), txt);
+                    importRacons(item.getInputStream(), item.getName(), item.getContentType(), txt);
                 }
             }
         }
@@ -133,7 +132,7 @@ public class AtonImportRestService {
      * @param fileName the name of the PDF file
      * @param txt a log of the import
      */
-    private void importAtoN(InputStream inputStream, String fileName, StringBuilder txt) throws Exception {
+    private void importAtoN(InputStream inputStream, String fileName, String contentType, StringBuilder txt) throws Exception {
         log.info("Extracting AtoNs from Excel sheet " + fileName);
 
         List<AtonNode> atons = new ArrayList<>();
@@ -160,14 +159,12 @@ public class AtonImportRestService {
             row++;
         }
 
-        // Update the AtoN database
-        //atonService.updateAtons(atons);
-
         // Start batch job to import AtoNs
-        BatchEntity batchJob = new BatchEntity();
-        batchJob.setName("dk-aton-import");
-        batchJob.writeDeflatedData(atons);
-        batchService.startBatchJob(batchJob);
+        batchService.startBatchJobDeflateData(
+                "dk-aton-import",
+                atons,
+                fileName,
+                contentType);
 
         log.info("Extracted " + atons.size() + " AtoNs from " + fileName);
         txt.append(String.format("Parsed %d AtoN rows in file %s. Imported %d. Errors: %d%n", row, fileName, atons.size(), errors));
@@ -180,7 +177,7 @@ public class AtonImportRestService {
      * @param fileName the name of the PDF file
      * @param txt a log of the import
      */
-    private void importLights(InputStream inputStream, String fileName, StringBuilder txt) throws Exception {
+    private void importLights(InputStream inputStream, String fileName, String contentType, StringBuilder txt) throws Exception {
         log.info("Extracting lights from Excel sheet " + fileName);
 
         List<AtonNode> atons = new ArrayList<>();
@@ -225,7 +222,7 @@ public class AtonImportRestService {
      * @param fileName the name of the PDF file
      * @param txt a log of the import
      */
-    private void importAis(InputStream inputStream, String fileName, StringBuilder txt) throws Exception {
+    private void importAis(InputStream inputStream, String fileName, String contentType, StringBuilder txt) throws Exception {
     }
 
 
@@ -235,7 +232,7 @@ public class AtonImportRestService {
      * @param fileName the name of the PDF file
      * @param txt a log of the import
      */
-    private void importDgps(InputStream inputStream, String fileName, StringBuilder txt) throws Exception {
+    private void importDgps(InputStream inputStream, String fileName, String contentType, StringBuilder txt) throws Exception {
     }
 
 
@@ -245,7 +242,7 @@ public class AtonImportRestService {
      * @param fileName the name of the PDF file
      * @param txt a log of the import
      */
-    private void importRacons(InputStream inputStream, String fileName, StringBuilder txt) throws Exception {
+    private void importRacons(InputStream inputStream, String fileName, String contentType, StringBuilder txt) throws Exception {
     }
 
 

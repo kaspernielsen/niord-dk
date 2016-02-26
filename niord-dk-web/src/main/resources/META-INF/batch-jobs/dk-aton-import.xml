@@ -2,14 +2,11 @@
     <step id="setupStep" allow-start-if-complete="true" next="importAtonsStep">
         <batchlet ref="jobStartBatchlet"/>
     </step>
-    <step id="importAtonsStep" next="completedStep">
-        <chunk item-count="100">
+    <step id="importAtonsStep">
+        <chunk item-count="10">
             <reader ref="batchAtonReader" />
             <processor ref="batchAtonProcessor"/>
             <writer ref="batchAtonWriter" />
         </chunk>
-    </step>
-    <step id="completedStep" >
-        <batchlet ref="jobEndBatchlet" />
     </step>
 </job>

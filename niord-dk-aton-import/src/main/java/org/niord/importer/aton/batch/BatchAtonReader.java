@@ -1,6 +1,7 @@
 package org.niord.importer.aton.batch;
 
-import org.niord.core.batch.BatchEntity;
+import org.niord.core.batch.BatchData;
+import org.niord.core.batch.BatchRawData;
 import org.niord.core.batch.BatchService;
 import org.niord.core.batch.IBatchable;
 import org.niord.core.model.AtonNode;
@@ -10,7 +11,6 @@ import javax.batch.api.chunk.AbstractItemReader;
 import javax.batch.runtime.context.JobContext;
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.persistence.EntityManager;
 import java.io.Serializable;
 import java.util.List;
 
@@ -27,7 +27,7 @@ public class BatchAtonReader extends AbstractItemReader implements IBatchable {
     Logger log;
 
     @Inject
-    EntityManager em;
+    BatchService batchService;
 
     List<AtonNode> atons;
     int atonNo = 0;
@@ -37,10 +37,10 @@ public class BatchAtonReader extends AbstractItemReader implements IBatchable {
     public void open(Serializable prevCheckpointInfo) throws Exception {
 
         // Since data is a lazy field, refresh from the persistence manager
-        BatchEntity job = getBatchEntity(jobContext.getExecutionId());
-        job = em.find(BatchEntity.class, job.getId());
+        BatchData job = batchService.findByInstanceId(jobContext.getInstanceId());
+        BatchRawData rawData = (BatchRawData)job;
 
-        atons = job.readDeflatedData();
+        atons = rawData.getDeflatedData();
         if (prevCheckpointInfo != null) {
             atonNo = (Integer) prevCheckpointInfo;
         }
@@ -50,7 +50,8 @@ public class BatchAtonReader extends AbstractItemReader implements IBatchable {
     /** {@inheritDoc} **/
     @Override
     public Object readItem() throws Exception {
-        if (atonNo <= atons.size()) {
+        Thread.sleep(1000); // TEST
+        if (atonNo < atons.size() && atonNo < 200) {
             return atons.get(atonNo++);
         }
         return null;
