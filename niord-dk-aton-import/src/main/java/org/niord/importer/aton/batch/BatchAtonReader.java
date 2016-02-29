@@ -1,12 +1,8 @@
 package org.niord.importer.aton.batch;
 
-import org.niord.core.batch.BatchService;
+import org.niord.core.batch.AbstractItemHandler;
 import org.niord.core.model.AtonNode;
-import org.slf4j.Logger;
 
-import javax.batch.api.chunk.AbstractItemReader;
-import javax.batch.runtime.context.JobContext;
-import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.Serializable;
 import java.util.List;
@@ -15,16 +11,7 @@ import java.util.List;
  * Reads AtoNs from the DB
  */
 @Named
-public class BatchAtonReader extends AbstractItemReader {
-
-    @Inject
-    private JobContext jobContext;
-
-    @Inject
-    Logger log;
-
-    @Inject
-    BatchService batchService;
+public class BatchAtonReader extends AbstractItemHandler {
 
     List<AtonNode> atons;
     int atonNo = 0;
@@ -39,7 +26,7 @@ public class BatchAtonReader extends AbstractItemReader {
             atonNo = (Integer) prevCheckpointInfo;
         }
 
-        log.info("Start processing AtoNs from index " + atonNo);
+        getLog().info("Start processing AtoNs from index " + atonNo);
     }
 
     /** {@inheritDoc} **/
@@ -47,6 +34,7 @@ public class BatchAtonReader extends AbstractItemReader {
     public Object readItem() throws Exception {
         Thread.sleep(1000); // TEST
         if (atonNo < atons.size() && atonNo < 200) {
+            getLog().info("Reading AtoN no " + atonNo);
             return atons.get(atonNo++);
         }
         return null;
