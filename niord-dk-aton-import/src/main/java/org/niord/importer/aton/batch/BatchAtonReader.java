@@ -1,7 +1,5 @@
 package org.niord.importer.aton.batch;
 
-import org.niord.core.batch.BatchData;
-import org.niord.core.batch.BatchRawData;
 import org.niord.core.batch.BatchService;
 import org.niord.core.batch.IBatchable;
 import org.niord.core.model.AtonNode;
@@ -36,14 +34,12 @@ public class BatchAtonReader extends AbstractItemReader implements IBatchable {
     @Override
     public void open(Serializable prevCheckpointInfo) throws Exception {
 
-        // Since data is a lazy field, refresh from the persistence manager
-        BatchData job = batchService.findByInstanceId(jobContext.getInstanceId());
-        BatchRawData rawData = (BatchRawData)job;
+        atons = batchService.readBatchJobDeflatedDataFile(jobContext.getInstanceId());
 
-        atons = rawData.getDeflatedData();
         if (prevCheckpointInfo != null) {
             atonNo = (Integer) prevCheckpointInfo;
         }
+
         log.info("Start processing AtoNs from index " + atonNo);
     }
 

@@ -160,11 +160,11 @@ public class AtonImportRestService {
         }
 
         // Start batch job to import AtoNs
-        batchService.startBatchJobDeflateData(
+        batchService.startBatchJobWithDeflatedData(
                 "dk-aton-import",
                 atons,
-                fileName,
-                contentType);
+                fileName + ".gzip",
+                new Properties());
 
         log.info("Extracted " + atons.size() + " AtoNs from " + fileName);
         txt.append(String.format("Parsed %d AtoN rows in file %s. Imported %d. Errors: %d%n", row, fileName, atons.size(), errors));
