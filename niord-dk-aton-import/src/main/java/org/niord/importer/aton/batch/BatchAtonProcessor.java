@@ -1,6 +1,5 @@
 package org.niord.importer.aton.batch;
 
-import org.niord.core.batch.IBatchable;
 import org.niord.core.model.AtonNode;
 import org.niord.core.service.AtonService;
 
@@ -12,7 +11,7 @@ import javax.inject.Named;
  * Filters out AtoNs that has not changed
  */
 @Named
-public class BatchAtonProcessor implements ItemProcessor, IBatchable {
+public class BatchAtonProcessor implements ItemProcessor {
 
     @Inject
     AtonService atonService;

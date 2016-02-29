@@ -1,7 +1,6 @@
 package org.niord.importer.aton.batch;
 
 import org.niord.core.batch.BatchService;
-import org.niord.core.batch.IBatchable;
 import org.niord.core.model.AtonNode;
 import org.slf4j.Logger;
 
@@ -16,7 +15,7 @@ import java.util.List;
  * Reads AtoNs from the DB
  */
 @Named
-public class BatchAtonReader extends AbstractItemReader implements IBatchable {
+public class BatchAtonReader extends AbstractItemReader {
 
     @Inject
     private JobContext jobContext;

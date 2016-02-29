@@ -1,6 +1,5 @@
 package org.niord.importer.aton.batch;
 
-import org.niord.core.batch.IBatchable;
 import org.niord.core.model.AtonNode;
 import org.niord.core.service.AtonService;
 import org.slf4j.Logger;
@@ -14,7 +13,7 @@ import java.util.List;
  * Persists the AtoNs to the database
  */
 @Named
-public class BatchAtonWriter extends AbstractItemWriter implements IBatchable {
+public class BatchAtonWriter extends AbstractItemWriter {
 
     @Inject
     Logger log;
