@@ -1,7 +1,7 @@
 package org.niord.importer.aton.batch;
 
+import org.niord.core.aton.AtonNode;
 import org.niord.core.batch.AbstractItemHandler;
-import org.niord.core.model.AtonNode;
 
 import javax.inject.Named;
 import java.io.Serializable;

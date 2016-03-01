@@ -2,7 +2,7 @@ package org.niord.importer.aton;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
-import org.niord.core.model.User;
+import org.niord.core.user.User;
 
 import java.util.Date;
 import java.util.Map;
