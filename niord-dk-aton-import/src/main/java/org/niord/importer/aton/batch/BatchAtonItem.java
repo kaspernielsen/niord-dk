@@ -15,31 +15,41 @@
  */
 package org.niord.importer.aton.batch;
 
-import org.niord.core.aton.AtonNode;
-import org.niord.core.aton.AtonService;
-import org.niord.core.batch.AbstractItemHandler;
+import org.apache.poi.ss.usermodel.Row;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-import java.util.List;
+import java.util.Map;
 
 /**
- * Persists the AtoNs to the database
+ * Encapsulates a row in an Excel sheet + an index of column indexes.
  */
-@Named
-public class BatchAtonImportWriter extends AbstractItemHandler {
+@SuppressWarnings("unused")
+public class BatchAtonItem {
+    Map<String, Integer> colIndex;
+    Row row;
 
-    @Inject
-    AtonService atonService;
+    /** Constructor */
+    public BatchAtonItem() {
+    }
 
-    /** {@inheritDoc} **/
-    @Override
-    public void writeItems(List<Object> items) throws Exception {
-        long t0 = System.currentTimeMillis();
-        for (Object i : items) {
-            AtonNode aton = (AtonNode) i;
-            atonService.saveEntity(aton);
-        }
-        getLog().info(String.format("Persisted %d AtoNs in %d s", items.size(), (System.currentTimeMillis() - t0) / 1000L));
+    /** Constructor */
+    public BatchAtonItem(Map<String, Integer> colIndex, Row row) {
+        this.colIndex = colIndex;
+        this.row = row;
+    }
+
+    public Map<String, Integer> getColIndex() {
+        return colIndex;
+    }
+
+    public void setColIndex(Map<String, Integer> colIndex) {
+        this.colIndex = colIndex;
+    }
+
+    public Row getRow() {
+        return row;
+    }
+
+    public void setRow(Row row) {
+        this.row = row;
     }
 }

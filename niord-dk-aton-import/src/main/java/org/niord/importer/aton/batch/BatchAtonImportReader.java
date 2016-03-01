@@ -1,48 +1,35 @@
+/* Copyright (c) 2011 Danish Maritime Authority
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 3 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this library.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.niord.importer.aton.batch;
 
-import org.niord.core.aton.AtonNode;
-import org.niord.core.batch.AbstractItemHandler;
-
 import javax.inject.Named;
-import java.io.Serializable;
-import java.util.List;
 
 /**
  * Reads AtoNs from the DB
  */
 @Named
-public class BatchAtonImportReader extends AbstractItemHandler {
+public class BatchAtonImportReader extends BaseAtonImportReader {
 
-    List<AtonNode> atons;
-    int atonNo = 0;
-
-    /** {@inheritDoc} **/
-    @Override
-    public void open(Serializable prevCheckpointInfo) throws Exception {
-
-        atons = batchService.readBatchJobDeflatedDataFile(jobContext.getInstanceId());
-
-        if (prevCheckpointInfo != null) {
-            atonNo = (Integer) prevCheckpointInfo;
-        }
-
-        getLog().info("Start processing AtoNs from index " + atonNo);
-    }
+    public static final String[] FIELDS = {
+            "AFMSTATION", "FYRLBNR_DK", "AFM_NAVN", "PLADSNAVN", "AFUFORKORTELSE", "BESKRIVELSE",
+            "LATTITUDE", "LONGITUDE", "KARAKNR", "EJER", "KARAKNR", "AJF_BRUGER", "AJF_DATO" };
 
     /** {@inheritDoc} **/
     @Override
-    public Object readItem() throws Exception {
-        Thread.sleep(1000); // TEST
-        if (atonNo < atons.size() && atonNo < 200) {
-            getLog().info("Reading AtoN no " + atonNo);
-            return atons.get(atonNo++);
-        }
-        return null;
-    }
-
-    /** {@inheritDoc} **/
-    @Override
-    public Serializable checkpointInfo() throws Exception {
-        return atonNo;
+    public String[] getFields() {
+        return FIELDS;
     }
 }
