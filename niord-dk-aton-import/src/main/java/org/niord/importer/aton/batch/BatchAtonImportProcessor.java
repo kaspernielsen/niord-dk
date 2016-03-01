@@ -11,7 +11,7 @@ import javax.inject.Named;
  * Filters out AtoNs that has not changed
  */
 @Named
-public class BatchAtonProcessor extends AbstractItemHandler {
+public class BatchAtonImportProcessor extends AbstractItemHandler {
 
     @Inject
     AtonService atonService;

@@ -11,7 +11,7 @@ import java.util.List;
  * Reads AtoNs from the DB
  */
 @Named
-public class BatchAtonReader extends AbstractItemHandler {
+public class BatchAtonImportReader extends AbstractItemHandler {
 
     List<AtonNode> atons;
     int atonNo = 0;

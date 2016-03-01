@@ -12,7 +12,7 @@ import java.util.List;
  * Persists the AtoNs to the database
  */
 @Named
-public class BatchAtonWriter extends AbstractItemHandler {
+public class BatchAtonImportWriter extends AbstractItemHandler {
 
     @Inject
     AtonService atonService;
