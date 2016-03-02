@@ -36,6 +36,7 @@ public abstract class BaseAtonImportReader extends AbstractItemHandler {
 
     Map<String, Integer> colIndex = new HashMap<>();
     Iterator<Row> rowIterator;
+    int totalRowNo;
     int row = 0;
 
     /**
@@ -71,6 +72,12 @@ public abstract class BaseAtonImportReader extends AbstractItemHandler {
     @Override
     public Object readItem() throws Exception {
         if (rowIterator.hasNext()) {
+
+            // Every now and then, update the progress
+            if (row % 10 == 0) {
+                updateProgress((int)(100.0 * row / totalRowNo));
+            }
+
             getLog().info("Reading row " + row);
             row++;
             return new BatchAtonItem(colIndex, rowIterator.next());
@@ -100,6 +107,8 @@ public abstract class BaseAtonImportReader extends AbstractItemHandler {
             HSSFWorkbook workbook = new HSSFWorkbook(inputStream);
             // Get first/desired sheet from the workbook
             HSSFSheet sheet = workbook.getSheetAt(0);
+
+            totalRowNo = sheet.getLastRowNum();
 
             // Get row iterator
             Iterator<Row> rowIterator = sheet.iterator();

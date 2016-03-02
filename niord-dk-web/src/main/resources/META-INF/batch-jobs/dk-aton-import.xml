@@ -1,4 +1,4 @@
-<job id="DkAtonImportJob" xmlns="http://xmlns.jcp.org/xml/ns/javaee" version="1.0">
+<job id="dk-aton-import" xmlns="http://xmlns.jcp.org/xml/ns/javaee" version="1.0">
     <step id="setupStep" allow-start-if-complete="true" next="importAtonsStep">
         <batchlet ref="jobStartBatchlet"/>
     </step>
