@@ -29,6 +29,10 @@ import java.util.stream.Collectors;
  * AtoN batch processor used for converting the legacy "AFM" Excel row into OSM seamark format.
  *
  * Filters out AtoNs that has not changed
+ *
+ * The AtoN model adheres to the OSM seamark specification, please refer to:
+ * http://wiki.openstreetmap.org/wiki/Key:seamark
+ * and sub-pages.
  */
 @Named
 public class BatchAtonImportProcessor extends BaseAtonImportProcessor {
@@ -55,6 +59,14 @@ public class BatchAtonImportProcessor extends BaseAtonImportProcessor {
         aton.updateTag(AtonTag.CUST_TAG_ATON_UID, stringValue("AFMSTATION"));
         if (StringUtils.isNotBlank(stringValue("FYRLBNR_DK"))) {
             aton.updateTag(AtonTag.CUST_TAG_LIGHT_NUMBER, stringValue("FYRLBNR_DK"));
+        }
+
+        if (StringUtils.isNotBlank(stringValue("PLADSNAVN"))) {
+            aton.updateTag(AtonTag.CUST_TAG_LOCALITY, stringValue("PLADSNAVN"));
+        }
+
+        if (StringUtils.isNotBlank(stringValue("AFM_NAVN"))) {
+            aton.updateTag("seamark:name", stringValue("AFM_NAVN"));
         }
 
         generateAton(
