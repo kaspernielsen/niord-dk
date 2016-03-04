@@ -19,7 +19,9 @@ import org.apache.commons.lang.StringUtils;
 import org.niord.core.aton.AtonNode;
 import org.niord.core.aton.AtonTag;
 import org.niord.core.user.User;
+import org.slf4j.Logger;
 
+import javax.inject.Inject;
 import javax.inject.Named;
 
 /**
@@ -33,6 +35,8 @@ import javax.inject.Named;
 @Named
 public class BatchLightImportProcessor extends AbstractAtonImportProcessor {
 
+    @Inject
+    Logger log;
 
     /** {@inheritDoc} **/
     @Override
@@ -61,15 +65,20 @@ public class BatchLightImportProcessor extends AbstractAtonImportProcessor {
         aton.updateTag(AtonTag.TAG_INT_LIGHT_NUMBER, stringValue("NR_INT"));
         aton.updateTag(AtonTag.TAG_LOCALITY, stringValue("Lokalitet"));
         aton.updateTag("seamark:name", stringValue("AFM_navn"));
+
         aton.updateTag("seamark:light:elevation", parseElevation());
-        aton.updateTag("seamark:light:height", toString(numericValue("Fyrbygnings_hoejde")));
+        aton.updateTag("seamark:light:height", toString(numericValueOrNull("Fyrbygnings_hoejde")));
         aton.updateTag("seamark:light:range", parseRange());
         aton.updateTag("seamark:light:information", stringValue("Fyrudseende"));
 
         String lightChar = stringValue("Fyrkarakter");
-        if (StringUtils.isNotBlank(lightChar)) {
-            // TODO
-        }
+        String fogChar = stringValue("Taagesignal");
+        String note = stringValue("Note");
+
+        //log.info("\n== Light ==\nFyrkarakter: " + lightChar + "\nNote: " + note + "\nFog: " + fogChar);
+
+        LightSeamark light = DkLightParser.parseLightCharacteristics(lightChar);
+        //light.toOsm().forEach(tag -> aton.updateTag(tag.getK(), tag.getV()));
 
         return aton;
     }
@@ -78,7 +87,7 @@ public class BatchLightImportProcessor extends AbstractAtonImportProcessor {
     private String parseElevation() {
         String elevation = null;
         for (int x = 1; x <= 4; x++) {
-            elevation = appendValue(elevation, numericValue("Flammehoejde_" + x));
+            elevation = appendValue(elevation, numericValueOrNull("Flammehoejde_" + x));
         }
         return elevation;
     }
@@ -87,7 +96,15 @@ public class BatchLightImportProcessor extends AbstractAtonImportProcessor {
     private String parseRange() {
         String range = null;
         for (int x = 1; x <= 3; x++) {
-            range = appendValue(range, stringValue("Lysstyrke_" + x));
+            try {
+                String r = stringValue("Lysstyrke_" + x)
+                                .split(" ")[1]              // "W 10,5(1,5)" -> "10,5(1,5)"
+                                .trim()
+                                .replaceAll("\\(.*\\)", "") // "10,5(1,5)" -> "10,5"
+                                .replace(',', '.');         // "10,5" -> "10.5"
+                range = appendValue(range, r);
+            } catch (Exception ignored) {
+            }
         }
         return range;
     }

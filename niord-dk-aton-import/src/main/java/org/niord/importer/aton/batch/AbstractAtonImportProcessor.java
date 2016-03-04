@@ -106,6 +106,13 @@ public abstract class AbstractAtonImportProcessor extends AbstractItemHandler {
     }
 
 
+    /** Returns the numeric value of the cell with the given header column key. Returns null for 0.0 */
+    Double numericValueOrNull(String colKey) {
+        Double val = numericValue(colKey);
+        return val == null || Math.abs(val) < 0.000001 ? null : val;
+    }
+
+
     /** Returns the string value of the cell with the given header column key */
     String stringValue(String colKey) {
         Cell cell = row.getCell(colIndex.get(colKey));
