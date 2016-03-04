@@ -35,7 +35,7 @@ import java.util.stream.Collectors;
  * and sub-pages.
  */
 @Named
-public class BatchAtonImportProcessor extends BaseAtonImportProcessor {
+public class BatchAtonImportProcessor extends AbstractAtonImportProcessor {
 
 
     /** {@inheritDoc} **/
@@ -56,13 +56,13 @@ public class BatchAtonImportProcessor extends BaseAtonImportProcessor {
         aton.setChangeset(getChangeSet());
         aton.setVersion(1);     // Unknown version
 
-        aton.updateTag(AtonTag.CUST_TAG_ATON_UID, stringValue("AFMSTATION"));
+        aton.updateTag(AtonTag.TAG_ATON_UID, stringValue("AFMSTATION"));
         if (StringUtils.isNotBlank(stringValue("FYRLBNR_DK"))) {
-            aton.updateTag(AtonTag.CUST_TAG_LIGHT_NUMBER, stringValue("FYRLBNR_DK"));
+            aton.updateTag(AtonTag.TAG_LIGHT_NUMBER, stringValue("FYRLBNR_DK"));
         }
 
         if (StringUtils.isNotBlank(stringValue("PLADSNAVN"))) {
-            aton.updateTag(AtonTag.CUST_TAG_LOCALITY, stringValue("PLADSNAVN"));
+            aton.updateTag(AtonTag.TAG_LOCALITY, stringValue("PLADSNAVN"));
         }
 
         if (StringUtils.isNotBlank(stringValue("AFM_NAVN"))) {

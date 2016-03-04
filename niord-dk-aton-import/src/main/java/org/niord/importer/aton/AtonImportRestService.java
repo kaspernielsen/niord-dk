@@ -26,7 +26,7 @@ import org.niord.core.sequence.DefaultSequence;
 import org.niord.core.sequence.Sequence;
 import org.niord.core.sequence.SequenceService;
 import org.niord.core.user.UserService;
-import org.niord.importer.aton.batch.BaseAtonImportProcessor;
+import org.niord.importer.aton.batch.AbstractAtonImportProcessor;
 import org.niord.model.vo.aton.AtonNodeVo;
 import org.niord.model.vo.aton.AtonOsmVo;
 import org.slf4j.Logger;
@@ -122,6 +122,7 @@ public class AtonImportRestService {
         return txt.toString();
     }
 
+
     /**
      * Extracts the AtoNs from the Excel sheet
      * @param inputStream the Excel sheet input stream
@@ -131,16 +132,12 @@ public class AtonImportRestService {
     private void importAtoN(InputStream inputStream, String fileName, StringBuilder txt) throws Exception {
         log.info("Extracting AtoNs from Excel sheet " + fileName);
 
-        int changeset = (int)sequenceService.getNextValue(AFM_SEQUENCE);
-        Properties properties = new Properties();
-        properties.put(BaseAtonImportProcessor.CHANGE_SET_PROPERTY, changeset);
-
         // Start batch job to import AtoNs
         batchService.startBatchJobWithDataFile(
                 "dk-aton-import",
                 inputStream,
                 fileName,
-                properties);
+                initBatchProperties());
 
         log.info("Started 'dk-aton-import' batch job with file " + fileName);
         txt.append("Started 'dk-aton-import' batch job with file ").append(fileName);
@@ -154,6 +151,17 @@ public class AtonImportRestService {
      * @param txt a log of the import
      */
     private void importLights(InputStream inputStream, String fileName, StringBuilder txt) throws Exception {
+        log.info("Extracting Lights from Excel sheet " + fileName);
+
+        // Start batch job to import AtoNs
+        batchService.startBatchJobWithDataFile(
+                "dk-light-import",
+                inputStream,
+                fileName,
+                initBatchProperties());
+
+        log.info("Started 'dk-light-import' batch job with file " + fileName);
+        txt.append("Started 'dk-light-import' batch job with file ").append(fileName);
     }
 
     /**
@@ -183,6 +191,15 @@ public class AtonImportRestService {
      * @param txt a log of the import
      */
     private void importRacons(InputStream inputStream, String fileName, StringBuilder txt) throws Exception {
+    }
+
+
+    /** Initializes the properties to use with the batch data */
+    private Properties initBatchProperties() {
+        int changeset = (int)sequenceService.getNextValue(AFM_SEQUENCE);
+        Properties properties = new Properties();
+        properties.put(AbstractAtonImportProcessor.CHANGE_SET_PROPERTY, changeset);
+        return properties;
     }
 
 

@@ -1,11 +1,11 @@
-<job id="dk-aton-import" xmlns="http://xmlns.jcp.org/xml/ns/javaee" version="1.0">
+<job id="dk-light-import" xmlns="http://xmlns.jcp.org/xml/ns/javaee" version="1.0">
     <step id="setupStep" allow-start-if-complete="true" next="importAtonsStep">
         <batchlet ref="jobStartBatchlet"/>
     </step>
     <step id="importAtonsStep">
         <chunk item-count="10">
-            <reader ref="batchAtonImportReader" />
-            <processor ref="batchAtonImportProcessor"/>
+            <reader ref="batchLightImportReader" />
+            <processor ref="batchLightImportProcessor"/>
             <writer ref="baseAtonImportWriter" />
         </chunk>
     </step>

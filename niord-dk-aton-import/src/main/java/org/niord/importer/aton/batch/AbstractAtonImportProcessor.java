@@ -15,6 +15,7 @@
  */
 package org.niord.importer.aton.batch;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.niord.core.aton.AtonNode;
@@ -23,12 +24,15 @@ import org.niord.core.batch.AbstractItemHandler;
 
 import javax.inject.Inject;
 import java.io.IOException;
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
 
 /**
  * Base class for Excel-based AtoN import batch processor classes
  */
-public abstract class BaseAtonImportProcessor extends AbstractItemHandler {
+public abstract class AbstractAtonImportProcessor extends AbstractItemHandler {
 
     public static final String CHANGE_SET_PROPERTY = "changeSet";
 
@@ -115,4 +119,23 @@ public abstract class BaseAtonImportProcessor extends AbstractItemHandler {
         return cell == null ? null : cell.getDateCellValue();
     }
 
+    /** Returns the string representation of the object or null if it is undefined */
+    public String toString(Object o) {
+        String result = o != null ? o.toString() : null;
+        return StringUtils.isNotBlank(result) ? result : null;
+    }
+
+    /** Appends a value using semi-colon as a separator */
+    public String appendValue(String str, Object o) {
+        String val = toString(o);
+        if (StringUtils.isNotBlank(val)) {
+            if (str == null) {
+                str = "";
+            } else if (str.length() > 0) {
+                str += ";";
+            }
+            str += val;
+        }
+        return str;
+    }
 }

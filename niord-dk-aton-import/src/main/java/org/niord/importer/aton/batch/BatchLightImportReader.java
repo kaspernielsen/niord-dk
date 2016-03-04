@@ -15,31 +15,23 @@
  */
 package org.niord.importer.aton.batch;
 
-import org.niord.core.aton.AtonNode;
-import org.niord.core.aton.AtonService;
-import org.niord.core.batch.AbstractItemHandler;
-
-import javax.inject.Inject;
 import javax.inject.Named;
-import java.util.List;
 
 /**
- * Persists the AtoNs to the database
+ * Reads lights from the DB
  */
 @Named
-public class BatchAtonImportWriter extends AbstractItemHandler {
+public class BatchLightImportReader extends AbstractAtonImportReader {
 
-    @Inject
-    AtonService atonService;
+    public static final String[] FIELDS = {
+            "Farvand", "Farvandsafsnit", "NR_DK", "NR_INT", "AFM_navn", "Lokalitet",
+            "Fyrkarakter", "Taagesignal", "Flammehoejde_1", "Flammehoejde_2", "Flammehoejde_3", "Flammehoejde_4",
+            "Lysstyrke_1", "Lysstyrke_2", "Lysstyrke_3", "Fyrudseende", "Fyrbygnings_hoejde", "Lysvinkler",
+            "Bemaerkninger", "Ajourfoert_dato", "STATUS", "AFM_NR", "LATITUDE", "LONGITUDE" };
 
     /** {@inheritDoc} **/
     @Override
-    public void writeItems(List<Object> items) throws Exception {
-        long t0 = System.currentTimeMillis();
-        for (Object i : items) {
-            AtonNode aton = (AtonNode) i;
-            atonService.saveEntity(aton);
-        }
-        getLog().info(String.format("Persisted %d AtoNs in %d s", items.size(), (System.currentTimeMillis() - t0) / 1000L));
+    public String[] getFields() {
+        return FIELDS;
     }
 }
