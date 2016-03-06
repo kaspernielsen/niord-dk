@@ -575,7 +575,7 @@ public class BatchAtonImportProcessor extends AbstractAtonImportProcessor {
     /** Generate the topmark shape and color tags **/
     private AtonNode generateTopmark(AtonNode aton, String shape, String color) {
         if (StringUtils.isNotBlank(shape)) {
-            aton.updateTag("seamark:topmark:shape", "cylinder");
+            aton.updateTag("seamark:topmark:shape", shape);
         }
         if (StringUtils.isNotBlank(color)) {
             aton.updateTag("seamark:topmark:color", color);
