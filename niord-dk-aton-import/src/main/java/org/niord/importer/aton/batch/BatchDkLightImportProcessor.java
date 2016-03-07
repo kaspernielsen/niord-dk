@@ -65,20 +65,43 @@ public class BatchDkLightImportProcessor extends AbstractDkAtonImportProcessor {
         aton.updateTag(AtonTag.TAG_INT_LIGHT_NUMBER, stringValue("NR_INT"));
         aton.updateTag(AtonTag.TAG_LOCALITY, stringValue("Lokalitet"));
         aton.updateTag("seamark:name", stringValue("AFM_navn"));
-
-        aton.updateTag("seamark:light:elevation", parseElevation());
-        aton.updateTag("seamark:light:height", toString(numericValueOrNull("Fyrbygnings_hoejde")));
-        aton.updateTag("seamark:light:range", parseRange());
         aton.updateTag("seamark:light:information", stringValue("Fyrudseende"));
 
+        aton.updateTag("seamark:light:elevation", parseElevation());
+
+        aton.updateTag("seamark:light:range", parseRange());
+
         String lightChar = stringValue("Fyrkarakter");
-        String fogChar = stringValue("Taagesignal");
-        String note = stringValue("Note");
+        //String fogChar = stringValue("Taagesignal");
 
-        //log.info("\n== Light ==\nFyrkarakter: " + lightChar + "\nNote: " + note + "\nFog: " + fogChar);
+        LightSeamark light = DkLightParser.newInstance();
 
-        LightSeamark light = DkLightParser.parseLightCharacteristics(lightChar);
-        //light.toOsm().forEach(tag -> aton.updateTag(tag.getK(), tag.getV()));
+        // Parse the light character, e.g. "Iso.WRG.2s"
+        DkLightParser.parseLightCharacteristics(light, lightChar);
+
+        // Parse the light elevations
+        DkLightParser.parseHeight(light, numericValueOrNull("Fyrbygnings_hoejde"));
+
+        // Parse the light sector angles
+        DkLightParser.parseLightSectorAngles(light, stringValue("Lysvinkler"));
+
+        // Parse the light ranges
+        DkLightParser.parseRange(light,
+                stringValue("Lysstyrke_1"),
+                stringValue("Lysstyrke_2"),
+                stringValue("Lysstyrke_3"));
+
+        // Parse the exhibition
+        DkLightParser.parseExhibition(light, stringValue("Braendetid"));
+
+        if (!light.isValid()) {
+            // TODO: May still be e.g. SIREN
+            getLog().info("Skipping invalid light " + stringValue("NR_DK") + ": " + lightChar);
+            return null;
+        }
+
+        // Copy the light OSM tags to the AtoN
+        light.toOsm().forEach(tag -> aton.updateTag(tag.getK(), tag.getV()));
 
         return aton;
     }

@@ -62,8 +62,9 @@ public class LightImporterTest {
     @Test
     public void testLightParsing() throws Exception {
         Arrays.stream(characteristics).forEach(c -> {
-            LightSeamark light = DkLightParser.parseLightCharacteristics(c);
-            Assert.assertNotNull(light);
+            LightSeamark light = DkLightParser.newInstance();
+            DkLightParser.parseLightCharacteristics(light, c);
+            Assert.assertTrue(light.isValid());
 
             System.out.println("===== " + c + "=====");
             light.toOsm().forEach(t -> System.out.printf("<tag k='%s' v='%s'/>%n", t.getK(), t.getV()));

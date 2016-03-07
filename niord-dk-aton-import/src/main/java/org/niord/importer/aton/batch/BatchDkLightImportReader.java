@@ -27,7 +27,7 @@ public class BatchDkLightImportReader extends AbstractDkAtonImportReader {
             "Farvand", "Farvandsafsnit", "NR_DK", "NR_INT", "AFM_navn", "Lokalitet",
             "Fyrkarakter", "Taagesignal", "Flammehoejde_1", "Flammehoejde_2", "Flammehoejde_3", "Flammehoejde_4",
             "Lysstyrke_1", "Lysstyrke_2", "Lysstyrke_3", "Fyrudseende", "Fyrbygnings_hoejde", "Lysvinkler",
-            "Bemaerkninger", "Ajourfoert_dato", "STATUS", "AFM_NR", "LATITUDE", "LONGITUDE", "Note" };
+            "Braendetid", "Bemaerkninger", "Ajourfoert_dato", "STATUS", "AFM_NR", "LATITUDE", "LONGITUDE", "Note" };
 
     /** {@inheritDoc} **/
     @Override

@@ -16,9 +16,13 @@
 package org.niord.importer.aton.batch;
 
 import org.apache.commons.lang.StringUtils;
+import org.niord.importer.aton.batch.LightSeamark.Colour;
+import org.niord.importer.aton.batch.LightSeamark.LightSector;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -35,12 +39,12 @@ public class DkLightParser {
 
     public static Pattern LIGHT_CHARACTER_FORMAT = Pattern.compile(
             "^" +
-            "(?<multiple>\\d+[ ]+)?" +
-            "(?<phase>(" + LIGHT_PHASES + ")([\\. +]?(" + LIGHT_PHASES + "))*)[\\. ]?" +
-            "(?<group>\\(\\w+(\\+\\w+)*\\))?[\\. ]?" +
-            "(?<colors>(" +  LIGHT_COLORS + ")([\\. ]?(" + LIGHT_COLORS + "))*)?[\\. ]?" +
-            "(?<period>\\d+(,\\d)?[sm])?" +
-            ".*$"
+                    "(?<multiple>\\d+[ ]+)?" +
+                    "(?<phase>(" + LIGHT_PHASES + ")([\\. +]?(" + LIGHT_PHASES + "))*)[\\. ]?" +
+                    "(?<group>\\(\\w+(\\+\\w+)*\\))?[\\. ]?" +
+                    "(?<colors>(" + LIGHT_COLORS + ")([\\. ]?(" + LIGHT_COLORS + "))*)?[\\. ]?" +
+                    "(?<period>\\d+(,\\d)?[sm])?" +
+                    ".*$"
     );
 
     public static Pattern LIGHT_FORMAT = Pattern.compile(
@@ -51,22 +55,42 @@ public class DkLightParser {
             "[\\. +]?(?<phase>" + LIGHT_PHASES + ")"
     );
 
-    public static void main(String[] args) {
-        Matcher cm = LIGHT_CHARACTER_FORMAT.matcher("F.R");
-        while (cm.find()) {
-            System.out.println(cm.group("phase"));
-        }
+    public static Pattern RANGE_FORMAT = Pattern.compile(
+            "(?<color>" + LIGHT_COLORS + ") (?<range>\\d+(,\\d)?)"
+    );
 
+    public static Pattern SECTOR_FORMAT = Pattern.compile(
+            "[\\. ]?(?<color>" + LIGHT_COLORS + ")" +
+                    "(?<start>\\d+(,\\d+)?)°-" +
+                    "(?<end>\\d+(,\\d+)?)°"
+    );
+
+    /**
+     * No public initialization
+     */
+    private DkLightParser() {
     }
 
     /**
-     * Parses the light characteristics into a LightSeamark
-     * @param lightChar the light characteristics
-     * @return the parsed LightSeamark
+     * Creates and initializes a new instance
+     *
+     * @return the newly created light instance
      */
-    public static LightSeamark parseLightCharacteristics(String lightChar) {
+    public static LightSeamark newInstance() {
+        LightSeamark light = new LightSeamark();
+        LightSector sector = new LightSector();
+        light.getSectors().add(sector);
+        return light;
+    }
 
-        LightSeamark light = null;
+    /**
+     * Parses the light characteristics and updates the first sector of the LightSeamark
+     *
+     * @param light     the light to update
+     * @param lightChar the light characteristics
+     * @return the updated light
+     */
+    public static LightSeamark parseLightCharacteristics(LightSeamark light, String lightChar) {
 
         Matcher m = LIGHT_CHARACTER_FORMAT.matcher(lightChar);
 
@@ -78,12 +102,10 @@ public class DkLightParser {
             String periodSpec = m.group("period");
 
             if (StringUtils.isBlank(phaseSpec) || (!"Mo".equals(phaseSpec) && StringUtils.isBlank(colorsSpec))) {
-                return null;
+                return light;
             }
 
-            light = new LightSeamark();
-            LightSeamark.LightSector sector = new LightSeamark.LightSector();
-            light.getSectors().add(sector);
+            LightSector sector = light.getSectors().get(0);
 
             // Phases
             Matcher pm = PHASE_FORMAT.matcher(phaseSpec);
@@ -92,7 +114,7 @@ public class DkLightParser {
                 phases.add(valueOfLc(pm.group("phase")));
             }
             if (phases.isEmpty() || phases.size() > 2) {
-                return null;
+                return light;
             } else if (phases.size() == 1) {
                 sector.setCharacter(phases.get(0));
             } else {
@@ -129,7 +151,7 @@ public class DkLightParser {
             if (StringUtils.isNotBlank(colorsSpec)) {
                 Matcher cm = LIGHT_FORMAT.matcher(colorsSpec);
                 while (cm.find()) {
-                    sector.getColours().add(LightSeamark.Colour.valueOfLc(cm.group("color")));
+                    sector.getColours().add(Colour.valueOfLc(cm.group("color")));
                 }
             }
             // Multiple
@@ -144,10 +166,151 @@ public class DkLightParser {
 
             // Period
             if (StringUtils.isNotBlank(periodSpec)) {
-                sector.setPeriod(Double.valueOf(periodSpec.substring(0, periodSpec.length()-1).replace(',', '.')));
+                sector.setPeriod(Double.valueOf(periodSpec.substring(0, periodSpec.length() - 1).replace(',', '.')));
             }
 
         }
         return light;
     }
+
+
+    /**
+     * When the light character is read in, there may be multiple colours, e.g. "Iso.WRG.8s".
+     * This covers the fact that the light may be a multi-sectored or -directional light.
+     * This method will take a multi-light sector and convert it into a single-light
+     * multi-sectored version.
+     *
+     * This function is not used yet. Consider using it if not light sector angles are defined.
+     *
+     * @param light the light to update
+     */
+    @SuppressWarnings("unused")
+    private static LightSeamark expandColours(LightSeamark light) {
+        if (light.getSectors().size() == 1 && light.getSectors().get(0).getColours().size() > 1) {
+
+            LightSector sector = light.getSectors().get(0);
+            List<LightSector> sectors = new ArrayList<>();
+            sector.getColours().forEach(col -> {
+                LightSector s = sector.copy();
+                s.getColours().clear();
+                s.getColours().add(col);
+                sectors.add(s);
+            });
+
+            light.setSectors(sectors);
+        }
+        return light;
+    }
+
+
+    /**
+     * Parses the height and updates the light with the value
+     * @param light the light to update
+     * @param height the height
+     * @return the updated light
+     */
+    public static LightSeamark parseHeight(LightSeamark light, Double height) {
+        light.getSectors().forEach(s -> s.setHeight(height));
+        return light;
+    }
+
+
+    /**
+     * Parses the light sector angles. The field has the format
+     * "G020,9°-025,5° W025,5°-030° R030°-19,2° G119,2°-207,5° W207,5°-209,8° R209,8°-220,8°. "
+     *
+     * @param light the light to update
+     * @param sectors the light sector angles
+     * @return the updated light
+     */
+    public static LightSeamark parseLightSectorAngles(LightSeamark light, String sectors) {
+        if (StringUtils.isBlank(sectors) || light.getSectors().size() != 1) {
+            return light;
+        }
+
+        List<LightSector> newSectors = new ArrayList<>();
+        LightSector sector = light.getSectors().get(0);
+
+        Matcher m = SECTOR_FORMAT.matcher(sectors);
+        while (m.find()) {
+            try {
+                Colour col = Colour.valueOfLc(m.group("color"));
+                Double start = Double.valueOf(m.group("start").replace(',', '.'));
+                Double end = Double.valueOf(m.group("end").replace(',', '.'));
+
+                LightSector newSector = sector.copy();
+                newSector.getColours().clear();
+                newSector.getColours().add(col);
+                newSector.setSectorStart(start);
+                newSector.setSectorEnd(end);
+                newSectors.add(newSector);
+
+            } catch (Exception ignored) {
+            }
+        }
+
+        if (newSectors.size() > 0) {
+            light.setSectors(newSectors);
+        }
+
+        return light;
+    }
+
+
+    /**
+     * Parses the ranges and updates the light with the values.
+     * There should be 1-3 ranges, which should match the colours of the light sectors
+     *
+     * @param light the light to update
+     * @param ranges the ranges
+     * @return the updated light
+     */
+    public static LightSeamark parseRange(LightSeamark light, String... ranges) {
+
+        // Build a map of the color-range values
+        Map<Colour, Double> rangeMap = new HashMap<>();
+        for (String range : ranges) {
+            if (StringUtils.isNotBlank(range)) {
+                Matcher m = RANGE_FORMAT.matcher(range);
+                try {
+                    if (m.matches()) {
+                        rangeMap.put(
+                                Colour.valueOfLc(m.group("color")),
+                                Double.valueOf(m.group("range").replace(',', '.'))
+                        );
+                    }
+                } catch (Exception ignored) {
+                }
+            }
+        }
+
+        // Update the corresponding light sectors
+        light.getSectors().forEach(s -> {
+            Colour col = s.getColours().size() == 1 ? s.getColours().get(0) : null;
+            if (col != null && rangeMap.containsKey(col)) {
+                s.setRange(rangeMap.get(col));
+            }
+        });
+
+        return light;
+    }
+
+
+    /**
+     * Parses the exhibition and updates the light with the values.
+     *
+     * @param light the light to update
+     * @param exhibition the exhibition
+     * @return the updated light
+     */
+    public static LightSeamark parseExhibition(LightSeamark light, String exhibition) {
+
+        if (StringUtils.isNotBlank(exhibition) && exhibition.toLowerCase().contains("brændetid: H24")) {
+            light.setExhibition(LightSeamark.Exhibition.h24);
+        }
+
+        return light;
+    }
+
+
 }

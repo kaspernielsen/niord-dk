@@ -16,6 +16,7 @@
 package org.niord.importer.aton.batch;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.math.DoubleRange;
 import org.niord.core.aton.AtonTag;
 
 import java.util.ArrayList;
@@ -183,6 +184,12 @@ public class LightSeamark {
     /** Functions           **/
     /*************************/
 
+    /** Checks if the light is valid */
+    public boolean isValid() {
+        return sectors.size() > 0 &&
+                sectors.stream().allMatch(LightSector::isValid);
+    }
+
     /** Converts this entity to a list of AtoN tags **/
     public List<AtonTag> toOsm() {
 
@@ -274,6 +281,31 @@ public class LightSeamark {
         String group;
         Double period;
         String sequence;
+        Double sectorStart;
+        Double sectorEnd;
+
+        /** Checks if the light sector is valid */
+        public boolean isValid() {
+            return character != null &&
+                    (colours.size() > 0 ||
+                            (character == Character.Mo && group != null));
+        }
+
+        /** Creates a copy of this sector **/
+        public LightSector copy() {
+            LightSector s = new LightSector();
+            s.setColours(new ArrayList<>(colours));
+            s.setCharacter(character);
+            s.setHeight(height);
+            s.setMultiple(multiple);
+            s.setRange(range);
+            s.setGroup(group);
+            s.setPeriod(period);
+            s.setSequence(sequence);
+            s.setSectorStart(sectorStart);
+            s.setSectorEnd(sectorEnd);
+            return s;
+        }
 
         /** Converts this entity to a list of AtoN tags **/
         public void toOsm(List<AtonTag> tags, String prefix) {
@@ -289,6 +321,8 @@ public class LightSeamark {
             addAtonTag(tags, prefix + "group", group);
             addAtonTag(tags, prefix + "period", period);
             addAtonTag(tags, prefix + "sequence", sequence);
+            addAtonTag(tags, prefix + "sector_start", sectorStart);
+            addAtonTag(tags, prefix + "sector_end", sectorEnd);
         }
 
         /*************************/
@@ -357,6 +391,22 @@ public class LightSeamark {
 
         public void setSequence(String sequence) {
             this.sequence = sequence;
+        }
+
+        public Double getSectorStart() {
+            return sectorStart;
+        }
+
+        public void setSectorStart(Double sectorStart) {
+            this.sectorStart = sectorStart;
+        }
+
+        public Double getSectorEnd() {
+            return sectorEnd;
+        }
+
+        public void setSectorEnd(Double sectorEnd) {
+            this.sectorEnd = sectorEnd;
         }
     }
 }
