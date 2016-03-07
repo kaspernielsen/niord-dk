@@ -22,6 +22,8 @@ import org.niord.core.user.User;
 
 import javax.inject.Named;
 import java.util.Arrays;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -124,350 +126,54 @@ public class BatchDkAtonImportProcessor extends AbstractDkAtonImportProcessor {
     /********************************/
 
     /**
-     * Generates type-specific AtoN OSM tags.
+     * Updates the AtoN with the given tags, which must be in k,v,k,v,...,k,v order.
      *
-     * @param shortDesc the FORKORTELSE field
-     * @param description the BESKRIVELSE field
-     * @param type the "KARAKNR" field
-     * @return the corresponding AFM topmark and color code
+     * Any occurrence of "${type}" in the keys will be substituted with the "seamark:type" value.
+     *
+     * @param aton the AtoN to update
+     * @param tags the tags
      */
-    public Integer[] generateAton(AtonNode aton, String shortDesc, String description, int type) {
-        if (StringUtils.isBlank(description)) {
-            return new Integer[] { null, null };
+    private void updateAtonTags(AtonNode aton, String... tags) {
+
+        if (tags.length % 2 != 0) {
+            throw new IllegalArgumentException("Invalid number of key-value tag parameters " + tags.length);
         }
 
-        // An AtoN consists of a master type (e.g. "light") and a set of slave types (e.g. AIS)
-        // Currently, only master is handled, and the slave types are left for the other Excel imports.
-        Set<AtonType> types = parseType(type);
-        AtonType masterType = masterType(types);
-
-        Integer topMark;
-        String osmType = null;
-        String osmCateogry = null;
-        String osmShape = null;
-        switch (description) {
-
-            case "AIS Syntetisk AtoN":
-                generaetRadioStationAton(aton, "s-ais");
-                break;
-            case "AIS Virtuel AtoN":
-                generaetRadioStationAton(aton, "v-ais");
-                break;
-
-            case "Anduvningsfyr":
-                generateAton(aton, "light_major", 3);
-                break;
-
-            case "Bagbord båke - CAN":
-                generateAton(aton, "beacon_lateral", "port", getBeaconShape(masterType), 2004, 1);
-                break;
-
-            case "Bagbord båke - Trekant ned":
-                generateAton(aton, "beacon_lateral", "port", getBeaconShape(masterType), 2164, 1);
-                break;
-
-            case "Bagbord sideafmærkning":
-                topMark = shortDesc.equals("PORT u/top") ? null : 2;
-                if (masterType.isLight()) {
-                    osmType = "light_minor";
-                } else if (masterType.isBeacon()) {
-                    osmType = "beacon_lateral";
-                    osmCateogry = "port";
-                    osmShape = getBeaconShape(masterType);
-                } else {
-                    osmType = "buoy_lateral";
-                    osmCateogry = "port";
-                    osmShape = "can";  // Guessing
-                }
-                generateAton(aton, osmType, osmCateogry, osmShape, topMark, 1);
-                break;
-
-            case "Bagbord skillepkts.afmærkning":
-            case "Bagbords skillepunktsafmærkn.":
-                generateAton(aton, "buoy_lateral", "preferred_channel_starboard", "can", 2, 9);
-                break;
-
-            case "Bagbords molefyr":
-                generateAton(aton, "light_minor", null, null, null, 1);
-                break;
-
-            case "Bifyr med vinkler":
-            case "Bifyr, lokalt advarselsfyr":
-            case "Bagfyr":
-                generateAton(aton, "light_minor", null, null, null, 5);
-                break;
-
-            case "Båke (Keglestub) u/top":
-                generateAton(aton, "beacon_special_purpose", null, null, null, 4);
-                break;
-
-            case "Båke med firkantet plade-top":
-                generateAton(aton, "beacon_special_purpose", null, null, 2054, 4);
-                break;
-
-            case "Bropassage, bagbord":
-                generateAton(aton, "light", null, null, 29, 1);
-                break;
-
-            case "Bropassage, styrbord":
-                generateAton(aton, "light", null, null, 28, 2);
-                break;
-
-            case "Bropassagesignal":
-                generateAton(aton, "light", null, null, null, 1);
-                break;
-
-            case "CAN-båke i gul tønde, m/top":
-                generateAton(aton, "beacon_special_purpose", null, "buoyant", 2004, 4);
-                break;
-
-            case "Emergency Wreck Marking Buoy":
-                generateAton(aton, "buoy_special_purpose", "warning", "buoyant", null, 2224);
-                break;
-
-            case "Firkantet båke u/top":
-                generateAton(aton, "beacon_special_purpose", null, null, null, 1);
-                break;
-
-            case "Forbåke m/top":
-                generateAton(aton, "beacon_special_purpose", "leading", null, 28, 1);
-                break;
-
-            case "Forfyr":
-                generateAton(aton, masterType == AtonType.LIGHT_MINOR ? "light_minor" : "light", null, null, null, 5);
-                break;
-
-            case "Fredningsbåke":
-                generateAton(aton, "beacon_special_purpose", null, null, 4, 4);
-                break;
-
-            case "Fundet via Dansk Fyrliste":
-                if (masterType.isBeacon()) {
-                    // Might this be an error?
-                    osmType = "beacon_special_purpose";
-                } else {
-                    osmType = masterType == AtonType.LIGHT_MINOR ? "light_minor" : "light";
-                }
-                generateAton(aton, osmType, null, null, null, 23);
-                break;
-
-            case "Fyrtårn":
-                generateAton(aton, "light_major", null, null, null, 3);
-                break;
-
-            case "Grave-bagbåke":
-                generateAton(aton, "beacon_special_purpose", "leading", null, 20, 3);
-                break;
-
-            case "Grave-forbåke":
-                generateAton(aton, "beacon_special_purpose", "leading", null, 20, 3);
-                break;
-
-            case "Havn / fredningsomr. bagbåke":
-            case "Havn / fredningsomr. forbåke":
-                generateAton(aton, "beacon_special_purpose", "leading", null, 4, 4);
-                break;
-
-            case "Hvid stage med rød kugletop":
-                generateAton(aton, "beacon_special_purpose", null, "stake", 11, 3);
-                break;
-
-            case "Isoleret fareafmærkning":
-                generateAton(aton, "buoy_isolated_danger", null, null, 27, 15);
-                break;
-
-            case "Jernstang m. diamant-top":
-                generateAton(aton, "beacon_special_purpose", null, "pole", 2104, 1);
-                break;
-
-            case "Kabel bagbåke":
-                generateAton(aton, "buoy_isolated_danger", "cable", null, 14, 7);
-                break;
-
-            case "Kabel forbåke":
-                generateAton(aton, "buoy_isolated_danger", "cable", null, 13, 16);
-                break;
-
-            case "Kabelskilt":
-                generateAton(aton, "buoy_isolated_danger", "cable", null, null, null);
-                break;
-
-            case "Kompasafmærkning Ø for.":
-                generateAton(aton, masterType.isBeacon() ? "beacon_cardinal" : "buoy_cardinal", "east", null, 24, 13);
-                break;
-
-            case "Kompasafmærkning N for.":
-                generateAton(aton, masterType.isBeacon() ? "beacon_cardinal" : "buoy_cardinal", "north", null, 23, 12);
-                break;
-
-            case "Kompasafmærkning S for.":
-                generateAton(aton, masterType.isBeacon() ? "beacon_cardinal" : "buoy_cardinal", "south", null, 25, 11);
-                break;
-
-            case "Kompasafmærkning V for.":
-                generateAton(aton, masterType.isBeacon() ? "beacon_cardinal" : "buoy_cardinal", "west", null, 26, 10);
-                break;
-
-            case "Meteorologimast":
-                generateAton(aton, "landmark", "mast", null, null, 5);
-                break;
-
-            case "Midtfarvandsafmærkning":
-                generateAton(aton, masterType.isBeacon() ? "beacon_safe_water" : "buoy_safe_water", null, null, 11, 7);
-                break;
-
-            case "Pæl m. tværtræ-top":
-                generateAton(aton, "beacon_special_purpose", null, "pole", 2094, 1);
-                break;
-
-            case "Pyramide":
-                generateAton(aton, "beacon_special_purpose", null, "cairn", null, 1);
-                break;
-
-            case "Radiofyr":
-                generaetRadioStationAton(aton, null);
-                break;
-
-            case "Rød stage":
-                // TODO: Might also be: topmark=2144
-                generateAton(aton, "beacon_special_purpose", null, getBeaconShape(masterType), 2134, 1);
-                break;
-
-            case "Rørledningsbåke":
-                generateAton(aton, "beacon_special_purpose", "pipeline", null, 14, 4);
-                break;
-
-            case "Retningsfyr":
-                generateAton(aton, "light_minor", null, null, null, 5);
-                break;
-
-            case "sejladsbagbåke":
-                generateAton(aton, "beacon_special_purpose", "leading", null, 9, 7);
-                break;
-
-            case "Sejladsforbåke":
-                generateAton(aton, "beacon_special_purpose", "leading", null, 12, 7);
-                break;
-
-            case "Skydesignal":
-                generateAton(aton, "beacon_special_purpose", "firing_danger_area", null, 0, 5);
-                break;
-
-            case "Sluse- og kanalsignal":
-                generateAton(aton, "beacon_special_purpose", null, null, 0, 5);
-                break;
-
-            case "Specialafmærkning":
-                // TODO: Might also be: topmark=null
-                topMark = shortDesc.equals("PORT u/top") ? null : 2;
-                if (masterType.isLight()) {
-                    // Possibly a data error...
-                    osmType = "light";
-                } else if (masterType.isBeacon()) {
-                    topMark = 4;
-                    osmType = "beacon_special_purpose";
-                    osmShape = getBeaconShape(masterType);
-                } else {
-                    topMark = 4;
-                    osmType = "buoy_special_purpose";
-                }
-                generateAton(aton, osmType, null, osmShape, topMark, 4);
-                break;
-
-            case "Specialbåke":
-                generateAton(aton, "beacon_special_purpose", null, getBeaconShape(masterType), null, null);
-                break;
-
-            case "stage med X-top":
-                generateAton(aton, "beacon_special_purpose", null, getBeaconShape(masterType), 2134, 1);
-                break;
-
-            case "stage med Y-top":
-                generateAton(aton, "beacon_special_purpose", null, getBeaconShape(masterType), 2144, 1);
-                break;
-
-            case "Stang m.firkantet plade-top":
-                generateAton(aton, "beacon_special_purpose", null, "pole", 2054, 4);
-                break;
-
-            case "Sten-båke i gul tønde, m/top":
-                generateAton(aton, "beacon_special_purpose", null, "cairn", 2014, 4);
-                break;
-
-            case "Styrbord båke - Trekant op":
-                // NB: In AFM this was defined with color=1 - wrong methinks
-                generateAton(aton, "beacon_lateral", "starboard", getBeaconShape(masterType), 2034, 2);
-                break;
-
-            case "Styrbord molefyr":
-                generateAton(aton, "light_minor", null, null, null, 2);
-                break;
-
-            case "Styrbord sideafmærkning":
-                topMark = shortDesc.equals("STAR u/top") ? null : 1;
-                if (masterType.isLight()) {
-                    osmType = "light_minor";
-                } else if (masterType.isBeacon()) {
-                    osmType = "beacon_lateral";
-                    osmCateogry = "starboard";
-                    osmShape = getBeaconShape(masterType);
-                } else {
-                    osmType = "buoy_lateral";
-                    osmCateogry = "starboard";
-                    osmShape = "conical"; // Guessing
-                }
-                generateAton(aton, osmType, osmCateogry, osmShape, topMark, 2);
-                break;
-
-            case "Supertønde":
-                generateAton(aton, "buoy_special_purpose", null, "super-buoy", null, 7);
-                break;
-
-            case "Tågelys":
-                generateAton(aton, "light", null, null, null, 4);
-                break;
-
-            case "Timeglas-båke, m/top":
-                generateAton(aton, "beacon_special_purpose", null, "tower", 2044, 6);
-                break;
-
-            case "Treben (jern) + trekant-top":
-                generateAton(aton, "beacon_special_purpose", null, getBeaconShape(masterType), 2074, 1);
-                break;
-
-            case "Trebenet jernbåke":
-                generateAton(aton, "beacon_special_purpose", null, getBeaconShape(masterType), null, 1);
-                break;
-
-            case "Tremmeværk":
-                generateAton(aton, "beacon_special_purpose", null, getBeaconShape(masterType), null, 1);
-                break;
-
-            case "Varde":
-                generateAton(aton, "beacon_special_purpose", null, "cairn", null, 1);
-                break;
-
-            case "Vindmølle":
-                generateAton(aton, "landmark", "windmotor", null, null, null);
-                break;
-
-            case "Vinkelfyr":
-                if (masterType.isLight()) {
-                    osmType = "light";
-                } else if (masterType.isBeacon()) {
-                    osmType = "beacon_special_purpose";
-                    osmShape = getBeaconShape(masterType);
-                }
-                generateAton(aton, osmType, null, osmShape, null, 5);
-                break;
+        // Build a map of the parameters (NB: preserve order)
+        Map<String, String> tagLookup = new LinkedHashMap<>();
+        for (int x = 0; x < tags.length; x += 2) {
+            if (StringUtils.isNotBlank(tags[x]) && StringUtils.isNotBlank(tags[x + 1])) {
+                tagLookup.put(tags[x], tags[x + 1]);
+            }
         }
 
-        return new Integer[] { null, null };
+        // Ensure that the seamark:type is either specified in the tags parameters or already defined
+        String type = StringUtils.isNotBlank(tagLookup.get("seamark:type"))
+                ? tagLookup.get("seamark:type")
+                : aton.getTagValue("seamark:type");
+
+        if (StringUtils.isBlank(type)) {
+            throw new IllegalArgumentException("No seamark:type defined for AtoN " + aton);
+        }
+
+        // Update the AtoN
+        tagLookup.entrySet().stream()
+                .forEach(tag -> {
+
+                    // Substitute "${type}" in the key with the "seamark:type" value
+                    String key = tag.getKey();
+                    if (key.contains("${type}")) {
+                        key = key.replace("${type}", type);
+                    }
+
+                    aton.updateTag(key, tag.getValue());
+                });
+
     }
 
 
     /**
-     * Generates the given OSM type.
+     * Generates type-specific AtoN OSM tags.
      *
      * Important: The light details are handled by other Excel imports.
      *
@@ -475,112 +181,743 @@ public class BatchDkAtonImportProcessor extends AbstractDkAtonImportProcessor {
      * @see <a href="http://wiki.openstreetmap.org/wiki/Seamarks/Beacons">OpenStreetMap Beacon definitions</a>
      * @see <a href="http://wiki.openstreetmap.org/wiki/Seamarks/Buoys>OpenStreetMap Buoy definitions</a>
      *
-     * @param aton the AtoN to generate
-     * @param osmType the OSM type
-     * @param osmCategory the OSM category
-     * @param osmShape the OSM shape
-     * @param topMark the AFM top-mark ID
-     * @param color the AFM color code
-     * @param pattern the AFM colour pattern
+     * @param shortDesc the FORKORTELSE field
+     * @param description the BESKRIVELSE field
+     * @param type the "KARAKNR" field
      */
-    void generateAton(AtonNode aton, String osmType, String osmCategory, String osmShape, Integer topMark, Integer color, String pattern) {
-        aton.updateTag("seamark:type", osmType);
-        aton.updateTag(String.format("seamark:%s:category", osmType), osmCategory);
-        if (StringUtils.isNotBlank(osmShape)) {
-            aton.updateTag(String.format("seamark:%s:shape", osmType), osmShape);
-        }
-        generateTopmark(aton, topMark);
-        generateColor(aton, osmType, color, pattern);
-    }
-
-
-    /** Short-cut method **/
-    void generateAton(AtonNode aton, String osmType, String osmCategory, String osmShape, Integer topMark, Integer color) {
-        generateAton(aton, osmType, osmCategory, osmShape, topMark, color, null);
-    }
-
-
-    /** Short-cut method **/
-    void generateAton(AtonNode aton, String osmType, Integer topMark) {
-        generateAton(aton, osmType, null, null, topMark, null);
-    }
-
-
-    /*************************/
-    /** AtoN Radio Stations **/
-    /*************************/
-
-    /**
-     * Generates a radio station AtoN
-     * @see <a href="http://wiki.openstreetmap.org/wiki/Seamarks/Radio_Stations">OpenStreetMap definitions</a>
-     */
-    private void generaetRadioStationAton(AtonNode aton, String category) {
-        aton.updateTag("seamark:type", "radio_station");
-        aton.updateTag("seamark:radio_station:category", category);
-    }
-
-
-    /*************************/
-    /** AtoN Top-marks      **/
-    /*************************/
-
-    /**
-     * Generate topmark data for the given AtoN
-     * Based on the TOPBETEGNELSE table
-     * @param aton the AtoN to generate topmark data for
-     * @param topmark the topmark key
-     */
-    public AtonNode generateTopmark(AtonNode aton, Integer topmark) {
-        if (topmark == null) {
-            return aton;
+    public void generateAton(AtonNode aton, String shortDesc, String description, int type) {
+        if (StringUtils.isBlank(description)) {
+            return;
         }
 
-        // TODO: These mappings badly need to be verified
-        switch (topmark) {
-            case    1: return generateTopmark(aton, "cone, point up", parseColor(2));
-            case    2: return generateTopmark(aton, "cylinder", parseColor(1));
-            case    3: return generateTopmark(aton, "sphere", parseColor(5));
-            case    4: return generateTopmark(aton, "x-shape", parseColor(4));
-            case    5: return generateTopmark(aton, "sphere", parseColor(3));
-            case    9: return generateTopmark(aton, "cone, point down", parseColor(12));
-            case   11: return generateTopmark(aton, "sphere", parseColor(1));
-            case   12: return generateTopmark(aton, "cone, point up", parseColor(12));
+        // An AtoN consists of a master type (e.g. "light") and a set of slave types (e.g. AIS)
+        // Currently, only master is handled, and the slave types are left for the other Excel imports.
+        Set<AtonType> types = parseType(type);
+        AtonType masterType = masterType(types);
 
-            case   13: return generateTopmark(aton, "sphere", parseColor(16)); // ?? "Diskos, DISC"
-            case   14: return generateTopmark(aton, "rhombus", parseColor(7));
-            case   20: return generateTopmark(aton, "x-shape", parseColor(4));
-            case   23: return generateTopmark(aton, "2 cones up", parseColor(12));
-            case   24: return generateTopmark(aton, "2 cones base together", parseColor(13));
-            case   25: return generateTopmark(aton, "2 cones down", parseColor(11));
-            case   26: return generateTopmark(aton, "2 cones point together", parseColor(10));
-            case   27: return generateTopmark(aton, "2 spheres", parseColor(22));
-            case   28: return generateTopmark(aton, "cone, point up", parseColor(2));
-            case   29: return generateTopmark(aton, "square", parseColor(1));
-            case 2004: return generateTopmark(aton, "cylinder", parseColor(6));
-            //case 2014: return generateTopmark(aton, "sten", parseColor(4));  // ?? "Sten"
-            case 2034: return generateTopmark(aton, "cone, point up", parseColor(6));
-            case 2044: return generateTopmark(aton, "2 cones point together", parseColor(6)); //?? Timeglas
-            case 2054: return generateTopmark(aton, "square", parseColor(4));
-            case 2074: return generateTopmark(aton, "triangle, point down", parseColor(1));
-            case 2094: return generateTopmark(aton, "besom, point down", parseColor(1)); //?? Tværtræ
-            case 2104: return generateTopmark(aton, "rhombus", parseColor(1));
-            case 2134: return generateTopmark(aton, "x-shape", parseColor(1));
-            case 2144: return generateTopmark(aton, "besom, point down", parseColor(1));
-            case 2164: return generateTopmark(aton, "cone, point down", parseColor(1));
-        }
-        return aton;
-    }
+        String osmType;
+        switch (description) {
 
+            case "AIS Syntetisk AtoN":
+                updateAtonTags(aton,
+                        "seamark:type",                 "radio_station",
+                        "seamark:${type}:category",     "s-ais"
+                );
+                break;
 
-    /** Generate the topmark shape and color tags **/
-    private AtonNode generateTopmark(AtonNode aton, String shape, String color) {
-        if (StringUtils.isNotBlank(shape)) {
-            aton.updateTag("seamark:topmark:shape", shape);
+            case "AIS Virtuel AtoN":
+                updateAtonTags(aton,
+                        "seamark:type",                 "radio_station",
+                        "seamark:${type}:category",     "v-ais"
+                );
+                break;
+
+            case "Anduvningsfyr":
+                updateAtonTags(aton,
+                        "seamark:type",                 "light_major",
+                        "seamark:light:colour",         "white"
+                );
+                break;
+
+            case "Bagbord båke - CAN":
+                // topmark: 2004, colour: 1
+                updateAtonTags(aton,
+                        "seamark:type",                 "beacon_lateral",
+                        "seamark:${type}:category",     "port",
+                        "seamark:${type}:shape",        getBeaconShape(masterType),
+                        "seamark:${type}:system",       "iala-a",
+                        "seamark:${type}:colour",       "red",
+                        "seamark:topmark:shape",        "cylinder",
+                        "seamark:topmark:colour",       "orange"
+                );
+                break;
+
+            case "Bagbord båke - Trekant ned":
+                // topmark: 2164, colour: 1
+                updateAtonTags(aton,
+                        "seamark:type",                 "beacon_lateral",
+                        "seamark:${type}:category",     "port",
+                        "seamark:${type}:shape",        getBeaconShape(masterType),
+                        "seamark:${type}:system",       "iala-a",
+                        "seamark:${type}:colour",       "red",
+                        "seamark:topmark:shape",        "triangle, point down",
+                        "seamark:topmark:colour",       "red"
+                );
+                break;
+
+            case "Bagbord sideafmærkning":
+                if (masterType.isLight()) {
+                    updateAtonTags(aton,
+                            "seamark:type",             "light_minor",
+                            "seamark:light:colour",     "red"
+                    );
+                    return;
+                } else if (masterType.isBeacon()) {
+                    updateAtonTags(aton,
+                            "seamark:type",             "beacon_lateral",
+                            "seamark:${type}:shape",    getBeaconShape(masterType)
+                    );
+                } else {
+                    updateAtonTags(aton,
+                            "seamark:type",             "buoy_lateral",
+                            "seamark:${type}:shape",    "can" // Guessing
+                    );
+                }
+                updateAtonTags(aton,
+                        "seamark:${type}:category",     "port",
+                        "seamark:${type}:system",       "iala-a",
+                        "seamark:${type}:colour",       "red"
+                );
+                if (shortDesc.equals("PORT u/top")) {
+                    updateAtonTags(aton,
+                            "seamark:topmark:shape",    "cylinder",
+                            "seamark:topmark:colour",   "red"
+                    );
+                }
+                break;
+
+            case "Bagbord skillepkts.afmærkning":
+            case "Bagbords skillepunktsafmærkn.":
+                // topmark: 2, colour: 9
+                updateAtonTags(aton,
+                        "seamark:type",                 "buoy_lateral",
+                        "seamark:${type}:category",     "preferred_channel_starboard",
+                        "seamark:${type}:shape",        "can",
+                        "seamark:${type}:system",       "iala-a",
+                        "seamark:${type}:colour",       "red;green;red",
+                        "seamark:${type}:colour_pattern", "horizontal",
+                        "seamark:topmark:shape",        "cylinder",
+                        "seamark:topmark:colour",       "red"
+                );
+                break;
+
+            case "Bagbords molefyr":
+                updateAtonTags(aton,
+                        "seamark:type",                 "light_minor",
+                        "seamark:light:colour",         "red"
+                );
+                break;
+
+            case "Bifyr med vinkler":
+            case "Bifyr, lokalt advarselsfyr":
+            case "Bagfyr":
+                updateAtonTags(aton,
+                        "seamark:type",                 "light_minor",
+                        "seamark:light:colour",         "black"
+                );
+                break;
+
+            case "Båke (Keglestub) u/top":
+                // topmark: -, colour: 4
+                updateAtonTags(aton,
+                        "seamark:type",                 "beacon_special_purpose",
+                        "seamark:${type}:colour",       "yellow"
+                );
+                break;
+
+            case "Båke med firkantet plade-top":
+                // topmark: 2054, colour: 4
+                updateAtonTags(aton,
+                        "seamark:type",                 "beacon_special_purpose",
+                        "seamark:${type}:colour",       "yellow",
+                        "seamark:topmark:shape",        "triangle, point down",
+                        "seamark:topmark:colour",       "red"
+                );
+                break;
+
+            case "Bropassage, bagbord":
+                // topmark: 29, colour: 1
+                updateAtonTags(aton,
+                        "seamark:type",                 "light",
+                        "seamark:light:colour",         "red",
+                        "seamark:topmark:shape",        "square",
+                        "seamark:topmark:colour",       "red"
+                );
+                break;
+
+            case "Bropassage, styrbord":
+                // topmark: 28, colour: 2
+                updateAtonTags(aton,
+                        "seamark:type",                 "light",
+                        "seamark:light:colour",         "green",
+                        "seamark:topmark:shape",        "triangle, point up",
+                        "seamark:topmark:colour",       "green"
+                );
+                break;
+
+            case "Bropassagesignal":
+                // topmark: -, colour: 1
+                updateAtonTags(aton,
+                        "seamark:type",                 "light",
+                        "seamark:light:colour",         "red"
+                );
+                break;
+
+            case "CAN-båke i gul tønde, m/top":
+                // topmark: 2004, colour: 4
+                updateAtonTags(aton,
+                        "seamark:type",                 "beacon_special_purpose",
+                        "seamark:${type}:colour",       "yellow",
+                        "seamark:${type}:shape",        "buoyant",
+                        "seamark:topmark:shape",        "cylinder",
+                        "seamark:topmark:colour",       "red"
+                );
+                break;
+
+            case "Emergency Wreck Marking Buoy":
+                // topmark: -, colour: 2224
+                updateAtonTags(aton,
+                        "seamark:type",                 "buoy_special_purpose",
+                        "seamark:${type}:category",     "warning",
+                        "seamark:${type}:colour",       "blue;yellow",
+                        "seamark:${type}:colour_pattern", "vertical",
+                        "seamark:${type}:shape",        "buoyant"
+                );
+                break;
+
+            case "Firkantet båke u/top":
+                // topmark: -, colour: 1
+                updateAtonTags(aton,
+                        "seamark:type",                 "beacon_special_purpose",
+                        "seamark:${type}:colour",       "red"
+                );
+                break;
+
+            case "Forbåke m/top":
+                // topmark: 28, colour: 1
+                updateAtonTags(aton,
+                        "seamark:type",                 "beacon_special_purpose",
+                        "seamark:${type}:category",     "leading",
+                        "seamark:${type}:colour",       "red", // TODO: verify
+                        "seamark:topmark:shape",        "triangle, point up",
+                        "seamark:topmark:colour",       "green"
+                );
+                break;
+
+            case "Forfyr":
+                // topmark: -, colour: 5
+                updateAtonTags(aton,
+                        "seamark:type",                 masterType == AtonType.LIGHT_MINOR ? "light_minor" : "light",
+                        "seamark:light:colour",         "black"
+                );
+                break;
+
+            case "Fredningsbåke":
+                // topmark: 4, colour: 4
+                updateAtonTags(aton,
+                        "seamark:type",                 "beacon_special_purpose",
+                        "seamark:${type}:colour",       "yellow",
+                        "seamark:topmark:shape",        "x-shape",
+                        "seamark:topmark:colour",       "yellow"
+                );
+                break;
+
+            case "Fundet via Dansk Fyrliste":
+                // topmark: -, colour: 23
+                if (masterType.isBeacon()) {
+                    // Might this be an error?
+                    osmType = "beacon_special_purpose";
+                } else {
+                    osmType = masterType == AtonType.LIGHT_MINOR ? "light_minor" : "light";
+                }
+                updateAtonTags(aton,
+                        "seamark:type",                 osmType,
+                        "seamark:${type}:colour",       "amber"
+                );
+                break;
+
+            case "Fyrtårn":
+                // topmark: -, colour: 23
+                updateAtonTags(aton,
+                        "seamark:type",                 "light_major",
+                        "seamark:${type}:colour",       "amber"
+                );
+                break;
+
+            case "Grave-bagbåke":
+            case "Grave-forbåke":
+                // topmark: 20, colour: 3
+                updateAtonTags(aton,
+                        "seamark:type",                 "beacon_special_purpose",
+                        "seamark:${type}:category",     "leading",
+                        "seamark:${type}:colour",       "white",
+                        "seamark:topmark:shape",        "x-shape",
+                        "seamark:topmark:colour",       "yellow"
+                );
+                break;
+
+            case "Havn / fredningsomr. bagbåke":
+            case "Havn / fredningsomr. forbåke":
+                // topmark: 4, colour: 4
+                updateAtonTags(aton,
+                        "seamark:type",                 "beacon_special_purpose",
+                        "seamark:${type}:category",     "leading",
+                        "seamark:${type}:colour",       "yellow",
+                        "seamark:topmark:shape",        "x-shape",
+                        "seamark:topmark:colour",       "yellow"
+                );
+                break;
+
+            case "Hvid stage med rød kugletop":
+                // topmark: 11, colour: 3
+                updateAtonTags(aton,
+                        "seamark:type",                 "beacon_special_purpose",
+                        "seamark:${type}:shape",        "stake",
+                        "seamark:${type}:colour",       "white",
+                        "seamark:topmark:shape",        "sphere",
+                        "seamark:topmark:colour",       "red"
+                );
+                break;
+
+            case "Isoleret fareafmærkning":
+                // topmark: 27, colour: 15
+                updateAtonTags(aton,
+                        "seamark:type",                 "buoy_special_purpose",
+                        "seamark:${type}:colour",       "black;red;black",
+                        "seamark:${type}:colour_pattern", "horizontal",
+                        "seamark:topmark:shape",        "2 spheres",
+                        "seamark:topmark:colour",       "black"
+                );
+                break;
+
+            case "Jernstang m. diamant-top":
+                // topmark: 2104, colour: 1
+                updateAtonTags(aton,
+                        "seamark:type",                 "beacon_special_purpose",
+                        "seamark:${type}:shape",        "pole",
+                        "seamark:${type}:colour",       "red",
+                        "seamark:topmark:shape",        "rhombus",
+                        "seamark:topmark:colour",       "red"
+                );
+                break;
+
+            case "Kabel bagbåke":
+                // topmark: 14, colour: 7
+                updateAtonTags(aton,
+                        "seamark:type",                 "beacon_special_purpose",
+                        "seamark:${type}:category",     "cable",
+                        "seamark:${type}:colour",       "red;white",
+                        "seamark:${type}:colour_pattern", "horizontal",
+                        "seamark:topmark:shape",        "rhombus",
+                        "seamark:topmark:colour",       "red;white",
+                        "seamark:topmark:colour_pattern", "horizontal" // Verify...
+                );
+                break;
+
+            case "Kabel forbåke":
+                // topmark: 13, colour: 16
+                updateAtonTags(aton,
+                        "seamark:type",                 "beacon_special_purpose",
+                        "seamark:${type}:category",     "cable",
+                        "seamark:${type}:colour",       "white;red",
+                        "seamark:${type}:colour_pattern", "horizontal",
+                        "seamark:topmark:shape",        "sphere",
+                        "seamark:topmark:colour",       "white;red",
+                        "seamark:topmark:colour_pattern", "horizontal" // Verify...
+                );
+                break;
+
+            case "Kabelskilt":
+                // TODO: Not right
+                // topmark: -, colour: -
+                updateAtonTags(aton,
+                        "seamark:type",                 "beacon_special_purpose",
+                        "seamark:${type}:category",     "cable"
+                );
+                break;
+
+            case "Kompasafmærkning Ø for.":
+                // topmark: 24, colour: 13
+                updateAtonTags(aton,
+                        "seamark:type",                 masterType.isBeacon() ? "beacon_cardinal" : "buoy_cardinal",
+                        "seamark:${type}:category",     "east",
+                        "seamark:${type}:colour",       "black;yellow;black",
+                        "seamark:${type}:colour_pattern", "horizontal",
+                        "seamark:topmark:shape",        "2 cones base together",
+                        "seamark:topmark:colour",       "black"
+                );
+                break;
+
+            case "Kompasafmærkning N for.":
+                // topmark: 23, colour: 12
+                updateAtonTags(aton,
+                        "seamark:type",                 masterType.isBeacon() ? "beacon_cardinal" : "buoy_cardinal",
+                        "seamark:${type}:category",     "north",
+                        "seamark:${type}:colour",       "black;yellow",
+                        "seamark:${type}:colour_pattern", "horizontal",
+                        "seamark:topmark:shape",        "2 cones up",
+                        "seamark:topmark:colour",       "black"
+                );
+                break;
+
+            case "Kompasafmærkning S for.":
+                // topmark: 25, colour: 11
+                updateAtonTags(aton,
+                        "seamark:type",                 masterType.isBeacon() ? "beacon_cardinal" : "buoy_cardinal",
+                        "seamark:${type}:category",     "south",
+                        "seamark:${type}:colour",       "yellow;black",
+                        "seamark:${type}:colour_pattern", "horizontal",
+                        "seamark:topmark:shape",        "2 cones down",
+                        "seamark:topmark:colour",       "black"
+                );
+                break;
+
+            case "Kompasafmærkning V for.":
+                // topmark: 26, colour: 10
+                updateAtonTags(aton,
+                        "seamark:type",                 masterType.isBeacon() ? "beacon_cardinal" : "buoy_cardinal",
+                        "seamark:${type}:category",     "west",
+                        "seamark:${type}:colour",       "yellow;black;yellow",
+                        "seamark:${type}:colour_pattern", "horizontal",
+                        "seamark:topmark:shape",        "2 cones point together",
+                        "seamark:topmark:colour",       "black"
+                );
+                break;
+
+            case "Meteorologimast":
+                // topmark: -, colour: 5
+                updateAtonTags(aton,
+                        "seamark:type",                 "landmark",
+                        "seamark:${type}:shape",        "mast",
+                        "seamark:${type}:colour",       "black"
+                );
+                break;
+
+            case "Midtfarvandsafmærkning":
+                // topmark: 1, colour: 7
+                updateAtonTags(aton,
+                        "seamark:type",                 masterType.isBeacon() ? "beacon_safe_water" : "buoy_safe_water",
+                        "seamark:${type}:colour",       "red;white",
+                        "seamark:${type}:colour_pattern", "vertical",
+                        "seamark:topmark:shape",        "sphere",
+                        "seamark:topmark:colour",       "red"
+                );
+                break;
+
+            case "Pæl m. tværtræ-top":
+                // topmark: 2094, colour: 1
+                updateAtonTags(aton,
+                        "seamark:type",                 "beacon_special_purpose",
+                        "seamark:${type}:colour",       "red",
+                        "seamark:${type}:shape",        "pole",
+                        "seamark:topmark:shape",        "t-shape",
+                        "seamark:topmark:colour",       "red"
+                );
+                break;
+
+            case "Pyramide":
+                // topmark: -, colour: 1
+                updateAtonTags(aton,
+                        "seamark:type",                 "beacon_special_purpose",
+                        "seamark:${type}:colour",       "red",
+                        "seamark:${type}:shape",        "cairn"
+                );
+                break;
+
+            case "Radiofyr":
+                updateAtonTags(aton,
+                        "seamark:type",                 "radio_station"
+                );
+                break;
+
+            case "Rød stage":
+                // TODO: Might also be: topmark=2144
+                // topmark: 2134, colour: 1
+                updateAtonTags(aton,
+                        "seamark:type",                 "beacon_special_purpose",
+                        "seamark:${type}:shape",        getBeaconShape(masterType),
+                        "seamark:${type}:colour",       "red",
+                        "seamark:topmark:shape",        "x-shape",
+                        "seamark:topmark:colour",       "red"
+                );
+                break;
+
+            case "Rørledningsbåke":
+                // topmark: 14, colour: 4
+                updateAtonTags(aton,
+                        "seamark:type",                 "beacon_special_purpose",
+                        "seamark:${type}:category",     "pipeline",
+                        "seamark:${type}:colour",       "yellow",
+                        "seamark:topmark:shape",        "rhombus",
+                        "seamark:topmark:colour",       "red;white",
+                        "seamark:topmark:colour_pattern", "horizontal" // Verify
+                );
+                break;
+
+            case "Retningsfyr":
+                // topmark: -, colour: 5
+                updateAtonTags(aton,
+                        "seamark:type",                 "light_minor",
+                        "seamark:light:colour",         "black"
+                );
+                break;
+
+            case "sejladsbagbåke":
+                // topmark: 9, colour: 7
+                updateAtonTags(aton,
+                        "seamark:type",                 "beacon_special_purpose",
+                        "seamark:${type}:category",     "leading",
+                        "seamark:${type}:colour",       "red;white",
+                        "seamark:${type}:colour_pattern", "horizontal",
+                        "seamark:topmark:shape",        "cone, point down",
+                        "seamark:topmark:colour",       "black;yellow",
+                        "seamark:topmark:colour_pattern", "horizontal"
+                );
+                break;
+
+            case "Sejladsforbåke":
+                // topmark: 12, colour: 7
+                updateAtonTags(aton,
+                        "seamark:type",                 "beacon_special_purpose",
+                        "seamark:${type}:category",     "leading",
+                        "seamark:${type}:colour",       "red;white",
+                        "seamark:${type}:colour_pattern", "horizontal",
+                        "seamark:topmark:shape",        "cone, point up",
+                        "seamark:topmark:colour",       "black;yellow",
+                        "seamark:topmark:colour_pattern", "horizontal"
+                );
+                break;
+
+            case "Skydesignal":
+                // topmark: -, colour: 5
+                updateAtonTags(aton,
+                        "seamark:type",                 "beacon_special_purpose",
+                        "seamark:${type}:category",     "firing_danger_area",
+                        "seamark:${type}:colour",       "black"
+                );
+                break;
+
+            case "Sluse- og kanalsignal":
+                // topmark: -, colour: 5
+                updateAtonTags(aton,
+                        "seamark:type",                 "beacon_special_purpose",
+                        "seamark:${type}:colour",       "black"
+                );
+                break;
+
+            case "Specialafmærkning":
+                // topmark: -/4, colour: 4
+                if (masterType.isLight()) {
+                    updateAtonTags(aton,
+                            "seamark:type",             "light",
+                            "seamark:light:colour",     "yellow"
+                    );
+                    return;
+                } else if (masterType.isBeacon()) {
+                    updateAtonTags(aton,
+                            "seamark:type",             "beacon_special_purpose",
+                            "seamark:${type}:shape",    getBeaconShape(masterType),
+                            "seamark:${type}:colour",   "yellow"
+                    );
+                } else {
+                    updateAtonTags(aton,
+                            "seamark:type",             "buoy_special_purpose",
+                            "seamark:${type}:colour",   "yellow"
+                    );
+                }
+                if (shortDesc.equals("SPEC m/top")) {
+                    updateAtonTags(aton,
+                            "seamark:topmark:shape",    "x-shape",
+                            "seamark:topmark:colour",   "yellow"
+                    );
+                }
+                break;
+
+            case "Specialbåke":
+                // topmark: -, colour: -
+                updateAtonTags(aton,
+                        "seamark:type",                 "beacon_special_purpose",
+                        "seamark:${type}:shape",        getBeaconShape(masterType)
+                );
+                break;
+
+            case "stage med X-top":
+                // topmark: 2134, colour: 1
+                updateAtonTags(aton,
+                        "seamark:type",                 "beacon_special_purpose",
+                        "seamark:${type}:shape",        getBeaconShape(masterType),
+                        "seamark:${type}:colour",       "red",
+                        "seamark:topmark:shape",        "x-shape",
+                        "seamark:topmark:colour",       "red"
+                );
+                break;
+
+            case "stage med Y-top":
+                // topmark: 2144, colour: 1
+                updateAtonTags(aton,
+                        "seamark:type",                 "beacon_special_purpose",
+                        "seamark:${type}:shape",        getBeaconShape(masterType),
+                        "seamark:${type}:colour",       "red",
+                        "seamark:topmark:shape",        "besom, point down",
+                        "seamark:topmark:colour",       "red"
+                );
+                break;
+
+            case "Stang m.firkantet plade-top":
+                // topmark: 2054, colour: 4
+                updateAtonTags(aton,
+                        "seamark:type",                 "beacon_special_purpose",
+                        "seamark:${type}:shape",        "pole",
+                        "seamark:${type}:colour",       "yellow",
+                        "seamark:topmark:shape",        "square",
+                        "seamark:topmark:colour",       "yellow"
+                );
+                break;
+
+            case "Sten-båke i gul tønde, m/top":
+                // topmark: 2014, colour: 4
+                updateAtonTags(aton,
+                        "seamark:type",                 "beacon_special_purpose",
+                        "seamark:${type}:shape",        "cairn",
+                        "seamark:${type}:colour",       "yellow",
+                        "seamark:topmark:shape",        "x-shape", // sten?
+                        "seamark:topmark:colour",       "yellow"
+                );
+                break;
+
+            case "Styrbord båke - Trekant op":
+                // NB: In AFM this was defined with color=1 - wrong methinks
+                // topmark: 2034, colour: 2
+                updateAtonTags(aton,
+                        "seamark:type",                 "beacon_lateral",
+                        "seamark:${type}:category",     "starboard",
+                        "seamark:${type}:shape",        getBeaconShape(masterType),
+                        "seamark:${type}:system",       "iala-a",
+                        "seamark:${type}:colour",       "green",
+                        "seamark:topmark:shape",        "triangle, point up",
+                        "seamark:topmark:colour",       "orange"
+                );
+                break;
+
+            case "Styrbord molefyr":
+                // topmark: -, colour: 2
+                updateAtonTags(aton,
+                        "seamark:type",                 "light_minor",
+                        "seamark:${type}:system",       "iala-a",
+                        "seamark:${type}:colour",       "green"
+                );
+                break;
+
+            case "Styrbord sideafmærkning":
+                if (masterType.isLight()) {
+                    updateAtonTags(aton,
+                            "seamark:type",             "light_minor",
+                            "seamark:light:colour",     "green"
+                    );
+                    return;
+                } else if (masterType.isBeacon()) {
+                    updateAtonTags(aton,
+                            "seamark:type",             "beacon_lateral",
+                            "seamark:${type}:shape",    getBeaconShape(masterType)
+                    );
+                } else {
+                    updateAtonTags(aton,
+                            "seamark:type",             "buoy_lateral",
+                            "seamark:${type}:shape",    "conical" // Guessing
+                    );
+                }
+                updateAtonTags(aton,
+                        "seamark:${type}:category",     "starboard",
+                        "seamark:${type}:system",       "iala-a",
+                        "seamark:${type}:colour",       "green"
+                );
+                if (shortDesc.equals("STAR u/top")) {
+                    updateAtonTags(aton,
+                            "seamark:topmark:shape",    "cone, point up",
+                            "seamark:topmark:colour",   "green"
+                    );
+                }
+                break;
+
+            case "Supertønde":
+                // topmark: -, colour: 7
+                updateAtonTags(aton,
+                        "seamark:type",                 "buoy_special_purpose",
+                        "seamark:${type}:shape",        "super-buoy",
+                        "seamark:${type}:colour",       "orange"
+                );
+                break;
+
+            case "Tågelys":
+                // topmark: -, colour: 4
+                updateAtonTags(aton,
+                        "seamark:type",             "light",
+                        "seamark:light:colour",     "yellow"
+                );
+                break;
+
+            case "Timeglas-båke, m/top":
+                // topmark: 2044, colour: 6
+                updateAtonTags(aton,
+                        "seamark:type",                 "beacon_special_purpose",
+                        "seamark:${type}:shape",        "tower",
+                        "seamark:${type}:colour",       "orange",
+                        "seamark:topmark:shape",        "2 cones point together",
+                        "seamark:topmark:colour",       "orange"
+                );
+                break;
+
+            case "Treben (jern) + trekant-top":
+                // topmark: 2074, colour: 1
+                updateAtonTags(aton,
+                        "seamark:type",                 "beacon_special_purpose",
+                        "seamark:${type}:shape",        getBeaconShape(masterType),
+                        "seamark:${type}:colour",       "red",
+                        "seamark:topmark:shape",        "triangle, point down",
+                        "seamark:topmark:colour",       "red"
+                );
+                break;
+
+            case "Trebenet jernbåke":
+                // topmark: -, colour: 1
+                updateAtonTags(aton,
+                        "seamark:type",                 "beacon_special_purpose",
+                        "seamark:${type}:shape",        getBeaconShape(masterType),
+                        "seamark:${type}:colour",       "red"
+                );
+                break;
+
+            case "Tremmeværk":
+                // topmark: -, colour: 1
+                updateAtonTags(aton,
+                        "seamark:type",                 "beacon_special_purpose",
+                        "seamark:${type}:shape",        getBeaconShape(masterType),
+                        "seamark:${type}:colour",       "red"
+                );
+                break;
+
+            case "Varde":
+                // topmark: -, colour: 1
+                updateAtonTags(aton,
+                        "seamark:type",                 "beacon_special_purpose",
+                        "seamark:${type}:shape",        "cairn",
+                        "seamark:${type}:colour",       "red"
+                );
+                break;
+
+            case "Vindmølle":
+                updateAtonTags(aton,
+                        "seamark:type",                 "landmark",
+                        "seamark:${type}:category",     "windmotor"
+                );
+                break;
+
+            case "Vinkelfyr":
+                // topmark: -, colour: 5
+                if (masterType.isLight()) {
+                    updateAtonTags(aton,
+                            "seamark:type",             "light",
+                            "seamark:light:colour",     "black"
+                    );
+                } else if (masterType.isBeacon()) {
+                    updateAtonTags(aton,
+                            "seamark:type",             "beacon_special_purpose",
+                            "seamark:${type}:shape",    getBeaconShape(masterType),
+                            "seamark:${type}:colour",   "black"
+                    );
+                }
+                break;
         }
-        if (StringUtils.isNotBlank(color)) {
-            aton.updateTag("seamark:topmark:color", color);
-        }
-        return aton;
     }
 
 
@@ -615,85 +952,14 @@ public class BatchDkAtonImportProcessor extends AbstractDkAtonImportProcessor {
             return types.iterator().next();
         }
 
-        // Check for one of the master types
-        AtonType[] masterTypes = { AtonType.LIGHT, AtonType.LIGHT_MINOR, AtonType.LIGHT_BUOY };
+        // Check for one of the master types.
+        // The master types are ordered, so that e.g. stake+light will return stake.
+        AtonType[] masterTypes = { AtonType.BEACON, AtonType.BUOY, AtonType.STAKE,
+                AtonType.LIGHT, AtonType.LIGHT_MINOR, AtonType.LIGHT_BUOY };
         return Arrays.stream(masterTypes)
                 .filter(types::contains)
                 .findFirst()
                 .orElse(types.iterator().next());
-    }
-
-
-    /*************************/
-    /** Colour Parsing     **/
-    /*************************/
-
-    /**
-     * Parses the color code and returns the corresponding OSM color string.
-     *
-     * The mapping is based on the "Farver" AFM table.
-     *
-     * @param color the color code
-     * @return the corresponding OSM color string
-     */
-    String parseColor(Integer color) {
-        if (color == null) {
-            return null;
-        }
-
-        switch (color) {
-            case    1: return "red";
-            case    2: return "green";
-            case    3: return "white";
-            case    4: return "yellow";
-            case    5: return "black";
-            case    6: return "orange";
-            case    7: return "red;white";
-            case    8: return "green;red;green";
-            case    9: return "red;green;red";
-            case   10: return "yellow;black;yellow";
-            case   11: return "yellow;black";
-            case   12: return "black;yellow";
-            case   13: return "black;yellow;black";
-            case   14: return "blue";
-            case   15: return "black;red;black";
-            case   16: return "white;red";
-            case   17: return "yellow";
-            case   19: return "white;red;red;white";
-            case   21: return "green;white";
-            case   22: return "black;black";
-            case   23: return "amber";
-            case 2004: return "white;red;green";
-            case 2044: return "white;green";
-            case 2084: return "red;green";
-            case 2114: return "white;green;red";
-            case 2124: return "red;white";
-            case 2134: return "green;white";
-            case 2144: return "green;red";
-            case 2224: return "blue;yellow";
-            case 2164: return "red;green";
-        }
-        return null;
-    }
-
-
-    /**
-     * Generates the color for the given OSM type.
-     *
-     * @see <a href="http://wiki.openstreetmap.org/wiki/Seamarks/Colours">OpenStreetMap definitions</a>
-     *
-     * @param aton the AtoN to generate color for
-     * @param osmType the OSM type
-     * @param color the color code
-     */
-    void generateColor(AtonNode aton, String osmType, Integer color, String pattern) {
-        String osmColor = parseColor(color);
-        if (osmType != null && osmColor != null) {
-            aton.updateTag(String.format("seamark:%s:colour", osmType), osmColor);
-            if (pattern != null) {
-                aton.updateTag(String.format("seamark:%s:colour_pattern", osmType), osmColor);
-            }
-        }
     }
 
 }
