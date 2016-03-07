@@ -35,12 +35,12 @@ import java.util.stream.Collectors;
  * and sub-pages.
  */
 @Named
-public class BatchAtonImportProcessor extends AbstractAtonImportProcessor {
+public class BatchDkAtonImportProcessor extends AbstractDkAtonImportProcessor {
 
 
     /** {@inheritDoc} **/
     @Override
-    protected AtonNode parseAtonNode() throws Exception {
+    protected AtonNode parseAtonExcelRow() throws Exception {
 
         User user = job.getUser();
 

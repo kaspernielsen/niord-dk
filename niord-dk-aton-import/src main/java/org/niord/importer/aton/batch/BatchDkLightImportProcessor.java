@@ -33,14 +33,14 @@ import javax.inject.Named;
  * and sub-pages.
  */
 @Named
-public class BatchLightImportProcessor extends AbstractAtonImportProcessor {
+public class BatchDkLightImportProcessor extends AbstractDkAtonImportProcessor {
 
     @Inject
     Logger log;
 
     /** {@inheritDoc} **/
     @Override
-    protected AtonNode parseAtonNode() throws Exception {
+    protected AtonNode parseAtonExcelRow() throws Exception {
 
         User user = job.getUser();
 

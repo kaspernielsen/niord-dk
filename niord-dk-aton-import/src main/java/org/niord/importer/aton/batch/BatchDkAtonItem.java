@@ -23,16 +23,16 @@ import java.util.Map;
  * Encapsulates a row in an Excel sheet + an index of column indexes.
  */
 @SuppressWarnings("unused")
-public class BatchAtonItem {
+public class BatchDkAtonItem {
     Map<String, Integer> colIndex;
     Row row;
 
     /** Constructor */
-    public BatchAtonItem() {
+    public BatchDkAtonItem() {
     }
 
     /** Constructor */
-    public BatchAtonItem(Map<String, Integer> colIndex, Row row) {
+    public BatchDkAtonItem(Map<String, Integer> colIndex, Row row) {
         this.colIndex = colIndex;
         this.row = row;
     }

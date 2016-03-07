@@ -26,7 +26,7 @@ import org.niord.core.sequence.DefaultSequence;
 import org.niord.core.sequence.Sequence;
 import org.niord.core.sequence.SequenceService;
 import org.niord.core.user.UserService;
-import org.niord.importer.aton.batch.AbstractAtonImportProcessor;
+import org.niord.importer.aton.batch.AbstractDkAtonImportProcessor;
 import org.niord.model.vo.aton.AtonNodeVo;
 import org.niord.model.vo.aton.AtonOsmVo;
 import org.slf4j.Logger;
@@ -198,7 +198,7 @@ public class AtonImportRestService {
     private Properties initBatchProperties() {
         int changeset = (int)sequenceService.getNextValue(AFM_SEQUENCE);
         Properties properties = new Properties();
-        properties.put(AbstractAtonImportProcessor.CHANGE_SET_PROPERTY, changeset);
+        properties.put(AbstractDkAtonImportProcessor.CHANGE_SET_PROPERTY, changeset);
         return properties;
     }
 

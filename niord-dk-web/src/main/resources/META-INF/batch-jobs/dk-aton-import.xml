@@ -4,9 +4,9 @@
     </step>
     <step id="importAtonsStep">
         <chunk item-count="10">
-            <reader ref="batchAtonImportReader" />
-            <processor ref="batchAtonImportProcessor"/>
-            <writer ref="baseAtonImportWriter" />
+            <reader ref="batchDkAtonImportReader" />
+            <processor ref="batchDkAtonImportProcessor"/>
+            <writer ref="batchAtonImportWriter" />
         </chunk>
     </step>
 </job>

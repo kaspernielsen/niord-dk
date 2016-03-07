@@ -32,7 +32,7 @@ import java.util.Map;
 /**
  * Base class for Excel-based AtoN import batch reader classes
  */
-public abstract class AbstractAtonImportReader extends AbstractItemHandler {
+public abstract class AbstractDkAtonImportReader extends AbstractItemHandler {
 
     Map<String, Integer> colIndex = new HashMap<>();
     Iterator<Row> rowIterator;
@@ -80,7 +80,7 @@ public abstract class AbstractAtonImportReader extends AbstractItemHandler {
 
             getLog().info("Reading row " + row);
             row++;
-            return new BatchAtonItem(colIndex, rowIterator.next());
+            return new BatchDkAtonItem(colIndex, rowIterator.next());
         }
         return null;
     }

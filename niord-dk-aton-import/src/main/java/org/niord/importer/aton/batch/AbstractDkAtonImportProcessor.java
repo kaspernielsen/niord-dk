@@ -20,7 +20,7 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.niord.core.aton.AtonNode;
 import org.niord.core.aton.AtonService;
-import org.niord.core.batch.AbstractItemHandler;
+import org.niord.core.aton.batch.BatchAtonImportProcessor;
 
 import javax.inject.Inject;
 import java.io.IOException;
@@ -32,7 +32,7 @@ import java.util.Properties;
 /**
  * Base class for Excel-based AtoN import batch processor classes
  */
-public abstract class AbstractAtonImportProcessor extends AbstractItemHandler {
+public abstract class AbstractDkAtonImportProcessor extends BatchAtonImportProcessor {
 
     public static final String CHANGE_SET_PROPERTY = "changeSet";
 
@@ -43,34 +43,17 @@ public abstract class AbstractAtonImportProcessor extends AbstractItemHandler {
     Map<String, Integer> colIndex = new HashMap<>();
 
 
-    /** {@inheritDoc} **/
+    /**
+     * Parses the next AtonNode from the current Excel row
+     * @return the parsed AtonNode
+     */
     @Override
-    public Object processItem(Object item) throws Exception {
-
-        BatchAtonItem atonItem = (BatchAtonItem)item;
+    protected AtonNode toAtonNode(Object item) throws Exception {
+        BatchDkAtonItem atonItem = (BatchDkAtonItem)item;
         this.row = atonItem.getRow();
         this.colIndex = atonItem.getColIndex();
 
-        AtonNode aton = parseAtonNode();
-
-        // Look up any existing AtoN with the same AtoN UID
-        AtonNode orig = atonService.findByAtonUid(aton.getAtonUid());
-
-        if (orig == null) {
-            // Persist new AtoN
-            getLog().info("Persisting new AtoN");
-            return aton;
-
-        } else if (orig.hasChanged(aton)) {
-            // Update original
-            getLog().info("Updating AtoN " + orig.getId());
-            orig.updateNode(aton);
-            return orig;
-        }
-
-        // No change, ignore...
-        getLog().info("Ignoring unchanged AtoN " + orig.getId());
-        return null;
+        return parseAtonExcelRow();
     }
 
 
@@ -78,7 +61,7 @@ public abstract class AbstractAtonImportProcessor extends AbstractItemHandler {
      * Parses the next AtonNode from the current Excel row
      * @return the parsed AtonNode
      */
-    protected abstract AtonNode parseAtonNode() throws Exception;
+    protected abstract AtonNode parseAtonExcelRow() throws Exception;
 
 
     /**
@@ -98,6 +81,7 @@ public abstract class AbstractAtonImportProcessor extends AbstractItemHandler {
     /*************************/
     /** Excel Parsing       **/
     /*************************/
+
 
     /** Returns the numeric value of the cell with the given header column key */
     Double numericValue(String colKey) {
