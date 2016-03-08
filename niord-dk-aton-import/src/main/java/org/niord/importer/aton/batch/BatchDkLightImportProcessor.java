@@ -144,23 +144,19 @@ public class BatchDkLightImportProcessor extends AbstractDkAtonImportProcessor {
         }
 
         // If the new AtoN contains light information, remove any light information from the original
-        if (aton.matchingTags("seamark:\\w*light\\w*").size() > 0) {
-            original.removeTags("seamark:\\w*light\\w*");
+        if (aton.matchingTags("seamark:\\w*light\\.*").size() > 0) {
+            original.removeTags("seamark:\\w*light\\.*");
         }
 
         // If the new AtoN contains fog signal information, remove any fog signal information from the original
-        if (aton.matchingTags("seamark:fog_signal\\w*").size() > 0) {
-            original.removeTags("seamark:fog_signal\\w*");
+        if (aton.matchingTags("seamark:fog_signal\\.*").size() > 0) {
+            original.removeTags("seamark:fog_signal\\.*");
         }
 
         // Override any remaining tags in the original
         original.updateNode(aton);
     }
 
-
-    public static void main(String[] args) {
-        System.out.println("seamark:type".matches("seamark:\\w*type\\w*"));
-    }
 
     /** Parses the elevation fields */
     private String parseElevation() {
