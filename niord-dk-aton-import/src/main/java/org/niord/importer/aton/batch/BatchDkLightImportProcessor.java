@@ -55,10 +55,10 @@ public class BatchDkLightImportProcessor extends AbstractDkAtonImportProcessor {
         aton.setChangeset(getChangeSet());
         aton.setVersion(1);     // Unknown version
 
+        // If no AtoN UID exists, construct it
         String atonUid = stringValue("AFM_NR");
         if (StringUtils.isBlank(atonUid)) {
             atonUid = "light-" + stringValue("NR_DK");
-            aton.updateTag("seamark:type", "light");
         }
         aton.updateTag(AtonTag.TAG_ATON_UID, atonUid);
         aton.updateTag(AtonTag.TAG_LIGHT_NUMBER, stringValue("NR_DK"));
@@ -66,13 +66,12 @@ public class BatchDkLightImportProcessor extends AbstractDkAtonImportProcessor {
         aton.updateTag(AtonTag.TAG_LOCALITY, stringValue("Lokalitet"));
         aton.updateTag("seamark:name", stringValue("AFM_navn"));
         aton.updateTag("seamark:light:information", stringValue("Fyrudseende"));
-
         aton.updateTag("seamark:light:elevation", parseElevation());
 
-        aton.updateTag("seamark:light:range", parseRange());
+
+        /********* Light Character Parsing *******/
 
         String lightChar = stringValue("Fyrkarakter");
-        //String fogChar = stringValue("Taagesignal");
 
         LightSeamark light = DkLightParser.newInstance();
 
@@ -82,7 +81,7 @@ public class BatchDkLightImportProcessor extends AbstractDkAtonImportProcessor {
         // Parse the light elevations
         DkLightParser.parseHeight(light, numericValueOrNull("Fyrbygnings_hoejde"));
 
-        // Parse the light sector angles
+        // Parse the light sector angles, e.g. "G114,52°-116,52° W116,52°-117,52° R117,52°-119,52°."
         DkLightParser.parseLightSectorAngles(light, stringValue("Lysvinkler"));
 
         // Parse the light ranges
@@ -94,16 +93,67 @@ public class BatchDkLightImportProcessor extends AbstractDkAtonImportProcessor {
         // Parse the exhibition
         DkLightParser.parseExhibition(light, stringValue("Braendetid"));
 
-        if (!light.isValid()) {
-            // TODO: May still be e.g. SIREN
-            getLog().info("Skipping invalid light " + stringValue("NR_DK") + ": " + lightChar);
+
+        /********* Fog Signal Parsing *******/
+
+        String fogSignalSpec = stringValue("Taagesignal");
+
+        FogSignalSeamark fogSignal = DkFogSignalParser.newInstance();
+
+        // Parse the fog signal, e.g. "HORN(3)30s   (2+2+2+2+2+20)"
+        DkFogSignalParser.parseFogSignal(fogSignal, fogSignalSpec);
+
+
+        // Either the light or the fog signal (or both) must be valid
+        if (!light.isValid() && !fogSignal.isValid()) {
+            getLog().info("Skipping invalid light/fog-signal " + stringValue("NR_DK")
+                    + ": light=" + lightChar
+                    + ", fog-signal=" + fogSignalSpec);
             return null;
         }
 
-        // Copy the light OSM tags to the AtoN
-        light.toOsm().forEach(tag -> aton.updateTag(tag.getK(), tag.getV()));
+        // Copy the fog signal OSM tags to the AtoN.
+        if (fogSignal.isValid()) {
+            fogSignal.toOsm().forEach(t -> aton.updateTag(t.getK(), t.getV()));
+        }
+
+        // Copy the light OSM tags to the AtoN.
+        // NB: Any "seamark:type" will override a fog-signal type. Lights should take precedence.
+        if (light.isValid()) {
+            light.toOsm().forEach(t -> aton.updateTag(t.getK(), t.getV()));
+        }
 
         return aton;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    protected void mergeAtonNodes(AtonNode original, AtonNode aton) {
+
+        // Do not override the original AtoN type
+        String origType = original.getTagValue("seamark:type");
+        if (origType != null) {
+            aton.removeTags("seamark:type");
+        }
+
+        // If the new AtoN contains light information, remove any light information from the original
+        if (aton.matchingTags("seamark:\\w*light\\w*").size() > 0) {
+            original.removeTags("seamark:\\w*light\\w*");
+        }
+
+        // If the new AtoN contains fog signal information, remove any fog signal information from the original
+        if (aton.matchingTags("seamark:fog_signal\\w*").size() > 0) {
+            original.removeTags("seamark:fog_signal\\w*");
+        }
+
+        // Override any remaining tags in the original
+        original.updateNode(aton);
+    }
+
+
+    public static void main(String[] args) {
+        System.out.println("seamark:type".matches("seamark:\\w*type\\w*"));
     }
 
     /** Parses the elevation fields */
@@ -114,24 +164,5 @@ public class BatchDkLightImportProcessor extends AbstractDkAtonImportProcessor {
         }
         return elevation;
     }
-
-    /** Parses the rang fields */
-    private String parseRange() {
-        String range = null;
-        for (int x = 1; x <= 3; x++) {
-            try {
-                String r = stringValue("Lysstyrke_" + x)
-                                .split(" ")[1]              // "W 10,5(1,5)" -> "10,5(1,5)"
-                                .trim()
-                                .replaceAll("\\(.*\\)", "") // "10,5(1,5)" -> "10,5"
-                                .replace(',', '.');         // "10,5" -> "10.5"
-                range = appendValue(range, r);
-            } catch (Exception ignored) {
-            }
-        }
-        return range;
-    }
-
-
 
 }

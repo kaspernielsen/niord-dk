@@ -16,7 +16,6 @@
 package org.niord.importer.aton.batch;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.math.DoubleRange;
 import org.niord.core.aton.AtonTag;
 
 import java.util.ArrayList;
@@ -175,7 +174,7 @@ public class LightSeamark {
     /** Variables           **/
     /*************************/
 
-    Type type;
+    Type type = Type.light;
     Category category;
     Exhibition exhibition;
     List<LightSector> sectors = new ArrayList<>();

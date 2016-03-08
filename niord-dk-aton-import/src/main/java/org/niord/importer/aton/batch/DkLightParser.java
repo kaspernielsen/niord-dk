@@ -39,12 +39,12 @@ public class DkLightParser {
 
     public static Pattern LIGHT_CHARACTER_FORMAT = Pattern.compile(
             "^" +
-                    "(?<multiple>\\d+[ ]+)?" +
-                    "(?<phase>(" + LIGHT_PHASES + ")([\\. +]?(" + LIGHT_PHASES + "))*)[\\. ]?" +
-                    "(?<group>\\(\\w+(\\+\\w+)*\\))?[\\. ]?" +
-                    "(?<colors>(" + LIGHT_COLORS + ")([\\. ]?(" + LIGHT_COLORS + "))*)?[\\. ]?" +
-                    "(?<period>\\d+(,\\d)?[sm])?" +
-                    ".*$"
+            "(?<multiple>\\d+[ ]+)?" +
+            "(?<phase>(" + LIGHT_PHASES + ")([\\. +]?(" + LIGHT_PHASES + "))*)[\\. ]?" +
+            "(?<group>\\(\\w+(\\+\\w+)*\\))?[\\. ]?" +
+            "(?<colors>(" + LIGHT_COLORS + ")([\\. ]?(" + LIGHT_COLORS + "))*)?[\\. ]?" +
+            "(?<period>\\d+(,\\d)?[sm])?" +
+            ".*$"
     );
 
     public static Pattern LIGHT_FORMAT = Pattern.compile(
