@@ -42,11 +42,17 @@ public class BatchDkLightImportProcessor extends AbstractDkAtonImportProcessor {
     @Override
     protected AtonNode parseAtonExcelRow() throws Exception {
 
+        // Only process active lights
+        if (!"DRIFT".equalsIgnoreCase(stringValue("STATUS"))) {
+            getLog().info("Skipping inactive light/fog-signal " + stringValue("NR_DK"));
+            return null;
+        }
+
         User user = job.getUser();
 
         AtonNode aton = new AtonNode();
 
-        aton.setVisible("DRIFT".equals(stringValue("STATUS")));
+        aton.setVisible(true);
         aton.setLat(numericValue("LATITUDE"));
         aton.setLon(numericValue("LONGITUDE"));
         aton.setTimestamp(dateValue("Ajourfoert_dato"));
