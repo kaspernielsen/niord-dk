@@ -1,0 +1,35 @@
+/* Copyright (c) 2011 Danish Maritime Authority
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 3 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this library.  If not, see <http://www.gnu.org/licenses/>.
+ */
+package org.niord.importer.aton.batch;
+
+import javax.inject.Named;
+
+/**
+ * Reads AIS from Excel
+ */
+@Named
+public class BatchDkRaconImportReader extends AbstractDkAtonImportReader {
+
+    public static final String[] FIELDS = {
+            "NR_DK", "NR_INT", "AFM_NR", "AFM_navn", "Radarbaand", "Identifikation", "Tidsinterval", "STATUS",
+            "LATITUDE", "LONGITUDE", "Ajourfoert_dato", "Retning_mod_fyret" };
+
+    /** {@inheritDoc} **/
+    @Override
+    public String[] getFields() {
+        return FIELDS;
+    }
+}

@@ -213,6 +213,17 @@ public class AtonImportRestService {
      * @param txt a log of the import
      */
     private void importRacons(InputStream inputStream, String fileName, StringBuilder txt) throws Exception {
+        log.info("Extracting RACONS from Excel sheet " + fileName);
+
+        // Start batch job to import AtoNs
+        batchService.startBatchJobWithDataFile(
+                "dk-racon-import",
+                inputStream,
+                fileName,
+                initBatchProperties());
+
+        log.info("Started 'dk-racon-import' batch job with file " + fileName);
+        txt.append("Started 'dk-racon-import' batch job with file ").append(fileName);
     }
 
 

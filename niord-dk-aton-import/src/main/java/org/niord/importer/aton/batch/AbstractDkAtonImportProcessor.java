@@ -110,6 +110,16 @@ public abstract class AbstractDkAtonImportProcessor extends BatchAtonImportProce
         return cell == null ? null : cell.getDateCellValue();
     }
 
+    /** Returns the date value of the cell with the given header column key */
+    Date dateValueOrNull(String colKey) {
+        try {
+            Cell cell = row.getCell(colIndex.get(colKey));
+            return cell == null ? null : cell.getDateCellValue();
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
     /** Returns the string representation of the object or null if it is undefined */
     public String toString(Object o) {
         String result = o != null ? o.toString() : null;
