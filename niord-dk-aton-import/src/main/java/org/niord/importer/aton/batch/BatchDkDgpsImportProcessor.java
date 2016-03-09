@@ -15,7 +15,6 @@
  */
 package org.niord.importer.aton.batch;
 
-import org.apache.commons.lang.StringUtils;
 import org.niord.core.aton.AtonNode;
 import org.niord.core.aton.AtonTag;
 import org.niord.core.user.User;
@@ -25,15 +24,14 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 /**
- * AtoN batch processor used for converting the legacy "AFM" Light Excel row into OSM seamark format.
- * Before running this batch job, run the dk-aton-import job.
+ * DGPS batch processor used for converting the legacy "AFM" DGPS Excel rows into OSM seamark format.
  *
  * The AtoN model adheres to the OSM seamark specification, please refer to:
  * http://wiki.openstreetmap.org/wiki/Key:seamark
  * and sub-pages.
  */
 @Named
-public class BatchDkAisImportProcessor extends AbstractDkAtonImportProcessor {
+public class BatchDkDgpsImportProcessor extends AbstractDkAtonImportProcessor {
 
     @Inject
     Logger log;
@@ -42,18 +40,11 @@ public class BatchDkAisImportProcessor extends AbstractDkAtonImportProcessor {
     @Override
     protected AtonNode parseAtonExcelRow() throws Exception {
 
-        String aisNr = String.valueOf(numericValue("NR_DK").intValue());
+        String dgpsNr = String.valueOf(numericValue("NR_DK").intValue());
 
         // Only process active AIS
         if (!"DRIFT".equalsIgnoreCase(stringValue("STATUS"))) {
-            getLog().info("Skipping inactive AIS " + aisNr);
-            return null;
-        }
-
-        // Only process AIS with known AFM-NR
-        String atonUid = stringValue("AFM_NR");
-        if (StringUtils.isBlank(atonUid)) {
-            getLog().info("Skipping AIS without AFM-NR " + aisNr);
+            getLog().info("Skipping inactive DGPS " + dgpsNr);
             return null;
         }
 
@@ -71,43 +62,26 @@ public class BatchDkAisImportProcessor extends AbstractDkAtonImportProcessor {
         aton.setVersion(1);     // Unknown version
 
         // If no AtoN UID exists, construct it
+        String atonUid = "dgps-" + dgpsNr;
         aton.updateTag(AtonTag.TAG_ATON_UID, atonUid);
-        aton.updateTag(AtonTag.TAG_AIS_NUMBER, aisNr);
         aton.updateTag("seamark:name", stringValue("AFM_navn"));
 
         aton.updateTag("seamark:type", "radio_station");
 
-        // Category - NB: spelling mistake intentional
-        aton.updateTag("seamark:radio_station:category", "Virituel".equals(stringValue("Type")) ? "v-ais" : "ais");
+        // Category
+        aton.updateTag("seamark:radio_station:category", "dgps");
 
-        // Call-sign
-        aton.updateTag("seamark:radio_station:callsign", stringValue("Identifikation"));
+        // Frequency - in Hertz
+        aton.updateTag("seamark:radio_station:frequency", String.valueOf((int)(numericValue("Frekvens_kHz") * 1000)));
 
-        // MMSI
-        aton.updateTag("seamark:radio_station:mmsi", String.valueOf(numericValue("MMSI_NR").intValue()));
+        // Range
+        aton.updateTag("seamark:radio_station:range", String.valueOf(numericValue("Raekkevide_sm")));
 
         // From http://wiki.openstreetmap.org/wiki/Key:radar_transponder
-        aton.updateTag("radio_transponder:AIS", "yes");
+        aton.updateTag("man_made", "monitoring_station");
+        aton.updateTag("monitoring:gps", "yes");
 
         return aton;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    protected void mergeAtonNodes(AtonNode original, AtonNode aton) {
-
-        // Do not override the original AtoN type
-        String origType = original.getTagValue("seamark:type");
-        if (origType != null) {
-            aton.removeTags("seamark:type");
-        }
-
-        // Remove any AIS information from the original
-        original.removeTags("seamark:radio_station\\.*");
-
-        // Override any remaining tags in the original
-        original.updateNode(aton);
     }
 
 }

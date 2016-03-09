@@ -192,6 +192,17 @@ public class AtonImportRestService {
      * @param txt a log of the import
      */
     private void importDgps(InputStream inputStream, String fileName, StringBuilder txt) throws Exception {
+        log.info("Extracting DGPS from Excel sheet " + fileName);
+
+        // Start batch job to import AtoNs
+        batchService.startBatchJobWithDataFile(
+                "dk-dgps-import",
+                inputStream,
+                fileName,
+                initBatchProperties());
+
+        log.info("Started 'dk-dgps-import' batch job with file " + fileName);
+        txt.append("Started 'dk-dgps-import' batch job with file ").append(fileName);
     }
 
 
