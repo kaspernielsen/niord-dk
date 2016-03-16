@@ -260,7 +260,7 @@ public class BatchDkAtonImportProcessor extends AbstractDkAtonImportProcessor {
                 } else {
                     updateAtonTags(aton,
                             "seamark:type",             "buoy_lateral",
-                            "seamark:${type}:shape",    "can" // Guessing
+                            "seamark:${type}:shape",    "can" // Guessing (may be "spar")
                     );
                 }
                 updateAtonTags(aton,
@@ -268,7 +268,7 @@ public class BatchDkAtonImportProcessor extends AbstractDkAtonImportProcessor {
                         "seamark:${type}:system",       "iala-a",
                         "seamark:${type}:colour",       "red"
                 );
-                if (shortDesc.equals("PORT u/top")) {
+                if (shortDesc.equals("PORT m/top")) {
                     updateAtonTags(aton,
                             "seamark:topmark:shape",    "cylinder",
                             "seamark:topmark:colour",   "red"
@@ -282,7 +282,7 @@ public class BatchDkAtonImportProcessor extends AbstractDkAtonImportProcessor {
                 updateAtonTags(aton,
                         "seamark:type",                 "buoy_lateral",
                         "seamark:${type}:category",     "preferred_channel_starboard",
-                        "seamark:${type}:shape",        "can",
+                        "seamark:${type}:shape",        "can", // (may be "spar")
                         "seamark:${type}:system",       "iala-a",
                         "seamark:${type}:colour",       "red;green;red",
                         "seamark:${type}:colour_pattern", "horizontal",
@@ -302,8 +302,8 @@ public class BatchDkAtonImportProcessor extends AbstractDkAtonImportProcessor {
             case "Bifyr, lokalt advarselsfyr":
             case "Bagfyr":
                 updateAtonTags(aton,
-                        "seamark:type",                 "light_minor",
-                        "seamark:light:colour",         "black"
+                        "seamark:type",                 "light_minor"
+                        // "seamark:light:colour",         "black"
                 );
                 break;
 
@@ -320,7 +320,7 @@ public class BatchDkAtonImportProcessor extends AbstractDkAtonImportProcessor {
                 updateAtonTags(aton,
                         "seamark:type",                 "beacon_special_purpose",
                         "seamark:${type}:colour",       "yellow",
-                        "seamark:topmark:shape",        "triangle, point down",
+                        "seamark:topmark:shape",        "board",
                         "seamark:topmark:colour",       "red"
                 );
                 break;
@@ -358,7 +358,7 @@ public class BatchDkAtonImportProcessor extends AbstractDkAtonImportProcessor {
                 updateAtonTags(aton,
                         "seamark:type",                 "beacon_special_purpose",
                         "seamark:${type}:colour",       "yellow",
-                        "seamark:${type}:shape",        "buoyant",
+                        "seamark:${type}:shape",        "pile",
                         "seamark:topmark:shape",        "cylinder",
                         "seamark:topmark:colour",       "red"
                 );
@@ -371,7 +371,7 @@ public class BatchDkAtonImportProcessor extends AbstractDkAtonImportProcessor {
                         "seamark:${type}:category",     "warning",
                         "seamark:${type}:colour",       "blue;yellow",
                         "seamark:${type}:colour_pattern", "vertical",
-                        "seamark:${type}:shape",        "buoyant"
+                        "seamark:${type}:shape",        "pillar"
                 );
                 break;
 
@@ -387,8 +387,8 @@ public class BatchDkAtonImportProcessor extends AbstractDkAtonImportProcessor {
                 // topmark: 28, colour: 1
                 updateAtonTags(aton,
                         "seamark:type",                 "beacon_special_purpose",
-                        "seamark:${type}:category",     "leading",
                         "seamark:${type}:colour",       "red", // TODO: verify
+                        "seamark:${type}:shape",        "stake",
                         "seamark:topmark:shape",        "triangle, point up",
                         "seamark:topmark:colour",       "green"
                 );
@@ -397,8 +397,8 @@ public class BatchDkAtonImportProcessor extends AbstractDkAtonImportProcessor {
             case "Forfyr":
                 // topmark: -, colour: 5
                 updateAtonTags(aton,
-                        "seamark:type",                 masterType == AtonType.LIGHT_MINOR ? "light_minor" : "light",
-                        "seamark:light:colour",         "black"
+                        "seamark:type",                 masterType == AtonType.LIGHT_MINOR ? "light_minor" : "light"
+                        //"seamark:light:colour",         "black"
                 );
                 break;
 
@@ -439,10 +439,10 @@ public class BatchDkAtonImportProcessor extends AbstractDkAtonImportProcessor {
                 // topmark: 20, colour: 3
                 updateAtonTags(aton,
                         "seamark:type",                 "beacon_special_purpose",
-                        "seamark:${type}:category",     "leading",
                         "seamark:${type}:colour",       "white",
+                        "seamark:${type}:shape",        "stake",
                         "seamark:topmark:shape",        "x-shape",
-                        "seamark:topmark:colour",       "yellow"
+                        "seamark:topmark:colour",       "white"
                 );
                 break;
 
@@ -451,7 +451,7 @@ public class BatchDkAtonImportProcessor extends AbstractDkAtonImportProcessor {
                 // topmark: 4, colour: 4
                 updateAtonTags(aton,
                         "seamark:type",                 "beacon_special_purpose",
-                        "seamark:${type}:category",     "leading",
+                        "seamark:${type}:shape",        "stake",
                         "seamark:${type}:colour",       "yellow",
                         "seamark:topmark:shape",        "x-shape",
                         "seamark:topmark:colour",       "yellow"
@@ -475,6 +475,7 @@ public class BatchDkAtonImportProcessor extends AbstractDkAtonImportProcessor {
                         "seamark:type",                 "buoy_special_purpose",
                         "seamark:${type}:colour",       "black;red;black",
                         "seamark:${type}:colour_pattern", "horizontal",
+                        "seamark:${type}:shape",        "pillar", // may also be "spar"
                         "seamark:topmark:shape",        "2 spheres",
                         "seamark:topmark:colour",       "black"
                 );
@@ -496,6 +497,7 @@ public class BatchDkAtonImportProcessor extends AbstractDkAtonImportProcessor {
                 updateAtonTags(aton,
                         "seamark:type",                 "beacon_special_purpose",
                         "seamark:${type}:category",     "cable",
+                        "seamark:${type}:shape",        "stake",
                         "seamark:${type}:colour",       "red;white",
                         "seamark:${type}:colour_pattern", "horizontal",
                         "seamark:topmark:shape",        "rhombus",
@@ -509,6 +511,7 @@ public class BatchDkAtonImportProcessor extends AbstractDkAtonImportProcessor {
                 updateAtonTags(aton,
                         "seamark:type",                 "beacon_special_purpose",
                         "seamark:${type}:category",     "cable",
+                        "seamark:${type}:shape",        "stake",
                         "seamark:${type}:colour",       "white;red",
                         "seamark:${type}:colour_pattern", "horizontal",
                         "seamark:topmark:shape",        "sphere",
@@ -531,6 +534,7 @@ public class BatchDkAtonImportProcessor extends AbstractDkAtonImportProcessor {
                 updateAtonTags(aton,
                         "seamark:type",                 masterType.isBeacon() ? "beacon_cardinal" : "buoy_cardinal",
                         "seamark:${type}:category",     "east",
+                        "seamark:${type}:shape",        masterType.isBeacon() ? "pile" : "pillar",
                         "seamark:${type}:colour",       "black;yellow;black",
                         "seamark:${type}:colour_pattern", "horizontal",
                         "seamark:topmark:shape",        "2 cones base together",
@@ -543,6 +547,7 @@ public class BatchDkAtonImportProcessor extends AbstractDkAtonImportProcessor {
                 updateAtonTags(aton,
                         "seamark:type",                 masterType.isBeacon() ? "beacon_cardinal" : "buoy_cardinal",
                         "seamark:${type}:category",     "north",
+                        "seamark:${type}:shape",        masterType.isBeacon() ? "pile" : "pillar",
                         "seamark:${type}:colour",       "black;yellow",
                         "seamark:${type}:colour_pattern", "horizontal",
                         "seamark:topmark:shape",        "2 cones up",
@@ -555,6 +560,7 @@ public class BatchDkAtonImportProcessor extends AbstractDkAtonImportProcessor {
                 updateAtonTags(aton,
                         "seamark:type",                 masterType.isBeacon() ? "beacon_cardinal" : "buoy_cardinal",
                         "seamark:${type}:category",     "south",
+                        "seamark:${type}:shape",        masterType.isBeacon() ? "pile" : "pillar",
                         "seamark:${type}:colour",       "yellow;black",
                         "seamark:${type}:colour_pattern", "horizontal",
                         "seamark:topmark:shape",        "2 cones down",
@@ -567,6 +573,7 @@ public class BatchDkAtonImportProcessor extends AbstractDkAtonImportProcessor {
                 updateAtonTags(aton,
                         "seamark:type",                 masterType.isBeacon() ? "beacon_cardinal" : "buoy_cardinal",
                         "seamark:${type}:category",     "west",
+                        "seamark:${type}:shape",        masterType.isBeacon() ? "pile" : "pillar",
                         "seamark:${type}:colour",       "yellow;black;yellow",
                         "seamark:${type}:colour_pattern", "horizontal",
                         "seamark:topmark:shape",        "2 cones point together",
@@ -587,6 +594,7 @@ public class BatchDkAtonImportProcessor extends AbstractDkAtonImportProcessor {
                 // topmark: 1, colour: 7
                 updateAtonTags(aton,
                         "seamark:type",                 masterType.isBeacon() ? "beacon_safe_water" : "buoy_safe_water",
+                        "seamark:${type}:shape",        masterType.isBeacon() ? "stake" : "pillar",
                         "seamark:${type}:colour",       "red;white",
                         "seamark:${type}:colour_pattern", "vertical",
                         "seamark:topmark:shape",        "sphere",
@@ -625,7 +633,7 @@ public class BatchDkAtonImportProcessor extends AbstractDkAtonImportProcessor {
                 // topmark: 2134, colour: 1
                 updateAtonTags(aton,
                         "seamark:type",                 "beacon_special_purpose",
-                        "seamark:${type}:shape",        getBeaconShape(masterType),
+                        "seamark:${type}:shape",        "stake",
                         "seamark:${type}:colour",       "red",
                         "seamark:topmark:shape",        "x-shape",
                         "seamark:topmark:colour",       "red"
@@ -639,16 +647,15 @@ public class BatchDkAtonImportProcessor extends AbstractDkAtonImportProcessor {
                         "seamark:${type}:category",     "pipeline",
                         "seamark:${type}:colour",       "yellow",
                         "seamark:topmark:shape",        "rhombus",
-                        "seamark:topmark:colour",       "red;white",
-                        "seamark:topmark:colour_pattern", "horizontal" // Verify
+                        "seamark:topmark:colour",       "yellow"
                 );
                 break;
 
             case "Retningsfyr":
                 // topmark: -, colour: 5
                 updateAtonTags(aton,
-                        "seamark:type",                 "light_minor",
-                        "seamark:light:colour",         "black"
+                        "seamark:type",                 "light_minor"
+                        //"seamark:light:colour",         "black"
                 );
                 break;
 
@@ -657,10 +664,9 @@ public class BatchDkAtonImportProcessor extends AbstractDkAtonImportProcessor {
                 updateAtonTags(aton,
                         "seamark:type",                 "beacon_special_purpose",
                         "seamark:${type}:category",     "leading",
-                        "seamark:${type}:colour",       "red;white",
-                        "seamark:${type}:colour_pattern", "horizontal",
+                        "seamark:${type}:shape",        "stake",
                         "seamark:topmark:shape",        "cone, point down",
-                        "seamark:topmark:colour",       "black;yellow",
+                        "seamark:topmark:colour",       "red;white",
                         "seamark:topmark:colour_pattern", "horizontal"
                 );
                 break;
@@ -670,10 +676,9 @@ public class BatchDkAtonImportProcessor extends AbstractDkAtonImportProcessor {
                 updateAtonTags(aton,
                         "seamark:type",                 "beacon_special_purpose",
                         "seamark:${type}:category",     "leading",
-                        "seamark:${type}:colour",       "red;white",
-                        "seamark:${type}:colour_pattern", "horizontal",
+                        "seamark:${type}:shape",        "stake",
                         "seamark:topmark:shape",        "cone, point up",
-                        "seamark:topmark:colour",       "black;yellow",
+                        "seamark:topmark:colour",       "red;white",
                         "seamark:topmark:colour_pattern", "horizontal"
                 );
                 break;
@@ -683,6 +688,7 @@ public class BatchDkAtonImportProcessor extends AbstractDkAtonImportProcessor {
                 updateAtonTags(aton,
                         "seamark:type",                 "beacon_special_purpose",
                         "seamark:${type}:category",     "firing_danger_area",
+                        "seamark:${type}:shape",        "stake",
                         "seamark:${type}:colour",       "black"
                 );
                 break;
@@ -691,6 +697,7 @@ public class BatchDkAtonImportProcessor extends AbstractDkAtonImportProcessor {
                 // topmark: -, colour: 5
                 updateAtonTags(aton,
                         "seamark:type",                 "beacon_special_purpose",
+                        "seamark:${type}:shape",        "stake",
                         "seamark:${type}:colour",       "black"
                 );
                 break;
@@ -712,6 +719,7 @@ public class BatchDkAtonImportProcessor extends AbstractDkAtonImportProcessor {
                 } else {
                     updateAtonTags(aton,
                             "seamark:type",             "buoy_special_purpose",
+                            "seamark:${type}:shape",    "pillar",
                             "seamark:${type}:colour",   "yellow"
                     );
                 }
@@ -768,22 +776,21 @@ public class BatchDkAtonImportProcessor extends AbstractDkAtonImportProcessor {
                 // topmark: 2014, colour: 4
                 updateAtonTags(aton,
                         "seamark:type",                 "beacon_special_purpose",
-                        "seamark:${type}:shape",        "cairn",
+                        "seamark:${type}:shape",        "pile",
                         "seamark:${type}:colour",       "yellow",
-                        "seamark:topmark:shape",        "x-shape", // sten?
+                        "seamark:topmark:shape",        "x-shape",
                         "seamark:topmark:colour",       "yellow"
                 );
                 break;
 
             case "Styrbord båke - Trekant op":
-                // NB: In AFM this was defined with color=1 - wrong methinks
-                // topmark: 2034, colour: 2
+                // topmark: 2034, colour: 1
                 updateAtonTags(aton,
                         "seamark:type",                 "beacon_lateral",
                         "seamark:${type}:category",     "starboard",
                         "seamark:${type}:shape",        getBeaconShape(masterType),
                         "seamark:${type}:system",       "iala-a",
-                        "seamark:${type}:colour",       "green",
+                        "seamark:${type}:colour",       "red",
                         "seamark:topmark:shape",        "triangle, point up",
                         "seamark:topmark:colour",       "orange"
                 );
@@ -821,7 +828,7 @@ public class BatchDkAtonImportProcessor extends AbstractDkAtonImportProcessor {
                         "seamark:${type}:system",       "iala-a",
                         "seamark:${type}:colour",       "green"
                 );
-                if (shortDesc.equals("STAR u/top")) {
+                if (shortDesc.equals("STAR m/top")) {
                     updateAtonTags(aton,
                             "seamark:topmark:shape",    "cone, point up",
                             "seamark:topmark:colour",   "green"
@@ -834,7 +841,8 @@ public class BatchDkAtonImportProcessor extends AbstractDkAtonImportProcessor {
                 updateAtonTags(aton,
                         "seamark:type",                 "buoy_special_purpose",
                         "seamark:${type}:shape",        "super-buoy",
-                        "seamark:${type}:colour",       "orange"
+                        "seamark:${type}:colour",       "red;white",
+                        "seamark:${type}:colour_pattern",  "vertical"
                 );
                 break;
 
@@ -850,7 +858,7 @@ public class BatchDkAtonImportProcessor extends AbstractDkAtonImportProcessor {
                 // topmark: 2044, colour: 6
                 updateAtonTags(aton,
                         "seamark:type",                 "beacon_special_purpose",
-                        "seamark:${type}:shape",        "tower",
+                        "seamark:${type}:shape",        "pile",
                         "seamark:${type}:colour",       "orange",
                         "seamark:topmark:shape",        "2 cones point together",
                         "seamark:topmark:colour",       "orange"
@@ -906,8 +914,8 @@ public class BatchDkAtonImportProcessor extends AbstractDkAtonImportProcessor {
                 // topmark: -, colour: 5
                 if (masterType.isLight()) {
                     updateAtonTags(aton,
-                            "seamark:type",             "light",
-                            "seamark:light:colour",     "black"
+                            "seamark:type",             "minor_light"
+                            ///"seamark:light:colour",     "black"
                     );
                 } else if (masterType.isBeacon()) {
                     updateAtonTags(aton,
