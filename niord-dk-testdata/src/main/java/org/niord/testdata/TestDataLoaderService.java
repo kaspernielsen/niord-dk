@@ -2,6 +2,7 @@ package org.niord.testdata;
 
 import org.niord.core.batch.BatchService;
 import org.niord.core.chart.Chart;
+import org.niord.core.domain.Domain;
 import org.niord.core.service.BaseService;
 import org.slf4j.Logger;
 
@@ -35,6 +36,31 @@ public class TestDataLoaderService extends BaseService {
         if (count(Chart.class) == 0) {
             startChartImportBatchJob();
         }
+
+        // Check if we need to load domains
+        if (count(Domain.class) == 0) {
+            importDomains();
+        }
+    }
+
+    /** Creates a couple of domains */
+    private void importDomains() {
+        Domain d = new Domain();
+        d.setClientId("niord-web");
+        d.setName("All");
+        em.persist(d);
+
+        d = new Domain();
+        d.setClientId("niord-web-nw");
+        d.setName("NW");
+        em.persist(d);
+
+        d = new Domain();
+        d.setClientId("niord-web-nm");
+        d.setName("NM");
+        em.persist(d);
+
+        log.info("Created test domains");
     }
 
     /**

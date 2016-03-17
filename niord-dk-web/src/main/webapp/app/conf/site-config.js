@@ -27,32 +27,6 @@ angular.module('niord.conf')
         LangService.initLanguage();
 
         // Update the application domains
-        $rootScope.domains = [
-            {
-                id: "1",
-                name: "All"
-            },
-            {
-                id: "2",
-                name: "NW"
-            },
-            {
-                id: "3",
-                name: "NM"
-            },
-            {
-                id: "4",
-                name: "NW (Local)"
-            },
-            {
-                id: "5",
-                name: "NM (Firing Areas)"
-            },
-            {
-                id: "6",
-                name: "NM (Annex)"
-            }
-        ];
         DomainService.initDomain();
 
     }]);
