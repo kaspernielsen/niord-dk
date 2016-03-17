@@ -5,8 +5,8 @@
  */
 angular.module('niord.conf')
 
-    .run(['$rootScope', '$window', '$translate', 'LangService', 'AppSpaceService',
-        function ($rootScope, $window, $translate, LangService, AppSpaceService) {
+    .run(['$rootScope', '$window', '$translate', 'LangService', 'DomainService',
+        function ($rootScope, $window, $translate, LangService, DomainService) {
 
         $rootScope.adminIntegrationPageEnabled = true;
 
@@ -26,8 +26,8 @@ angular.module('niord.conf')
         $rootScope.numeralLauguages = { 'da': 'da-dk', 'en': 'en' };
         LangService.initLanguage();
 
-        // Update the application spaces
-        $rootScope.spaces = [
+        // Update the application domains
+        $rootScope.domains = [
             {
                 id: "1",
                 name: "All"
@@ -53,6 +53,6 @@ angular.module('niord.conf')
                 name: "NM (Annex)"
             }
         ];
-        AppSpaceService.initAppSpace();
+        DomainService.initDomain();
 
     }]);
