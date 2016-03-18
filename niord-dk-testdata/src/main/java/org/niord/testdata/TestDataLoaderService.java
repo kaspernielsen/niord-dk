@@ -46,17 +46,12 @@ public class TestDataLoaderService extends BaseService {
     /** Creates a couple of domains */
     private void importDomains() {
         Domain d = new Domain();
-        d.setClientId("niord-web");
-        d.setName("All");
-        em.persist(d);
-
-        d = new Domain();
-        d.setClientId("niord-web-nw");
+        d.setClientId("niord-client-nw");
         d.setName("NW");
         em.persist(d);
 
         d = new Domain();
-        d.setClientId("niord-web-nm");
+        d.setClientId("niord-client-nm");
         d.setName("NM");
         em.persist(d);
 
