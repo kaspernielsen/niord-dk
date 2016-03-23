@@ -1,5 +1,6 @@
 package org.niord.testdata;
 
+import org.niord.core.area.Area;
 import org.niord.core.batch.BatchService;
 import org.niord.core.chart.Chart;
 import org.niord.core.domain.Domain;
@@ -35,6 +36,11 @@ public class TestDataLoaderService extends BaseService {
         // Check if we need to load charts
         if (count(Chart.class) == 0) {
             startChartImportBatchJob();
+        }
+
+        // Check if we need to load areas
+        if (count(Area.class) == 0) {
+            startAreaImportBatchJob();
         }
 
         // Check if we need to load domains
@@ -74,6 +80,25 @@ public class TestDataLoaderService extends BaseService {
 
         } catch (Exception e) {
             log.error("Failed starting chart-import batch job", e);
+        }
+    }
+
+    /**
+     * Starts a batch job to load the areas from the "/areas.json" file
+     */
+    private void startAreaImportBatchJob() {
+        try {
+
+            batchService.startBatchJobWithDataFile(
+                    "area-import",
+                    getClass().getResourceAsStream("/areas.json"),
+                    "areas.json",
+                    new Properties());
+
+            log.info("**** Started area-import batch job");
+
+        } catch (Exception e) {
+            log.error("Failed starting area-import batch job", e);
         }
     }
 }
