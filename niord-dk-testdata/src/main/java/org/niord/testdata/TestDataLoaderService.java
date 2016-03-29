@@ -2,6 +2,7 @@ package org.niord.testdata;
 
 import org.niord.core.area.Area;
 import org.niord.core.batch.BatchService;
+import org.niord.core.category.Category;
 import org.niord.core.chart.Chart;
 import org.niord.core.domain.Domain;
 import org.niord.core.service.BaseService;
@@ -35,12 +36,17 @@ public class TestDataLoaderService extends BaseService {
 
         // Check if we need to load charts
         if (count(Chart.class) == 0) {
-            startChartImportBatchJob();
+            startBatchJob("chart-import", "charts.json");
         }
 
         // Check if we need to load areas
         if (count(Area.class) == 0) {
-            startAreaImportBatchJob();
+            startBatchJob("area-import", "areas.json");
+        }
+
+        // Check if we need to load categories
+        if (count(Category.class) == 0) {
+            startBatchJob("category-import", "categories.json");
         }
 
         // Check if we need to load domains
@@ -48,6 +54,7 @@ public class TestDataLoaderService extends BaseService {
             importDomains();
         }
     }
+
 
     /** Creates a couple of domains */
     private void importDomains() {
@@ -64,41 +71,24 @@ public class TestDataLoaderService extends BaseService {
         log.info("Created test domains");
     }
 
+
     /**
-     * Starts a batch job to load the charts from the "/charts.json" file
+     * Starts the batch job with the given name and load the associated batch file data
      */
-    private void startChartImportBatchJob() {
+    private void startBatchJob(String batchJobName, String batchFileName) {
         try {
 
             batchService.startBatchJobWithDataFile(
-                    "chart-import",
-                    getClass().getResourceAsStream("/charts.json"),
-                    "charts.json",
+                    batchJobName,
+                    getClass().getResourceAsStream("/" + batchFileName),
+                    batchFileName,
                     new Properties());
 
-            log.info("**** Started chart-import batch job");
+            log.info("**** Started " + batchJobName + " batch job");
 
         } catch (Exception e) {
-            log.error("Failed starting chart-import batch job", e);
+            log.error("Failed starting " + batchJobName + " batch job", e);
         }
     }
 
-    /**
-     * Starts a batch job to load the areas from the "/areas.json" file
-     */
-    private void startAreaImportBatchJob() {
-        try {
-
-            batchService.startBatchJobWithDataFile(
-                    "area-import",
-                    getClass().getResourceAsStream("/areas.json"),
-                    "areas.json",
-                    new Properties());
-
-            log.info("**** Started area-import batch job");
-
-        } catch (Exception e) {
-            log.error("Failed starting area-import batch job", e);
-        }
-    }
 }

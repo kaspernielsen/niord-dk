@@ -1,0 +1,488 @@
+[
+  {
+    "descs": [
+      {
+        "lang": "da",
+        "name": "Skydeøvelser"
+      },
+      {
+        "lang": "en",
+        "name": "Firing Exercises"
+      }
+    ]
+  },
+  {
+    "children": [
+      {
+        "children": [
+          {
+            "children": [
+              {
+                "descs": [
+                  {
+                    "lang": "da",
+                    "name": "Lystønde forsvundet"
+                  },
+                  {
+                    "lang": "en",
+                    "name": "Light buoy missing"
+                  }
+                ]
+              },
+              {
+                "descs": [
+                  {
+                    "lang": "da",
+                    "name": "Lystønde slukket"
+                  },
+                  {
+                    "lang": "en",
+                    "name": "Light buoy unlit"
+                  }
+                ]
+              },
+              {
+                "descs": [
+                  {
+                    "lang": "da",
+                    "name": "Lystønde ikke på plads"
+                  },
+                  {
+                    "lang": "en",
+                    "name": "Light buoy off station"
+                  }
+                ]
+              },
+              {
+                "descs": [
+                  {
+                    "lang": "da",
+                    "name": "Lystønde uregelmæssig"
+                  },
+                  {
+                    "lang": "en",
+                    "name": "Light buoy unreliable"
+                  }
+                ]
+              },
+              {
+                "descs": [
+                  {
+                    "lang": "da",
+                    "name": "Lystønde inddraget"
+                  },
+                  {
+                    "lang": "en",
+                    "name": "Light buoy withdrawn"
+                  }
+                ]
+              },
+              {
+                "descs": [
+                  {
+                    "lang": "da",
+                    "name": "Lystønde etableret"
+                  },
+                  {
+                    "lang": "en",
+                    "name": "Light buoy established"
+                  }
+                ]
+              }
+            ],
+            "descs": [
+              {
+                "lang": "da",
+                "name": "Lystønde"
+              },
+              {
+                "lang": "en",
+                "name": "Light buoy"
+              }
+            ]
+          },
+          {
+            "children": [
+              {
+                "descs": [
+                  {
+                    "lang": "da",
+                    "name": "Dagsømærke ikke på plads"
+                  },
+                  {
+                    "lang": "en",
+                    "name": "Buoy off station"
+                  }
+                ]
+              },
+              {
+                "descs": [
+                  {
+                    "lang": "da",
+                    "name": "Dagsømærke etableret"
+                  },
+                  {
+                    "lang": "en",
+                    "name": "Buoy established"
+                  }
+                ]
+              },
+              {
+                "descs": [
+                  {
+                    "lang": "da",
+                    "name": "Dagsømærke inddraget"
+                  },
+                  {
+                    "lang": "en",
+                    "name": "Buoy withdrawn"
+                  }
+                ]
+              },
+              {
+                "descs": [
+                  {
+                    "lang": "da",
+                    "name": "Dagsømærke forsvundet"
+                  },
+                  {
+                    "lang": "en",
+                    "name": "Buoy missing"
+                  }
+                ]
+              }
+            ],
+            "descs": [
+              {
+                "lang": "da",
+                "name": "Dagsømærke"
+              },
+              {
+                "lang": "en",
+                "name": "Buoy"
+              }
+            ]
+          }
+        ],
+        "descs": [
+          {
+            "lang": "da",
+            "name": "Flydende afmærkning"
+          },
+          {
+            "lang": "en",
+            "name": "Floating Aids to Navigation"
+          }
+        ]
+      },
+      {
+        "children": [
+          {
+            "descs": [
+              {
+                "lang": "da",
+                "name": "Fyr slukket"
+              },
+              {
+                "lang": "en",
+                "name": "Light unlit"
+              }
+            ]
+          },
+          {
+            "descs": [
+              {
+                "lang": "da",
+                "name": "Fyr uregelmæssig"
+              },
+              {
+                "lang": "en",
+                "name": "Light unreliable"
+              }
+            ]
+          },
+          {
+            "descs": [
+              {
+                "lang": "da",
+                "name": "Fyr ødelagt"
+              },
+              {
+                "lang": "en",
+                "name": "Light damaged"
+              }
+            ]
+          }
+        ],
+        "descs": [
+          {
+            "lang": "da",
+            "name": "Fyr"
+          },
+          {
+            "lang": "en",
+            "name": "Light"
+          }
+        ]
+      }
+    ],
+    "descs": [
+      {
+        "lang": "da",
+        "name": "Afmærkning"
+      },
+      {
+        "lang": "en",
+        "name": "Aids to Navigation"
+      }
+    ]
+  },
+  {
+    "children": [
+      {
+        "descs": [
+          {
+            "lang": "da",
+            "name": "Vrag"
+          },
+          {
+            "lang": "en",
+            "name": "Wreck"
+          }
+        ]
+      },
+      {
+        "descs": [
+          {
+            "lang": "da",
+            "name": "Nyopdaget grund "
+          },
+          {
+            "lang": "en",
+            "name": "Uncharted obstruction"
+          }
+        ]
+      },
+      {
+        "descs": [
+          {
+            "lang": "da",
+            "name": "Reduceret vanddybde"
+          },
+          {
+            "lang": "en",
+            "name": "Reduced depth"
+          }
+        ]
+      }
+    ],
+    "descs": [
+      {
+        "lang": "da",
+        "name": "Vrag og grunde"
+      },
+      {
+        "lang": "en",
+        "name": "Wreck and grounds"
+      }
+    ]
+  },
+  {
+    "children": [
+      {
+        "descs": [
+          {
+            "lang": "da",
+            "name": "RACON"
+          },
+          {
+            "lang": "en",
+            "name": "RACON"
+          }
+        ]
+      },
+      {
+        "descs": [
+          {
+            "lang": "da",
+            "name": "AIS"
+          },
+          {
+            "lang": "en",
+            "name": "AIS"
+          }
+        ]
+      },
+      {
+        "descs": [
+          {
+            "lang": "da",
+            "name": "DGPS"
+          },
+          {
+            "lang": "en",
+            "name": "DGPS"
+          }
+        ]
+      }
+    ],
+    "descs": [
+      {
+        "lang": "da",
+        "name": "Radionavigation"
+      },
+      {
+        "lang": "en",
+        "name": "Radio navigation"
+      }
+    ]
+  },
+  {
+    "children": [
+      {
+        "descs": [
+          {
+            "lang": "da",
+            "name": "Mine"
+          },
+          {
+            "lang": "en",
+            "name": "Mine"
+          }
+        ]
+      },
+      {
+        "descs": [
+          {
+            "lang": "da",
+            "name": "Torpedo"
+          },
+          {
+            "lang": "en",
+            "name": "Torpedo"
+          }
+        ]
+      },
+      {
+        "descs": [
+          {
+            "lang": "da",
+            "name": "Søopmåling"
+          },
+          {
+            "lang": "en",
+            "name": "Hydrographic survey"
+          }
+        ]
+      },
+      {
+        "descs": [
+          {
+            "lang": "da",
+            "name": "Kabelarbejde"
+          },
+          {
+            "lang": "en",
+            "name": "Cable operations"
+          }
+        ]
+      },
+      {
+        "descs": [
+          {
+            "lang": "da",
+            "name": "Undervandsundersøgelse"
+          },
+          {
+            "lang": "en",
+            "name": "Underwater survey"
+          }
+        ]
+      },
+      {
+        "descs": [
+          {
+            "lang": "da",
+            "name": "Granat"
+          },
+          {
+            "lang": "en",
+            "name": "Grenade"
+          }
+        ]
+      },
+      {
+        "descs": [
+          {
+            "lang": "da",
+            "name": "Dykkerundersøgelser"
+          },
+          {
+            "lang": "en",
+            "name": "Diving operations"
+          }
+        ]
+      },
+      {
+        "descs": [
+          {
+            "lang": "da",
+            "name": "Fyr væltet"
+          },
+          {
+            "lang": "en",
+            "name": "light destroyed"
+          }
+        ]
+      }
+    ],
+    "descs": [
+      {
+        "lang": "da",
+        "name": "Sejladshindring"
+      },
+      {
+        "lang": "en",
+        "name": "Obstruction"
+      }
+    ]
+  },
+  {
+    "children": [
+      {
+        "descs": [
+          {
+            "lang": "da",
+            "name": "Drivende objekt"
+          },
+          {
+            "lang": "en",
+            "name": "Object adrift"
+          }
+        ]
+      },
+      {
+        "descs": [
+          {
+            "lang": "da",
+            "name": "Drivende bøje"
+          },
+          {
+            "lang": "en",
+            "name": "Buoy adrift"
+          }
+        ]
+      }
+    ],
+    "descs": [
+      {
+        "lang": "da",
+        "name": "Drivende genstand"
+      },
+      {
+        "lang": "en",
+        "name": "Drifting object"
+      }
+    ]
+  }
+]
