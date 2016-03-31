@@ -1,5 +1,12 @@
 [
   {
+    "key"         : "niord.home",
+    "description" : "The root directory for the Niord application",
+    "value"       : "${user.home}/.niord",
+    "web"         : false,
+    "editable"    : true
+  },
+  {
     "key"         : "baseUri",
     "description" : "The base application server URI",
     "value"       : "http://localhost:8080",
@@ -77,6 +84,34 @@
     "key"         : "wmsLayerEnabled",
     "description" : "Whether or not to display the WMS layer in maps",
     "value"       : true,
+    "web"         : true,
+    "editable"    : true
+  },
+  {
+    "key"         : "wmsProvider",
+    "description" : "The WMS provider",
+    "value"       : "http://kortforsyningen.kms.dk/",
+    "web"         : true,
+    "editable"    : true
+  },
+  {
+    "key"         : "wmsServiceName",
+    "description" : "The WMS service name",
+    "value"       : "soe_enc",
+    "web"         : true,
+    "editable"    : true
+  },
+  {
+    "key"         : "wmsLogin",
+    "description" : "The WMS login",
+    "value"       : "TO_BE_DEFINED",
+    "web"         : true,
+    "editable"    : true
+  },
+  {
+    "key"         : "wmsPassword",
+    "description" : "The WMS password",
+    "value"       : "TO_BE_DEFINED",
     "web"         : true,
     "editable"    : true
   }
