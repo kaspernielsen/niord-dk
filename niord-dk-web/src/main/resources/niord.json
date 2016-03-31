@@ -91,28 +91,28 @@
     "key"         : "wmsProvider",
     "description" : "The WMS provider",
     "value"       : "http://kortforsyningen.kms.dk/",
-    "web"         : true,
+    "web"         : false,
     "editable"    : true
   },
   {
     "key"         : "wmsServiceName",
     "description" : "The WMS service name",
     "value"       : "soe_enc",
-    "web"         : true,
+    "web"         : false,
     "editable"    : true
   },
   {
     "key"         : "wmsLogin",
     "description" : "The WMS login",
     "value"       : "TO_BE_DEFINED",
-    "web"         : true,
+    "web"         : false,
     "editable"    : true
   },
   {
     "key"         : "wmsPassword",
     "description" : "The WMS password",
     "value"       : "TO_BE_DEFINED",
-    "web"         : true,
+    "web"         : false,
     "editable"    : true
   }
 ]
