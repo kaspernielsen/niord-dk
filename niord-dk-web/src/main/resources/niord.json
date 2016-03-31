@@ -114,5 +114,12 @@
     "value"       : "TO_BE_DEFINED",
     "web"         : false,
     "editable"    : true
+  },
+  {
+    "key"         : "mapImageServer",
+    "description" : "URL of static-map service used for generation map thumbnails",
+    "value"       : "http://osm.e-navigation.net/staticmap.php",
+    "web"         : false,
+    "editable"    : true
   }
 ]
