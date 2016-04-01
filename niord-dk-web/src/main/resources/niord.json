@@ -112,6 +112,7 @@
     "key"         : "wmsPassword",
     "description" : "The WMS password",
     "value"       : "TO_BE_DEFINED",
+    "type"        : "Password",
     "web"         : false,
     "editable"    : true
   },
