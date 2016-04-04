@@ -15,10 +15,19 @@
  */
 package org.niord.importer.nw;
 
+import org.apache.commons.lang.StringUtils;
 import org.niord.core.settings.annotation.Setting;
 import org.slf4j.Logger;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -26,12 +35,14 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.Date;
+import java.util.zip.GZIPInputStream;
 
 import static org.niord.core.settings.Setting.Type.Password;
 
 /**
  * Defines the interface to the Danish legacy NW database
  */
+@Stateless
 @SuppressWarnings("unused")
 public class LegacyNwDatabase {
 
@@ -47,6 +58,14 @@ public class LegacyNwDatabase {
     @Inject
     Logger log;
 
+    // This is the location where a backup of legacy NW data can be fetched.
+    // NB: There is no sensitive data in the dump at all, so the location is not a secret...
+    @Inject
+    @Setting(value = "legacyNwDbLocation", defaultValue = "http://msi.dma.dk/msi-safe-dump.sql.gz",
+            description = "Location of legacy NW database dump")
+    String dbLocation;
+
+    // The next fields define the local mysql database to which the dump above will be imported
     @Inject
     @Setting(value = "legacyNwDbUrl", defaultValue = "jdbc:mysql://localhost:3306/oldmsi?useSSL=false",
             description = "JDBC Url to the legacy NW database")
@@ -78,8 +97,10 @@ public class LegacyNwDatabase {
      * @return success or failure in accessing legacy NW database
      */
     public boolean testConnection() {
-        try {
+        // TEST TEST TEST
+        downloadAndImportLegacyNwDump();
 
+        try {
             try (Connection con = openConnection();
                 Statement stmt = con.createStatement()) {
                 ResultSet rs = stmt.executeQuery("select count(*) from message");
@@ -96,6 +117,72 @@ public class LegacyNwDatabase {
         } catch (Exception e) {
             log.error("Failed creating a legacy NW database connection", e);
             return false;
+        }
+    }
+
+
+    /** Downloads a legacy NW database dump and imports it to the local legacy NW mysql database */
+    public void downloadAndImportLegacyNwDump() {
+
+        try {
+            // Download step
+            long t0 = System.currentTimeMillis();
+            File dbFile = downloadLegacyNwDump();
+            log.info(String.format("File %s decompressed to %s in %d ms",
+                    dbLocation, dbFile, System.currentTimeMillis() -  t0));
+
+            // Import step
+            t0 = System.currentTimeMillis();
+            importLegacyNwDump(dbFile);
+            log.info(String.format("File %s imported in %d ms",
+                    dbFile, System.currentTimeMillis() -  t0));
+
+        } catch (IOException | SQLException e) {
+            log.error("Error downloading and importing legacy NW database dump", e);
+        }
+    }
+
+
+    /** Downloads a legacy NW database dump */
+    private File downloadLegacyNwDump() throws IOException {
+        byte[] buffer = new byte[1024];
+
+        File decompressedFile = File.createTempFile("msi-safe-dump-", ".sql");
+
+        try (InputStream in = new URL(dbLocation).openStream();
+             GZIPInputStream gzipInputStream = new GZIPInputStream(in);
+             FileOutputStream fileOutputStream = new FileOutputStream(decompressedFile)) {
+
+            int bytes_read;
+            while ((bytes_read = gzipInputStream.read(buffer)) > 0) {
+                fileOutputStream.write(buffer, 0, bytes_read);
+            }
+            return decompressedFile;
+        }
+    }
+
+
+    /** Imports a legacy NW database dump to a local mysql database */
+    private void importLegacyNwDump(File file) throws SQLException, IOException {
+        try (Connection con = openConnection();
+             Statement stmt = con.createStatement();
+             BufferedReader bf = new BufferedReader(new FileReader(file))) {
+
+            StringBuilder sql = new StringBuilder();
+            String line;
+            while ((line = bf.readLine()) != null) {
+
+                // Skip blank lines and comments
+                if (StringUtils.isBlank(line) || line.startsWith("--")) {
+                    continue;
+                }
+
+                sql.append(line).append("\n");
+                if (line.endsWith(";")) {
+                    stmt.executeUpdate(sql.toString());
+                    sql = new StringBuilder();
+                }
+            }
         }
     }
 
