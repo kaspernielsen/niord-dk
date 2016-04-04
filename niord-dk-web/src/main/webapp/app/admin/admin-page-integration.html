@@ -5,6 +5,27 @@
 
     <uib-tabset class="framed-tabs">
 
+        <!-- Legacy NW Import -->
+        <uib-tab>
+            <tab-heading>
+                Legacy NW import
+            </tab-heading>
+            <div ng-controller="NwIntegrationCtrl" class="row">
+
+                <div class="col-sm-12 col-md-10 col-lg-8" style="margin-top: 20px">
+                    <p>Tests DB connection</p>
+                    <button class="btn btn-sm btn-default" ng-click="testConnection()">Test Connection</button>
+                </div>
+
+                <div class="col-sm-12 col-md-10 col-lg-8" style="margin-top: 20px">
+                    <label class="control-label" for="importResult">AtoN Upload Result</label>
+                    <textarea ng-model="nwTestDatabaseResult" id="nwTestDatabaseResult" class="form-control input-sm" style="font-size: 10px;" rows="3" readonly></textarea>
+                </div>
+
+            </div>
+        </uib-tab>
+
+
         <!-- AtoN Import -->
         <uib-tab>
             <tab-heading>

@@ -30,6 +30,14 @@
             <version>5.1.38</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.picketbox</groupId>
+            <artifactId>picketbox</artifactId>
+            <version>4.9.3.Final</version>
+            <scope>provided</scope>
+        </dependency>
+
+
     </dependencies>
 
 </project>

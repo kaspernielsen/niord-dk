@@ -16,12 +16,14 @@
 package org.niord.importer.nw;
 
 import org.niord.core.settings.annotation.Setting;
+import org.slf4j.Logger;
 
 import javax.inject.Inject;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.Date;
 
@@ -38,12 +40,15 @@ public class LegacyNwDatabase {
         try {
             Class.forName(JDBC_DRIVER);
         } catch (ClassNotFoundException e) {
-            throw new RuntimeException("Cannot initiailize DB driver " + JDBC_DRIVER);
+            throw new RuntimeException("Cannot initialize DB driver " + JDBC_DRIVER);
         }
     }
 
     @Inject
-    @Setting(value = "legacyNwDbUrl", defaultValue = "jdbc:mysql://localhost:3306/oldmsi",
+    Logger log;
+
+    @Inject
+    @Setting(value = "legacyNwDbUrl", defaultValue = "jdbc:mysql://localhost:3306/oldmsi?useSSL=false",
             description = "JDBC Url to the legacy NW database")
     String dbUrl;
 
@@ -63,8 +68,35 @@ public class LegacyNwDatabase {
      * Important to close the connection afterwards.
      * @return a new connection to the legacy database.
      */
-    public Connection getConnection() throws SQLException {
+    public Connection openConnection() throws SQLException {
         return DriverManager.getConnection(dbUrl, dbUser, dbPassword);
+    }
+
+
+    /**
+     * Tests the database connection and returns success or failure
+     * @return success or failure in accessing legacy NW database
+     */
+    public boolean testConnection() {
+        try {
+
+            try (Connection con = openConnection();
+                Statement stmt = con.createStatement()) {
+                ResultSet rs = stmt.executeQuery("select count(*) from message");
+                if (!rs.next()) {
+                    throw new Exception("No message table available in legacy NW database");
+                }
+                log.info("Testing connection to legacy NW database. Message count: " + rs.getInt(1));
+                rs.close();
+            }
+
+            // Report success
+            return true;
+
+        } catch (Exception e) {
+            log.error("Failed creating a legacy NW database connection", e);
+            return false;
+        }
     }
 
 
