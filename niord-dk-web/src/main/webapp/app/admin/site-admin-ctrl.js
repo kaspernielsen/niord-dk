@@ -7,30 +7,53 @@ angular.module('niord.admin')
     /**
      * Legacy NW import Controller
      */
-    .controller('NwIntegrationCtrl', ['$scope', '$http', 'growl',
-        function ($scope, $http, growl) {
+    .controller('NwIntegrationCtrl', ['$scope', '$rootScope', '$http', 'growl',
+        function ($scope, $rootScope, $http, growl) {
             'use strict';
 
-            $scope.nwTestDatabaseResult = '';
-
+            $scope.legacyNwResult = '';
 
             /** Displays the error message */
             $scope.displayError = function (err) {
                 growl.error("Error");
-                $scope.nwTestDatabaseResult = 'Error:\n' + err;
+                $scope.legacyNwResult = 'Error:\n' + err;
             };
 
 
             /** Tests the legacy NW database connection */
             $scope.testConnection = function() {
-                $scope.nwTestDatabaseResult = 'Trying to connect...';
+                $scope.legacyNwResult = 'Trying to connect...';
                 $http.get('/rest/import/nw/test-connection')
                     .success(function (result) {
-                        $scope.nwTestDatabaseResult = 'Connection status: ' + result;
+                        $scope.legacyNwResult = 'Connection status: ' + result;
                     })
                     .error($scope.displayError);
 
             };
+
+            // Determine the message series for the current domain
+            $scope.messageSeries = [];
+            if ($rootScope.domain && $rootScope.domain.messageSeries) {
+                $scope.messageSeries = $rootScope.domain.messageSeries;
+            }
+
+            $scope.importSeries = $scope.messageSeries.length == 1 ? $scope.messageSeries[0] : undefined;
+            $scope.importTag = '';
+
+
+            /** Imports the active legacy NW messages */
+            $scope.importActiveLegacyNw = function () {
+                $scope.legacyNwResult = 'Start import of active legacy MW messages';
+
+                $http.post('/rest/import/nw/import-active-nw', {
+                        seriesId: $scope.importSeries.seriesId,
+                        tagName: $scope.importTag
+                    })
+                    .success(function (result) {
+                        $scope.legacyNwResult = result;
+                    })
+                    .error($scope.displayError);
+            }
 
         }])
 

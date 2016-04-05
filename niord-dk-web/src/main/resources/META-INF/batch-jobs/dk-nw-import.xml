@@ -1,0 +1,12 @@
+<job id="dk-nw-import" xmlns="http://xmlns.jcp.org/xml/ns/javaee" version="1.0">
+    <step id="setupStep" allow-start-if-complete="true" next="importLegacyNwStep">
+        <batchlet ref="jobStartBatchlet"/>
+    </step>
+    <step id="importLegacyNwStep">
+        <chunk item-count="10">
+            <reader ref="batchDkNwImportReader" />
+            <processor ref="batchDkNwImportProcessor"/>
+            <writer ref="batchDkNwImportWriter" />
+        </chunk>
+    </step>
+</job>

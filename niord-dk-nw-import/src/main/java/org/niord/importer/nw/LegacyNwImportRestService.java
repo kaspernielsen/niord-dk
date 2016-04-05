@@ -15,14 +15,22 @@
  */
 package org.niord.importer.nw;
 
+import org.jboss.resteasy.annotations.cache.NoCache;
 import org.jboss.security.annotation.SecurityDomain;
+import org.niord.core.batch.BatchService;
+import org.niord.model.IJsonSerializable;
 import org.slf4j.Logger;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import java.util.List;
+import java.util.Properties;
 
 /**
  * Imports legacy NW from an "oldmsi" database.
@@ -38,7 +46,13 @@ public class LegacyNwImportRestService {
     Logger log;
 
     @Inject
-    LegacyNwDatabase legacyNwDatabase;
+    LegacyNwDatabase db;
+
+    @Inject
+    LegacyNwImportService importService;
+
+    @Inject
+    BatchService batchService;
 
     /**
      * Tests the database connection and returns success or failure
@@ -47,7 +61,70 @@ public class LegacyNwImportRestService {
     @GET
     @Path("/test-connection")
     public boolean testConnection() {
-        return legacyNwDatabase.testConnection(true);
+        return db.testConnection(true);
     }
 
+
+    @POST
+    @Path("/import-active-nw")
+    @Consumes("application/json;charset=UTF-8")
+    @Produces("text/plain")
+    @NoCache
+    public String startActiveNwImport(ImportActiveLegacyNwParams params) {
+        try {
+            List<Integer> ids = importService.getActiveLegacyNwIds(true);
+
+            // No point in importing empty result set
+            if (ids.isEmpty()) {
+                return "No active legacy NW found";
+            }
+            params.setIds(ids);
+
+            batchService.startBatchJobWithJsonData("dk-nw-import", params, "legacy-nw-data.json", new Properties());
+
+            String msg = "Started dk-nw-import batch job for " + ids.size() + " legacy NWs";
+            log.info(msg);
+            return msg;
+
+        } catch (Exception e) {
+            String msg = "Error importing active legacy NW: " + e;
+            log.error(msg, e);
+            return msg;
+        }
+    }
+
+
+    /**
+     * Defines the parameters used when starting an import of legacy NW messages
+     */
+    public static class ImportActiveLegacyNwParams implements IJsonSerializable {
+
+        String seriesId;
+        String tagName;
+        List<Integer> ids;
+
+        public String getSeriesId() {
+            return seriesId;
+        }
+
+        public void setSeriesId(String seriesId) {
+            this.seriesId = seriesId;
+        }
+
+        public String getTagName() {
+            return tagName;
+        }
+
+        public void setTagName(String tagName) {
+            this.tagName = tagName;
+        }
+
+        public List<Integer> getIds() {
+            return ids;
+        }
+
+        public void setIds(List<Integer> ids) {
+            this.ids = ids;
+        }
+    }
 }

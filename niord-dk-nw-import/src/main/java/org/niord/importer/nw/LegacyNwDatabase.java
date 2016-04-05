@@ -37,8 +37,6 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.sql.Timestamp;
-import java.util.Date;
 import java.util.Objects;
 import java.util.zip.GZIPInputStream;
 
@@ -46,6 +44,9 @@ import static org.niord.core.settings.Setting.Type.Password;
 
 /**
  * Defines the interface to the Danish legacy NW database
+ * <p>
+ * Note to hackers: The database dump that is fetched from http://msi.dma.dk/msi-safe-dump.sql.gz
+ * contains no sensitive data and everybody is welcome to download it...
  */
 @Stateless
 @SuppressWarnings("unused")
@@ -117,9 +118,6 @@ public class LegacyNwDatabase {
      * @return success or failure in accessing legacy NW database
      */
     public boolean testConnection(boolean containsData) {
-        // TEST TEST TEST
-        downloadAndImportLegacyNwDump();
-
         try {
             try (Connection con = openConnection();
                 Statement stmt = con.createStatement()) {
@@ -150,8 +148,18 @@ public class LegacyNwDatabase {
     }
 
 
-    /** Downloads a legacy NW database dump and imports it to the local legacy NW mysql database */
-    public void downloadAndImportLegacyNwDump() {
+    /**
+     * Downloads a legacy NW database dump and imports it to the local legacy NW mysql database.
+     * The database will only be imported if the dump file has changed since last import.
+     *
+     * @return if the database was updated
+     */
+    public boolean downloadAndImportLegacyNwDump() throws Exception {
+
+        // Test that we have a valid database connection
+        if (!testConnection(false)) {
+            throw new Exception("Invalid legacy NW database connection");
+        }
 
         try {
             // Download legacy NW dump
@@ -167,6 +175,9 @@ public class LegacyNwDatabase {
             if (Objects.equals(checksum, oldChecksum)) {
                 log.info("Downloaded legacy NW dump unchanged. Skipping import");
 
+                log.debug("Deleting legacy NW dump file with result: " + dbFile.delete());
+                return false;
+
             } else {
                 // Import step
                 t0 = System.currentTimeMillis();
@@ -175,13 +186,14 @@ public class LegacyNwDatabase {
                         dbFile, System.currentTimeMillis() -  t0));
 
                 settingsService.set("legacyNwDbChecksum", checksum);
-            }
 
-            // Delete the file
-            log.debug("Deleted legacy dump file with result: " + dbFile.delete());
+                log.debug("Deleting legacy NW dump file with result: " + dbFile.delete());
+                return true;
+            }
 
         } catch (IOException | SQLException | NoSuchAlgorithmException e) {
             log.error("Error downloading and importing legacy NW database dump", e);
+            throw new Exception("Failed downloading and importing legacy NW database dump", e);
         }
     }
 
@@ -212,11 +224,14 @@ public class LegacyNwDatabase {
     }
 
 
-    /** Imports a legacy NW database dump to a local mysql database */
-    private void importLegacyNwDump(File file) throws SQLException, IOException {
+    /**
+     * Imports a legacy NW database dump to a local mysql database
+     * @param dbFile the file to import data from
+     */
+    private void importLegacyNwDump(File dbFile) throws SQLException, IOException {
         try (Connection con = openConnection();
              Statement stmt = con.createStatement();
-             BufferedReader bf = new BufferedReader(new FileReader(file))) {
+             BufferedReader bf = new BufferedReader(new FileReader(dbFile))) {
 
             StringBuilder sql = new StringBuilder();
             String line;
@@ -235,32 +250,4 @@ public class LegacyNwDatabase {
             }
         }
     }
-
-
-    public static String getString(ResultSet rs, String key) throws SQLException {
-        String val = rs.getString(key);
-        return rs.wasNull() ? null : val;
-    }
-
-    public static Integer getInt(ResultSet rs, String key) throws SQLException {
-        Integer val = rs.getInt(key);
-        return rs.wasNull() ? null : val;
-    }
-
-    public static Double getDouble(ResultSet rs, String key) throws SQLException {
-        Double val = rs.getDouble(key);
-        return rs.wasNull() ? null : val;
-    }
-
-    public static Date getDate(ResultSet rs, String key) throws SQLException {
-        Timestamp val = rs.getTimestamp(key);
-        return rs.wasNull() ? null : val;
-    }
-
-
-    public static Boolean getBoolean(ResultSet rs, String key) throws SQLException {
-        boolean val = rs.getBoolean(key);
-        return rs.wasNull() ? null : val;
-    }
-
 }

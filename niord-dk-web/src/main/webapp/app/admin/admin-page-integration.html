@@ -10,16 +10,38 @@
             <tab-heading>
                 Legacy NW import
             </tab-heading>
-            <div ng-controller="NwIntegrationCtrl" class="row">
+            <div ng-controller="NwIntegrationCtrl">
 
-                <div class="col-sm-12 col-md-10 col-lg-8" style="margin-top: 20px">
-                    <p>Tests DB connection</p>
-                    <button class="btn btn-sm btn-default" ng-click="testConnection()">Test Connection</button>
-                </div>
+                <form id="importActive" name="importActive" class="form-horizontal" style="margin-top: 20px">
+                    <div class="form-group">
+                        <label for="importMessageSeries" class="col-sm-4 col-md-3 col-lg-2 control-label">Msg. Series</label>
+                        <div class="col-sm-4 col-md-4 col-lg-2">
+                            <select id="importMessageSeries" class="form-control input-sm" required
+                                    ng-model="importSeries" ng-options="series.seriesId for series in messageSeries" >
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="importTag" class="col-sm-4 col-md-3 col-lg-2 control-label">Tag</label>
+                        <div class="col-sm-4 col-md-4 col-lg-2">
+                            <input type="text" ng-model="importTag" class="form-control input-sm"
+                                   id="importTag" placeholder="Import Tag" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-offset-4 col-md-offset-3 col-lg-offset-2 col-sm-6">
+                            <button class="btn btn-sm btn-default" ng-click="importActiveLegacyNw()"
+                                    ng-disabled="importActive.$pristine || importActive.$invalid">Import Active</button>
+                            <button class="btn btn-sm btn-default" ng-click="testConnection()">Test Connection</button>
+                        </div>
+                    </div>
+                </form>
 
-                <div class="col-sm-12 col-md-10 col-lg-8" style="margin-top: 20px">
-                    <label class="control-label" for="importResult">AtoN Upload Result</label>
-                    <textarea ng-model="nwTestDatabaseResult" id="nwTestDatabaseResult" class="form-control input-sm" style="font-size: 10px;" rows="3" readonly></textarea>
+                <div class="row">
+                    <div class="col-sm-12 col-md-10 col-lg-8" style="margin-top: 20px">
+                        <label class="control-label" for="importResult">Result</label>
+                        <textarea ng-model="legacyNwResult" id="legacyNwResult" class="form-control input-sm" style="font-size: 10px;" rows="3" readonly></textarea>
+                    </div>
                 </div>
 
             </div>
@@ -63,7 +85,7 @@
                 </div>
 
                 <div class="col-sm-12 col-md-10 col-lg-8" style="margin-top: 20px">
-                    <label class="control-label" for="importResult">AtoN Upload Result</label>
+                    <label class="control-label" for="importResult">Result</label>
                     <textarea ng-model="importResult" id="importResult" class="form-control input-sm" style="font-size: 10px;" rows="3" readonly></textarea>
                 </div>
 
