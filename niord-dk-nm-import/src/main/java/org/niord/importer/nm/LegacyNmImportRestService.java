@@ -15,9 +15,12 @@
  */
 package org.niord.importer.nm;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.lang.StringUtils;
 import org.jboss.security.annotation.SecurityDomain;
 import org.niord.core.batch.AbstractBatchableRestService;
+import org.niord.model.IJsonSerializable;
 import org.slf4j.Logger;
 
 import javax.annotation.security.RolesAllowed;
@@ -30,6 +33,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import java.io.IOException;
 import java.util.Properties;
 
 /**
@@ -63,8 +67,46 @@ public class LegacyNmImportRestService extends AbstractBatchableRestService {
     /** {@inheritDoc} */
     @Override
     protected void checkBatchJob(String batchJobName, FileItem fileItem, Properties params) throws Exception {
-        log.info("BATCH JOB " + batchJobName + " and params " + params);
-        throw new Exception("GED MED GED PÅ");
+
+        ImportNmParams props;
+        try {
+            props = new ObjectMapper().readValue(params.getProperty("data"), ImportNmParams.class);
+        } catch (IOException e) {
+            throw new Exception("Missing batch data with tag and message series");
+        }
+
+        if (StringUtils.isBlank(props.getTagName())) {
+            throw new Exception("Missing message tag for imported NMs");
+        }
+        if (StringUtils.isBlank(props.getSeriesId())) {
+            throw new Exception("Missing message series for imported NMs");
+        }
+    }
+
+
+    /**
+     * Defines the parameters used when starting an import of legacy NW messages
+     */
+    public static class ImportNmParams implements IJsonSerializable {
+
+        String seriesId;
+        String tagName;
+
+        public String getSeriesId() {
+            return seriesId;
+        }
+
+        public void setSeriesId(String seriesId) {
+            this.seriesId = seriesId;
+        }
+
+        public String getTagName() {
+            return tagName;
+        }
+
+        public void setTagName(String tagName) {
+            this.tagName = tagName;
+        }
     }
 
 }

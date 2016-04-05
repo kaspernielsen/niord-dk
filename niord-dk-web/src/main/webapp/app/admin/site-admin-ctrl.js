@@ -32,23 +32,24 @@ angular.module('niord.admin')
             };
 
             // Determine the message series for the current domain
-            $scope.messageSeries = [];
+            $scope.messageSeriesIds = [];
             if ($rootScope.domain && $rootScope.domain.messageSeries) {
-                $scope.messageSeries = $rootScope.domain.messageSeries;
+                angular.forEach($rootScope.domain.messageSeries, function (series) {
+                    $scope.messageSeriesIds.push(series.seriesId);
+                });
             }
 
-            $scope.importSeries = $scope.messageSeries.length == 1 ? $scope.messageSeries[0] : undefined;
-            $scope.importTag = '';
+            $scope.data = {
+                seriesId: $scope.messageSeriesIds.length == 1 ? $scope.messageSeriesIds[0] : undefined,
+                tagName: ''
+            };
 
 
             /** Imports the active legacy NW messages */
             $scope.importActiveLegacyNw = function () {
                 $scope.legacyNwResult = 'Start import of active legacy MW messages';
 
-                $http.post('/rest/import/nw/import-active-nw', {
-                        seriesId: $scope.importSeries.seriesId,
-                        tagName: $scope.importTag
-                    })
+                $http.post('/rest/import/nw/import-active-nw', $scope.data)
                     .success(function (result) {
                         $scope.legacyNwResult = result;
                     })
@@ -76,13 +77,15 @@ angular.module('niord.admin')
 
 
             // Determine the message series for the current domain
-            $scope.messageSeries = [];
+            $scope.messageSeriesIds = [];
             if ($rootScope.domain && $rootScope.domain.messageSeries) {
-                $scope.messageSeries = $rootScope.domain.messageSeries;
+                angular.forEach($rootScope.domain.messageSeries, function (series) {
+                    $scope.messageSeriesIds.push(series.seriesId);
+                });
             }
 
             $scope.data = {
-                seriesId: $scope.messageSeries.length == 1 ? $scope.messageSeries[0] : undefined,
+                seriesId: $scope.messageSeriesIds.length == 1 ? $scope.messageSeriesIds[0] : undefined,
                 tagName: ''
             };
 

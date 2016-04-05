@@ -17,14 +17,14 @@
                         <label for="importNwMessageSeries" class="col-sm-4 col-md-3 col-lg-2 control-label">Msg. Series</label>
                         <div class="col-sm-4 col-md-4 col-lg-2">
                             <select id="importNwMessageSeries" class="form-control input-sm" required
-                                    ng-model="importSeries" ng-options="series.seriesId for series in messageSeries" >
+                                    ng-model="data.seriesId" ng-options="seriesId for seriesId in messageSeriesIds" >
                             </select>
                         </div>
                     </div>
                     <div class="form-group">
                         <label for="importNwTag" class="col-sm-4 col-md-3 col-lg-2 control-label">Tag</label>
                         <div class="col-sm-4 col-md-4 col-lg-2">
-                            <input type="text" ng-model="importTag" class="form-control input-sm"
+                            <input type="text" ng-model="data.tagName" class="form-control input-sm"
                                    id="importNwTag" placeholder="Import Tag" required>
                         </div>
                     </div>
@@ -63,17 +63,17 @@
                              error="nmFileUploadError(status, statusText)">
 
                     <div class="form-group row" style="margin-top: 20px">
-                        <label for="importNmMessageSeries" class="col-sm-4 col-md-3 col-lg-2 control-label">Msg. Series</label>
+                        <label for="importNmMessageSeries" class="col-sm-4 col-md-3 col-lg-2 control-label" style="text-align: right">Msg. Series</label>
                         <div class="col-sm-4 col-md-4 col-lg-2">
                             <select id="importNmMessageSeries" class="form-control input-sm" required
-                                    ng-model="data.importSeries" ng-options="series.seriesId for series in messageSeries" >
+                                    ng-model="data.seriesId" ng-options="seriesId for seriesId in messageSeriesIds" >
                             </select>
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label for="importNmTag" class="col-sm-4 col-md-3 col-lg-2 control-label">Tag</label>
+                        <label for="importNmTag" class="col-sm-4 col-md-3 col-lg-2 control-label" style="text-align: right">Tag</label>
                         <div class="col-sm-4 col-md-4 col-lg-2">
-                            <input type="text" ng-model="data.importTag" class="form-control input-sm"
+                            <input type="text" ng-model="data.tagName" class="form-control input-sm"
                                    id="importNmTag" placeholder="Import Tag" required>
                         </div>
                     </div>
@@ -83,7 +83,7 @@
                 <div class="row">
                     <div class="col-sm-12 col-md-10 col-lg-8" style="margin-top: 20px">
                         <label class="control-label" for="legacyNmResult">Result</label>
-                        <textarea ng-model="legacyNwResult" id="legacyNmResult" class="form-control input-sm" style="font-size: 10px;" rows="3" readonly></textarea>
+                        <textarea ng-model="legacyNmResult" id="legacyNmResult" class="form-control input-sm" style="font-size: 10px;" rows="3" readonly></textarea>
                     </div>
                 </div>
 
