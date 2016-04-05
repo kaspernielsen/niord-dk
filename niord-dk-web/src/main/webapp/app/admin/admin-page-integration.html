@@ -12,26 +12,26 @@
             </tab-heading>
             <div ng-controller="NwIntegrationCtrl">
 
-                <form id="importActive" name="importActive" class="form-horizontal" style="margin-top: 20px">
+                <form id="importActiveNw" name="importActive" class="form-horizontal" style="margin-top: 20px">
                     <div class="form-group">
-                        <label for="importMessageSeries" class="col-sm-4 col-md-3 col-lg-2 control-label">Msg. Series</label>
+                        <label for="importNwMessageSeries" class="col-sm-4 col-md-3 col-lg-2 control-label">Msg. Series</label>
                         <div class="col-sm-4 col-md-4 col-lg-2">
-                            <select id="importMessageSeries" class="form-control input-sm" required
+                            <select id="importNwMessageSeries" class="form-control input-sm" required
                                     ng-model="importSeries" ng-options="series.seriesId for series in messageSeries" >
                             </select>
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="importTag" class="col-sm-4 col-md-3 col-lg-2 control-label">Tag</label>
+                        <label for="importNwTag" class="col-sm-4 col-md-3 col-lg-2 control-label">Tag</label>
                         <div class="col-sm-4 col-md-4 col-lg-2">
                             <input type="text" ng-model="importTag" class="form-control input-sm"
-                                   id="importTag" placeholder="Import Tag" required>
+                                   id="importNwTag" placeholder="Import Tag" required>
                         </div>
                     </div>
                     <div class="form-group">
                         <div class="col-sm-offset-4 col-md-offset-3 col-lg-offset-2 col-sm-6">
                             <button class="btn btn-sm btn-default" ng-click="importActiveLegacyNw()"
-                                    ng-disabled="importActive.$pristine || importActive.$invalid">Import Active</button>
+                                    ng-disabled="importActiveNw.$pristine || importActiveNw.$invalid">Import Active</button>
                             <button class="btn btn-sm btn-default" ng-click="testConnection()">Test Connection</button>
                         </div>
                     </div>
@@ -39,8 +39,51 @@
 
                 <div class="row">
                     <div class="col-sm-12 col-md-10 col-lg-8" style="margin-top: 20px">
-                        <label class="control-label" for="importResult">Result</label>
+                        <label class="control-label" for="legacyNwResult">Result</label>
                         <textarea ng-model="legacyNwResult" id="legacyNwResult" class="form-control input-sm" style="font-size: 10px;" rows="3" readonly></textarea>
+                    </div>
+                </div>
+
+            </div>
+        </uib-tab>
+
+
+        <!-- Legacy NM Import -->
+        <uib-tab>
+            <tab-heading>
+                Legacy NM import
+            </tab-heading>
+            <div ng-controller="NmIntegrationCtrl">
+
+                <file-upload url="nmImportUrl"
+                             drop-text="or drop .html file here" multiple="false"
+                             file-types="'html'" auto-upload="false" remove-after-upload="true"
+                             data="data"
+                             success="nmFileUploaded(result)"
+                             error="nmFileUploadError(status, statusText)">
+
+                    <div class="form-group row" style="margin-top: 20px">
+                        <label for="importNmMessageSeries" class="col-sm-4 col-md-3 col-lg-2 control-label">Msg. Series</label>
+                        <div class="col-sm-4 col-md-4 col-lg-2">
+                            <select id="importNmMessageSeries" class="form-control input-sm" required
+                                    ng-model="data.importSeries" ng-options="series.seriesId for series in messageSeries" >
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="importNmTag" class="col-sm-4 col-md-3 col-lg-2 control-label">Tag</label>
+                        <div class="col-sm-4 col-md-4 col-lg-2">
+                            <input type="text" ng-model="data.importTag" class="form-control input-sm"
+                                   id="importNmTag" placeholder="Import Tag" required>
+                        </div>
+                    </div>
+
+                </file-upload>
+
+                <div class="row">
+                    <div class="col-sm-12 col-md-10 col-lg-8" style="margin-top: 20px">
+                        <label class="control-label" for="legacyNmResult">Result</label>
+                        <textarea ng-model="legacyNwResult" id="legacyNmResult" class="form-control input-sm" style="font-size: 10px;" rows="3" readonly></textarea>
                     </div>
                 </div>
 
