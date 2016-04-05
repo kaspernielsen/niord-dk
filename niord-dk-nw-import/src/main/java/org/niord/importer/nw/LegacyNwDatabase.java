@@ -16,7 +16,8 @@
 package org.niord.importer.nw;
 
 import org.apache.commons.lang.StringUtils;
-import org.niord.core.settings.annotation.Setting;
+import org.niord.core.settings.Setting;
+import org.niord.core.settings.SettingsService;
 import org.slf4j.Logger;
 
 import javax.ejb.Stateless;
@@ -27,7 +28,10 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.math.BigInteger;
 import java.net.URL;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -35,6 +39,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.Date;
+import java.util.Objects;
 import java.util.zip.GZIPInputStream;
 
 import static org.niord.core.settings.Setting.Type.Password;
@@ -55,31 +60,38 @@ public class LegacyNwDatabase {
         }
     }
 
+    // This is the location where a backup of legacy NW data dump can be fetched.
+    // NB: There is no sensitive data in the dump at all, so the location is not a secret...
+    private static final Setting DB_LOCATION =
+            new Setting("legacyNwDbLocation", "http://msi.dma.dk/msi-safe-dump.sql.gz")
+                    .description("Location of legacy NW database dump");
+
+    // The MD5 checksum for the last imported legacy NW data dump
+    private static final Setting DB_CHECKSUM =
+            new Setting("legacyNwDbChecksum")
+                    .description("MD5 checksum of legacy NW database dump")
+                    .editable(false)
+                    .cached(false);
+
+    // The next fields define the local mysql database to which the dump above will be imported
+    private static final Setting DB_URL =
+            new Setting("legacyNwDbUrl", "jdbc:mysql://localhost:3306/oldmsi?useSSL=false")
+                    .description("JDBC Url to the legacy NW database");
+
+    private static final Setting DB_USER =
+            new Setting("legacyNwDbUser", "oldmsi")
+                    .description("Database user to the legacy NW database");
+
+    private static final Setting DB_PASSWORD =
+            new Setting("legacyNwDbPassword", "oldmsi")
+                    .description("Database password to the legacy NW database")
+                    .type(Password);
+
     @Inject
     Logger log;
 
-    // This is the location where a backup of legacy NW data can be fetched.
-    // NB: There is no sensitive data in the dump at all, so the location is not a secret...
     @Inject
-    @Setting(value = "legacyNwDbLocation", defaultValue = "http://msi.dma.dk/msi-safe-dump.sql.gz",
-            description = "Location of legacy NW database dump")
-    String dbLocation;
-
-    // The next fields define the local mysql database to which the dump above will be imported
-    @Inject
-    @Setting(value = "legacyNwDbUrl", defaultValue = "jdbc:mysql://localhost:3306/oldmsi?useSSL=false",
-            description = "JDBC Url to the legacy NW database")
-    String dbUrl;
-
-    @Inject
-    @Setting(value = "legacyNwDbUser", defaultValue = "oldmsi",
-            description = "Database user to the legacy NW database")
-    String dbUser;
-
-    @Inject
-    @Setting(value = "legacyNwDbPassword", defaultValue = "oldmsi", type = Password,
-            description = "Database password to the legacy NW database")
-    String dbPassword;
+    SettingsService settingsService;
 
 
     /**
@@ -88,26 +100,39 @@ public class LegacyNwDatabase {
      * @return a new connection to the legacy database.
      */
     public Connection openConnection() throws SQLException {
-        return DriverManager.getConnection(dbUrl, dbUser, dbPassword);
+        return DriverManager.getConnection(
+                settingsService.getString(DB_URL),
+                settingsService.getString(DB_USER),
+                settingsService.getString(DB_PASSWORD));
     }
 
 
     /**
      * Tests the database connection and returns success or failure
+     * @param containsData check that the database contains message data as well
      * @return success or failure in accessing legacy NW database
      */
-    public boolean testConnection() {
+    public boolean testConnection(boolean containsData) {
         // TEST TEST TEST
         downloadAndImportLegacyNwDump();
 
         try {
             try (Connection con = openConnection();
                 Statement stmt = con.createStatement()) {
-                ResultSet rs = stmt.executeQuery("select count(*) from message");
-                if (!rs.next()) {
-                    throw new Exception("No message table available in legacy NW database");
+                ResultSet rs;
+
+                if (containsData) {
+                    // Check that the database contains message data
+                    rs = stmt.executeQuery("select count(*) from message");
+                } else {
+                    // Just check that the database exists
+                    rs = stmt.executeQuery("select 1");
                 }
-                log.info("Testing connection to legacy NW database. Message count: " + rs.getInt(1));
+
+                if (!rs.next()) {
+                    throw new Exception("Error testing legacy NW database");
+                }
+                log.info("Testing legacy NW database. Result: " + rs.getInt(1));
                 rs.close();
             }
 
@@ -125,42 +150,61 @@ public class LegacyNwDatabase {
     public void downloadAndImportLegacyNwDump() {
 
         try {
-            // Download step
+            // Download legacy NW dump
             long t0 = System.currentTimeMillis();
-            File dbFile = downloadLegacyNwDump();
-            log.info(String.format("File %s decompressed to %s in %d ms",
-                    dbLocation, dbFile, System.currentTimeMillis() -  t0));
+            File dbFile = File.createTempFile("msi-safe-dump-", ".sql");
 
-            // Import step
-            t0 = System.currentTimeMillis();
-            importLegacyNwDump(dbFile);
-            log.info(String.format("File %s imported in %d ms",
-                    dbFile, System.currentTimeMillis() -  t0));
+            String checksum = downloadLegacyNwDump(dbFile);
+            log.info(String.format("File %s decompressed to %s in %d ms",
+                    DB_LOCATION, dbFile, System.currentTimeMillis() -  t0));
+
+            String oldChecksum = settingsService.getString(DB_CHECKSUM);
+            System.out.println("OLD CHECKSUM " + oldChecksum + "   NEW CHECKSUM " + checksum);
+
+            if (Objects.equals(checksum, oldChecksum)) {
+                log.info("Downloaded legacy NW dump unchanged. Skipping import");
+
+            } else {
+                // Import step
+                t0 = System.currentTimeMillis();
+                importLegacyNwDump(dbFile);
+                log.info(String.format("File %s imported in %d ms",
+                        dbFile, System.currentTimeMillis() -  t0));
+
+                settingsService.set("legacyNwDbChecksum", checksum);
+            }
 
             // Delete the file
-            log.info("Deleted legacy dump file with result: " + dbFile.delete());
+            log.debug("Deleted legacy dump file with result: " + dbFile.delete());
 
-        } catch (IOException | SQLException e) {
+        } catch (IOException | SQLException | NoSuchAlgorithmException e) {
             log.error("Error downloading and importing legacy NW database dump", e);
         }
     }
 
 
-    /** Downloads a legacy NW database dump */
-    private File downloadLegacyNwDump() throws IOException {
+    /**
+     * Downloads a legacy NW database dump
+     * @param dbFile the file to save the database to
+     * @return the MD5 checksum of the downloaded file
+     */
+    private String downloadLegacyNwDump(File dbFile) throws IOException, NoSuchAlgorithmException {
+        MessageDigest m= MessageDigest.getInstance("MD5");
         byte[] buffer = new byte[1024];
+        String url = settingsService.getString(DB_LOCATION);
 
-        File decompressedFile = File.createTempFile("msi-safe-dump-", ".sql");
-
-        try (InputStream in = new URL(dbLocation).openStream();
+        try (InputStream in = new URL(url).openStream();
              GZIPInputStream gzipInputStream = new GZIPInputStream(in);
-             FileOutputStream fileOutputStream = new FileOutputStream(decompressedFile)) {
+             FileOutputStream fileOutputStream = new FileOutputStream(dbFile)) {
 
-            int bytes_read;
-            while ((bytes_read = gzipInputStream.read(buffer)) > 0) {
-                fileOutputStream.write(buffer, 0, bytes_read);
+            int bytesRead;
+            while ((bytesRead = gzipInputStream.read(buffer)) > 0) {
+                fileOutputStream.write(buffer, 0, bytesRead);
+                m.update(buffer, 0, bytesRead);
             }
-            return decompressedFile;
+
+            // Return the checksum
+            return new BigInteger(1, m.digest()).toString(16);
         }
     }
 

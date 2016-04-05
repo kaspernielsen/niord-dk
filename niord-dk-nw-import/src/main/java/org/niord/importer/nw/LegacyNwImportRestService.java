@@ -47,7 +47,7 @@ public class LegacyNwImportRestService {
     @GET
     @Path("/test-connection")
     public boolean testConnection() {
-        return legacyNwDatabase.testConnection();
+        return legacyNwDatabase.testConnection(true);
     }
 
 }
