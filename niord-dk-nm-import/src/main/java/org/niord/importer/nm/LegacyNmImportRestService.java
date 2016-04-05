@@ -86,6 +86,17 @@ public class LegacyNmImportRestService extends AbstractBatchableRestService {
 
 
     /**
+     * Returns the parsed ImportNmParams from the batch data properties
+     * @param params the properties to read the ImportNmParams from
+     * @return the parsed ImportNmParams from the batch data properties
+     */
+    public static ImportNmParams getImportNmParams(Properties params) throws IOException {
+        return new ObjectMapper()
+                .readValue(params.getProperty("data"), ImportNmParams.class);
+    }
+
+
+    /**
      * Defines the parameters used when starting an import of legacy NW messages
      */
     public static class ImportNmParams implements IJsonSerializable {
