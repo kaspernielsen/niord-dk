@@ -137,6 +137,9 @@ public class LegacyNwDatabase {
             log.info(String.format("File %s imported in %d ms",
                     dbFile, System.currentTimeMillis() -  t0));
 
+            // Delete the file
+            log.info("Deleted legacy dump file with result: " + dbFile.delete());
+
         } catch (IOException | SQLException e) {
             log.error("Error downloading and importing legacy NW database dump", e);
         }
