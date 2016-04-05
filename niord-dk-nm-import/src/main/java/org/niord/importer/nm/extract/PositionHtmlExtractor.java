@@ -1,4 +1,4 @@
-package org.niord.web.nm;
+package org.niord.importer.nm.extract;
 
 import org.jsoup.nodes.Element;
 import org.slf4j.Logger;

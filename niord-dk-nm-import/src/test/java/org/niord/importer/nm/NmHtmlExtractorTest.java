@@ -1,6 +1,7 @@
-package org.niord.web.nm;
+package org.niord.importer.nm;
 
 import org.junit.Test;
+import org.niord.importer.nm.extract.NmHtmlExtractor;
 
 import java.net.URL;
 

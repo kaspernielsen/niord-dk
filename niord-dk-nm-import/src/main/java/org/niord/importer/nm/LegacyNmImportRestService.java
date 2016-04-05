@@ -64,6 +64,7 @@ public class LegacyNmImportRestService extends AbstractBatchableRestService {
         return executeBatchJobFromUploadedFile(request, "dk-nm-import");
     }
 
+
     /** {@inheritDoc} */
     @Override
     protected void checkBatchJob(String batchJobName, FileItem fileItem, Properties params) throws Exception {

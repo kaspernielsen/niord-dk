@@ -1,8 +1,6 @@
-package org.niord.web.nm;
+package org.niord.importer.nm.extract;
 
 import org.jsoup.nodes.Element;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.regex.Matcher;
@@ -13,7 +11,6 @@ import java.util.regex.Pattern;
  */
 public class ChartHtmlExtractor implements IHtmlExtractor {
 
-    private final Logger log = LoggerFactory.getLogger(ChartHtmlExtractor.class);
     Pattern p1 = Pattern.compile("(\\d+)");
     Pattern p2 = Pattern.compile("(\\d+) \\(INT (\\d+)\\)");
 

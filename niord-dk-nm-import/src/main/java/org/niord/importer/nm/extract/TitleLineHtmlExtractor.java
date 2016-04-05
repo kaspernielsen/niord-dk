@@ -1,4 +1,4 @@
-package org.niord.web.nm;
+package org.niord.importer.nm.extract;
 
 import org.apache.commons.lang.StringUtils;
 import org.jsoup.nodes.Element;

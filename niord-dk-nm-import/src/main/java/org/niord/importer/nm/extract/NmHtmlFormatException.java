@@ -1,4 +1,4 @@
-package org.niord.web.nm;
+package org.niord.importer.nm.extract;
 
 /**
  * Exception thrown if the HTML format is invalid
