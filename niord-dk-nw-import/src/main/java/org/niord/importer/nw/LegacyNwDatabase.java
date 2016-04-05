@@ -64,7 +64,8 @@ public class LegacyNwDatabase {
     // NB: There is no sensitive data in the dump at all, so the location is not a secret...
     private static final Setting DB_LOCATION =
             new Setting("legacyNwDbLocation", "http://msi.dma.dk/msi-safe-dump.sql.gz")
-                    .description("Location of legacy NW database dump");
+                    .description("Location of legacy NW database dump")
+                    .editable(true);
 
     // The MD5 checksum for the last imported legacy NW data dump
     private static final Setting DB_CHECKSUM =
@@ -76,16 +77,19 @@ public class LegacyNwDatabase {
     // The next fields define the local mysql database to which the dump above will be imported
     private static final Setting DB_URL =
             new Setting("legacyNwDbUrl", "jdbc:mysql://localhost:3306/oldmsi?useSSL=false")
-                    .description("JDBC Url to the legacy NW database");
+                    .description("JDBC Url to the legacy NW database")
+                    .editable(true);
 
     private static final Setting DB_USER =
             new Setting("legacyNwDbUser", "oldmsi")
-                    .description("Database user to the legacy NW database");
+                    .description("Database user to the legacy NW database")
+                    .editable(true);
 
     private static final Setting DB_PASSWORD =
             new Setting("legacyNwDbPassword", "oldmsi")
                     .description("Database password to the legacy NW database")
-                    .type(Password);
+                    .type(Password)
+                    .editable(true);
 
     @Inject
     Logger log;
@@ -159,7 +163,6 @@ public class LegacyNwDatabase {
                     DB_LOCATION, dbFile, System.currentTimeMillis() -  t0));
 
             String oldChecksum = settingsService.getString(DB_CHECKSUM);
-            System.out.println("OLD CHECKSUM " + oldChecksum + "   NEW CHECKSUM " + checksum);
 
             if (Objects.equals(checksum, oldChecksum)) {
                 log.info("Downloaded legacy NW dump unchanged. Skipping import");
