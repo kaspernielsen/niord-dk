@@ -1,9 +1,14 @@
 package org.niord.importer.nm;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
 import org.niord.importer.nm.extract.NmHtmlExtractor;
+import org.niord.model.DataFilter;
+import org.niord.model.vo.MessageVo;
 
 import java.net.URL;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Extract NMs from HTML
@@ -18,7 +23,13 @@ public class NmHtmlExtractorTest {
 
             System.out.println("Year " + extractor.getYear() +  ", week " + extractor.getWeek());
 
-            extractor.extractNms();
+            List<MessageVo> messages = extractor.extractNms().stream()
+                    .map(m -> m.toVo(DataFilter.get().fields("details", "Area.parent")))
+                    .collect(Collectors.toList());
+
+            System.out.println("Extracted NMs:\n\n" +
+                    new ObjectMapper().writerWithDefaultPrettyPrinter()
+                        .writeValueAsString(messages));
 
         } catch (Exception e) {
             e.printStackTrace();

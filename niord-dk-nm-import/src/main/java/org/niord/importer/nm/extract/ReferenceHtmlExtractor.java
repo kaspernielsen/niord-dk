@@ -1,10 +1,12 @@
 package org.niord.importer.nm.extract;
 
 import org.jsoup.nodes.Element;
+import org.niord.core.message.Message;
+import org.niord.core.message.Reference;
+import org.niord.model.vo.ReferenceType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -18,14 +20,18 @@ public class ReferenceHtmlExtractor implements IHtmlExtractor {
     String[] prefixes = { "EfS reference.", "EfS-henvisning. ", "Tidligere EfS.", "Former EfS." };
 
     Element e;
+    Message message;
+    String lang;
 
     /** Constructor **/
-    public ReferenceHtmlExtractor(Element e) {
+    public ReferenceHtmlExtractor(Element e, Message message) {
         this.e = e;
+        this.message = message;
+        this.lang = message.getNumber() != null ? "da" : "en";
     }
 
-    /** Extract the references of the field **/
-    public List<String> extractReferences() throws NmHtmlFormatException {
+    /** Extract the reference of the field **/
+    public void extractReference() throws NmHtmlFormatException {
 
         // TODO handle comma-separated list of references
 
@@ -45,38 +51,41 @@ public class ReferenceHtmlExtractor implements IHtmlExtractor {
             int year = Integer.valueOf(m.group(2));
             String type = m.group(3);
             String description = null;
+            ReferenceType refType;
             if (type != null && !type.trim().isEmpty()) {
                 switch (removeBrackets(type)) {
                     case "gentagelse":
                     case "repetition":
                     case "gentagelse med ny tid":
                     case "repetition with new time":
-                        type = "repitition";
+                        refType = ReferenceType.REPETITION;
                         break;
 
                     case "ajourført":
                     case "updated": // TODO: Verify
-                        type = "update";
+                        refType = ReferenceType.UPDATE;
                         break;
 
                     case "udgår":
                     case "cancelled":
-                        type = "cancelled";
+                        refType = ReferenceType.CANCELLATION;
                         break;
 
                     default:
                         description = type;
-                        type = "reference";
+                        refType = ReferenceType.REFERENCE;
                 }
             } else  {
-                type = "reference";
+                refType = ReferenceType.REFERENCE;
             }
-            System.out.println(String.format("Reference: nm-%d-%d (%s), %s", id, year - 2000, type, description));
+            Reference reference = new Reference();
+            reference.setType(refType);
+            reference.setMessageId(String.format("NM-%03d-%02d", id, year - 2000));
+            reference.setDescription(description);
+            message.getReferences().add(reference);
         } else {
             log.warn("Unknown reference format " + ref);
         }
-
-        return null;
     }
 
 }

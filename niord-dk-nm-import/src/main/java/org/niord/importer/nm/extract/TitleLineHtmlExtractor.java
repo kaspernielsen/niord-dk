@@ -2,10 +2,9 @@ package org.niord.importer.nm.extract;
 
 import org.apache.commons.lang.StringUtils;
 import org.jsoup.nodes.Element;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.List;
+import org.niord.core.area.Area;
+import org.niord.core.message.Message;
+import org.niord.model.vo.Type;
 
 /**
  * Extracts the components of the title line from the HTML element
@@ -15,18 +14,22 @@ import java.util.List;
  */
 public class TitleLineHtmlExtractor implements IHtmlExtractor {
 
-    private final Logger log = LoggerFactory.getLogger(TitleLineHtmlExtractor.class);
-
     Element e;
+    Message message;
+    String lang;
 
     /** Constructor **/
-    public TitleLineHtmlExtractor(Element e) {
+    public TitleLineHtmlExtractor(Element e, Message message) {
         this.e = e;
+        this.message = message;
     }
 
-    public List<String> extractTitleLineComponents() throws NmHtmlFormatException {
+    /** Extracts the different parts of the title line */
+    public void extractTitleLineComponents() throws NmHtmlFormatException {
 
-        System.out.println("ID: " + extractIdentifier(e));
+        message.setNumber(extractIdentifier(e));
+
+        lang = message.getNumber() != null ? "da" : "en";
 
         String titleLine = extractText(e);
         String[] parts = titleLine.split("\\.");
@@ -36,22 +39,33 @@ public class TitleLineHtmlExtractor implements IHtmlExtractor {
 
         // Extract the NM sub-type
         int i = 0;
-        String type = "permanent"; // TODO: Verify
+        Type type = Type.PERMANENT_NOTICE;
         if (parts[i].matches("\\(T\\)|\\(P\\)")) {
-            type = parts[i++].contains("T") ? "temp" : "prelim";
+            type = parts[i++].contains("T") ? Type.TEMPORARY_NOTICE : Type.PRELIMINARY_NOTICE;
         }
-        System.out.println("NM Type: " + type);
+        message.setType(type);
+
+        StringBuilder title = new StringBuilder();
+        for (int x = i; x < parts.length; x++) {
+            title.append(parts[x]).append(". ");
+        }
+        message.checkCreateDesc(lang).setTitle(title.toString().trim());
 
         int areaParts = (parts.length  - i > 2) ? 2 : 1;
         int vicinityNo = (parts.length  - i > 4) ? 1 : 0;
 
-        String area = null;
+        Area area = null;
         while (areaParts > 0) {
-            area = area == null ? parts[i] : area + " - " + parts[i];
+            Area childArea = new Area();
+            childArea.createDesc(lang).setName(parts[i]);
+            if (area != null) {
+                area.addChild(childArea);
+            }
+            area = childArea;
             areaParts--;
             i++;
         }
-        System.out.println("Area: " + area);
+        message.getAreas().add(area);
 
         String vicinity = null;
         while (vicinityNo > 0) {
@@ -60,19 +74,18 @@ public class TitleLineHtmlExtractor implements IHtmlExtractor {
             i++;
         }
         if (vicinity != null) {
-            System.out.println("Vicinity: " + vicinity);
+            message.checkCreateDesc(lang).setVicinity(vicinity);
         }
 
-        String title = "";
+        String subject = "";
         while (i < parts.length) {
-            title = title.length() == 0 ? parts[i] : title + " " + parts[i];
-            title += ".";
+            subject = subject.length() == 0 ? parts[i] : subject + " " + parts[i];
+            subject += ".";
             i++;
         }
-        System.out.println("Title: " + title);
-
-        return null;
+        message.checkCreateDesc(lang).setSubject(subject);
     }
+
 
     /** Extracts the series identifier of the message **/
     private Integer extractIdentifier(Element e) throws NmHtmlFormatException {

@@ -1,6 +1,9 @@
 package org.niord.importer.nm.extract;
 
+import org.apache.commons.lang.StringUtils;
 import org.jsoup.nodes.Element;
+import org.niord.core.chart.Chart;
+import org.niord.core.message.Message;
 
 import java.util.List;
 import java.util.regex.Matcher;
@@ -15,10 +18,12 @@ public class ChartHtmlExtractor implements IHtmlExtractor {
     Pattern p2 = Pattern.compile("(\\d+) \\(INT (\\d+)\\)");
 
     Element e;
+    Message message;
 
     /** Constructor **/
-    public ChartHtmlExtractor(Element e) {
+    public ChartHtmlExtractor(Element e, Message message) {
         this.e = e;
+        this.message = message;
     }
 
     public List<String> extractCharts() throws NmHtmlFormatException {
@@ -39,7 +44,11 @@ public class ChartHtmlExtractor implements IHtmlExtractor {
                 chartNumber = m2.group(1);
                 internationalChartNumber = m2.group(2);
             }
-            System.out.println(String.format("Chart: %s (INT %s)", chartNumber, internationalChartNumber));
+
+            Chart c = new Chart(
+                    chartNumber,
+                    StringUtils.isBlank(internationalChartNumber) ? null : Integer.valueOf(internationalChartNumber));
+            message.getCharts().add(c);
         }
 
         return null;

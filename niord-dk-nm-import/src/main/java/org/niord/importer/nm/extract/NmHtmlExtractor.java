@@ -3,6 +3,7 @@ package org.niord.importer.nm.extract;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.niord.core.message.Message;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -11,6 +12,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Class for extracting NM messages from HTML files.
@@ -35,6 +38,7 @@ public class NmHtmlExtractor implements IHtmlExtractor {
         this(new FileInputStream(file), file.toURI().toString());
     }
 
+
     /**
      * Constructor
      *
@@ -43,6 +47,7 @@ public class NmHtmlExtractor implements IHtmlExtractor {
     public NmHtmlExtractor(URL url) throws Exception {
         this(url.openStream(), url.toURI().toString());
     }
+
 
     /**
      * Constructor
@@ -68,6 +73,7 @@ public class NmHtmlExtractor implements IHtmlExtractor {
         }
     }
 
+
     /**
      * Extracts the week and year from the document.
      * Throws an exception if this fails.
@@ -91,18 +97,23 @@ public class NmHtmlExtractor implements IHtmlExtractor {
         log.info(String.format("Extracted year %d week %d", year, week));
     }
 
+
     public int getYear() {
         return year;
     }
+
 
     public int getWeek() {
         return week;
     }
 
-    /** Extracts the NM messages **/
-    public void extractNms() throws NmHtmlFormatException {
 
-        boolean inMessage = false;
+    /** Extracts the NM messages **/
+    public List<Message> extractNms() throws NmHtmlFormatException {
+
+        List<Message> messages = new ArrayList<>();
+        Message message = null;
+        String lang = "da";
 
         for (Element e : body.getElementsByTag("div").first().getElementsByTag("p")) {
 
@@ -112,97 +123,98 @@ public class NmHtmlExtractor implements IHtmlExtractor {
 
             switch (e.attr("class")) {
                 case "1nr":
-                    inMessage = true;
-                    System.out.println("********* NM *********");
+                    message = new Message();
+                    messages.add(message);
 
-                    System.out.println("Original Info: " + extractOriginalInformation(e));
-                    TitleLineHtmlExtractor titleLineExtractor = new TitleLineHtmlExtractor(e);
+                    message.setOriginalInformation(extractOriginalInformation(e));
+                    TitleLineHtmlExtractor titleLineExtractor = new TitleLineHtmlExtractor(e, message);
                     titleLineExtractor.extractTitleLineComponents();
+                    lang = message.getNumber() != null ? "da" : "en";
                     break;
 
                 case "EfS-henvisning":
                 case "EfSreference0":
                 case "tidlefs":
                 case "FormerEfsNo":
-                    if (!inMessage) {
+                    if (message == null) {
                         log.warn("NtM reference field outside message");
                         break;
                     }
-                    ReferenceHtmlExtractor refExtractor = new ReferenceHtmlExtractor(e);
-                    refExtractor.extractReferences();
+                    ReferenceHtmlExtractor refExtractor = new ReferenceHtmlExtractor(e, message);
+                    refExtractor.extractReference();
                     break;
 
                 case "tidspunkt":
                 case "Time":
-                    if (!inMessage) {
+                    if (message == null) {
                         log.warn("Time field outside message");
                         break;
                     }
-                    System.out.println("Time: " + extractTime(e));
+                    message.checkCreateDesc(lang).setTime(extractTime(e));
                     break;
 
                 case "position":
                 case "positioner":
                 case "positionerfelt":
-                    if (!inMessage) {
+                    if (message == null) {
                         log.warn("Position field outside message");
                         break;
                     }
-                    PositionHtmlExtractor posExtractor = new PositionHtmlExtractor(e);
+                    PositionHtmlExtractor posExtractor = new PositionHtmlExtractor(e, message);
                     posExtractor.extractPositions();
                     break;
 
                 case "Publication":
                 case "Publications":
                 case "publikationer":
-                    if (!inMessage) {
+                    if (message == null) {
                         log.warn("Publication field outside message");
                         break;
                     }
-                    System.out.println("Publication: " + extractPublication(e));
+                    message.checkCreateDesc(lang).setPublication(extractPublication(e));
                     break;
 
                 case "detaljer":
                 case "Details0":
-                    if (!inMessage) {
+                    if (message == null) {
                         log.warn("Details field outside message");
                         break;
                     }
-                    System.out.println("Details: " + extractDetails(e));
+                    message.checkCreateDesc(lang).setDescription(extractDescription(e));
                     break;
 
                 case "Note":
                 case "anm":
-                    if (!inMessage) {
+                    if (message == null) {
                         log.warn("Note field outside message");
                         break;
                     }
-                    System.out.println("Note: " + extractNote(e));
+                    message.checkCreateDesc(lang).setNote(extractNote(e));
                     break;
 
                 case "kort":
                 case "Chart":
                 case "Charts0":
-                    if (!inMessage) {
+                    if (message == null) {
                         log.warn("Chart field outside message");
                         break;
                     }
-                    ChartHtmlExtractor chartExtractor = new ChartHtmlExtractor(e);
+                    ChartHtmlExtractor chartExtractor = new ChartHtmlExtractor(e, message);
                     chartExtractor.extractCharts();
                     break;
 
                 case "sag":
                 case "Kilde":
-                    if (!inMessage) {
+                    if (message == null) {
                         log.warn("Source field outside message");
                         break;
                     }
-                    System.out.println("Source: " + extractSource(e));
-                    inMessage = false;
+                    message.checkCreateDesc(lang).setSource(extractSource(e));
+                    message = null;
                     break;
 
                 case "Translation":
-                    inMessage = false;
+                    message = null;
                     break;
 
                 case "efterret":
@@ -219,7 +231,9 @@ public class NmHtmlExtractor implements IHtmlExtractor {
 
         }
 
+        return messages;
     }
+
 
     /** Extracts if the message is original information or not **/
     private boolean extractOriginalInformation(Element e) throws NmHtmlFormatException {
@@ -228,12 +242,14 @@ public class NmHtmlExtractor implements IHtmlExtractor {
         return originalInfoElement != null && "1stjerne".equals(originalInfoElement.attr("class"));
     }
 
+
     /** Extracts the message publication **/
     private String extractPublication(Element e) throws NmHtmlFormatException {
         // Strip field header
         e.select("i").first().remove();
         return extractText(e);
     }
+
 
     /** Extracts the message note **/
     private String extractNote(Element e) throws NmHtmlFormatException {
@@ -242,8 +258,9 @@ public class NmHtmlExtractor implements IHtmlExtractor {
         return extractText(e);
     }
 
+
     /** Extracts the message details **/
-    private String extractDetails(Element e) throws NmHtmlFormatException {
+    private String extractDescription(Element e) throws NmHtmlFormatException {
         // Strip field header
         e.select("i").first().remove();
         if (e.getElementsByTag("span").size() == 1){
@@ -252,12 +269,14 @@ public class NmHtmlExtractor implements IHtmlExtractor {
         return e.html();
     }
 
+
     /** Extracts the message source **/
     private String extractSource(Element e) throws NmHtmlFormatException {
         String source = extractText(e);
         // Strip brackets
         return removeBrackets(source);
     }
+
 
     /** Extracts the message time **/
     private String extractTime(Element e) throws NmHtmlFormatException {
