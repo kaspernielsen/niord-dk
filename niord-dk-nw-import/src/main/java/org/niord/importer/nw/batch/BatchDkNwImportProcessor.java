@@ -15,7 +15,8 @@
  */
 package org.niord.importer.nw.batch;
 
-import org.niord.core.batch.AbstractItemHandler;
+import org.niord.core.message.Message;
+import org.niord.core.message.batch.BatchMessageImportProcessor;
 import org.niord.importer.nw.LegacyNwImportService;
 
 import javax.inject.Inject;
@@ -25,10 +26,11 @@ import javax.inject.Named;
  * Processes legacy NW messages
  */
 @Named
-public class BatchDkNwImportProcessor extends AbstractItemHandler {
+public class BatchDkNwImportProcessor extends BatchMessageImportProcessor {
 
     @Inject
     LegacyNwImportService importService;
+
 
     /** {@inheritDoc} **/
     @Override
@@ -36,10 +38,13 @@ public class BatchDkNwImportProcessor extends AbstractItemHandler {
 
         Integer id = (Integer)item;
 
+        // Read the message with the given ID from the legacy NW database
+        Message message = importService.readMessage(id);
 
+        // Process related message base data
+        processMessage(message);
 
-        // No change, ignore...
-        getLog().info("NW " + id);
-        return null;
+        getLog().info("Importing legacy NW: " + id);
+        return message;
     }
 }

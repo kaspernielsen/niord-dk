@@ -6,7 +6,7 @@
         <chunk item-count="10">
             <reader ref="batchDkNwImportReader" />
             <processor ref="batchDkNwImportProcessor"/>
-            <writer ref="batchDkNwImportWriter" />
+            <writer ref="batchMessageImportWriter" />
         </chunk>
     </step>
 </job>

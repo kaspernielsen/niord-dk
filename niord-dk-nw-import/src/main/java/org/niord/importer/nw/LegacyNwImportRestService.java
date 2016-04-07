@@ -80,7 +80,11 @@ public class LegacyNwImportRestService {
             }
             params.setIds(ids);
 
-            batchService.startBatchJobWithJsonData("dk-nw-import", params, "legacy-nw-data.json", new Properties());
+            Properties batchProperties = new Properties();
+            batchProperties.setProperty("seriesId", params.getSeriesId());
+            batchProperties.setProperty("tagName", params.getTagName());
+
+            batchService.startBatchJobWithJsonData("dk-nw-import", params, "legacy-nw-data.json", batchProperties);
 
             String msg = "Started dk-nw-import batch job for " + ids.size() + " legacy NWs";
             log.info(msg);
