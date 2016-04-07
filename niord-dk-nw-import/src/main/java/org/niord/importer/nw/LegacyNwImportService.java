@@ -84,10 +84,9 @@ public class LegacyNwImportService {
 
         try (Connection con = db.openConnection();
              Statement stmt = con.createStatement()) {
-            ResultSet rs;
 
             List<Integer> result = new ArrayList<>();
-            rs = stmt.executeQuery(activeMessagesSql);
+            ResultSet rs = stmt.executeQuery(activeMessagesSql);
             while (rs.next()) {
                 result.add(getInt(rs, "id"));
             }
