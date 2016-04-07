@@ -3,6 +3,8 @@ package org.niord.importer.nm.extract;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.niord.core.area.Area;
+import org.niord.core.geojson.Feature;
 import org.niord.core.message.Message;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -110,6 +112,75 @@ public class NmHtmlExtractor implements IHtmlExtractor {
 
     /** Extracts the NM messages **/
     public List<Message> extractNms() throws NmHtmlFormatException {
+
+        // Parse the messages from the HTML
+        List<Message> messages =  parseNms();
+
+        // Merge Danish and English messages
+        messages = mergeNms(messages);
+
+        return messages;
+    }
+
+
+    /** Merges Danish and English messages */
+    private List<Message> mergeNms(List<Message> messages) {
+
+        List<Message> result = new ArrayList<>();
+        Message prevDanishMessage = null;
+        for (Message message : messages) {
+
+            // If the message number is defined, we have a Danish message
+            if (message.getNumber() != null) {
+                result.add(message);
+                prevDanishMessage = message;
+
+            } else {
+                // An english message follows a Danish and does not have a number
+                mergeNms(prevDanishMessage, message);
+            }
+        }
+        return result;
+    }
+
+
+    /** Merges Danish and English messages */
+    private void mergeNms(Message daMsg, Message enMsg) {
+        // Sanity checks...
+        if (daMsg == null || enMsg == null ||
+                daMsg.getDescs().size() != 1 ||
+                enMsg.getDescs().size() != 1 ||
+                daMsg.getAreas().size() != enMsg.getAreas().size() ||
+                daMsg.getCharts().size() != enMsg.getCharts().size()) {
+            return;
+        }
+
+        // Start copying
+        daMsg.getDescs().add(enMsg.getDescs().get(0));
+
+        if (daMsg.getAreas().size() == 1) {
+            Area daArea = daMsg.getAreas().get(0);
+            Area enArea = enMsg.getAreas().get(0);
+            daArea.getDescs().add(enArea.getDescs().get(0));
+            daArea = daArea.getParent();
+            enArea = enArea.getParent();
+            if (daArea != null && enArea != null) {
+                daArea.getDescs().add(enArea.getDescs().get(0));
+            }
+        }
+
+        if (daMsg.getGeometry() != null && daMsg.getGeometry().getFeatures().size() == 1 &&
+                enMsg.getGeometry() != null && enMsg.getGeometry().getFeatures().size() == 1) {
+            Feature daFeature = daMsg.getGeometry().getFeatures().get(0);
+            Feature enFeature = enMsg.getGeometry().getFeatures().get(0);
+            daFeature.getProperties().putAll(enFeature.getProperties());
+        }
+
+    }
+
+
+    /** Extracts the NM messages **/
+    private List<Message> parseNms() throws NmHtmlFormatException {
 
         List<Message> messages = new ArrayList<>();
         Message message = null;
