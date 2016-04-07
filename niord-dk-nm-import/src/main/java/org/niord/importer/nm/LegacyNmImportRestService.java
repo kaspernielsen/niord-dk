@@ -69,37 +69,31 @@ public class LegacyNmImportRestService extends AbstractBatchableRestService {
     @Override
     protected void checkBatchJob(String batchJobName, FileItem fileItem, Properties params) throws Exception {
 
-        ImportNmParams props;
+        ImportLegacyNmParams batchData;
         try {
-            props = new ObjectMapper().readValue(params.getProperty("data"), ImportNmParams.class);
+            batchData = new ObjectMapper().readValue(params.getProperty("data"), ImportLegacyNmParams.class);
         } catch (IOException e) {
             throw new Exception("Missing batch data with tag and message series");
         }
 
-        if (StringUtils.isBlank(props.getTagName())) {
+        if (StringUtils.isBlank(batchData.getTagName())) {
             throw new Exception("Missing message tag for imported NMs");
         }
-        if (StringUtils.isBlank(props.getSeriesId())) {
+        if (StringUtils.isBlank(batchData.getSeriesId())) {
             throw new Exception("Missing message series for imported NMs");
         }
-    }
 
-
-    /**
-     * Returns the parsed ImportNmParams from the batch data properties
-     * @param params the properties to read the ImportNmParams from
-     * @return the parsed ImportNmParams from the batch data properties
-     */
-    public static ImportNmParams getImportNmParams(Properties params) throws IOException {
-        return new ObjectMapper()
-                .readValue(params.getProperty("data"), ImportNmParams.class);
+        // Update parameters
+        params.remove("data");
+        params.setProperty("seriesId", batchData.getSeriesId());
+        params.setProperty("tagName", batchData.getTagName());
     }
 
 
     /**
      * Defines the parameters used when starting an import of legacy NW messages
      */
-    public static class ImportNmParams implements IJsonSerializable {
+    public class ImportLegacyNmParams implements IJsonSerializable {
 
         String seriesId;
         String tagName;

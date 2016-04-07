@@ -5,8 +5,8 @@
     <step id="importLegacyNmStep">
         <chunk item-count="10">
             <reader ref="batchDkNmImportReader" />
-            <processor ref="batchDkNmImportProcessor"/>
-            <writer ref="batchDkNmImportWriter" />
+            <processor ref="batchMessageImportProcessor"/>
+            <writer ref="batchMessageImportProcessor" />
         </chunk>
     </step>
 </job>
