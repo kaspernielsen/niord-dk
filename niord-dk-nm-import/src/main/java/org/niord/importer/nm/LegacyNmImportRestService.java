@@ -73,7 +73,7 @@ public class LegacyNmImportRestService extends AbstractBatchableRestService {
         try {
             batchData = new ObjectMapper().readValue(params.getProperty("data"), ImportLegacyNmParams.class);
         } catch (IOException e) {
-            throw new Exception("Missing batch data with tag and message series");
+            throw new Exception("Missing batch data with tag and message series", e);
         }
 
         if (StringUtils.isBlank(batchData.getTagName())) {
@@ -93,7 +93,7 @@ public class LegacyNmImportRestService extends AbstractBatchableRestService {
     /**
      * Defines the parameters used when starting an import of legacy NW messages
      */
-    public class ImportLegacyNmParams implements IJsonSerializable {
+    public static class ImportLegacyNmParams implements IJsonSerializable {
 
         String seriesId;
         String tagName;
