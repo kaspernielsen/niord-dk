@@ -50,7 +50,20 @@ angular.module('niord.conf')
             'MENU_ACTION' : 'Action',
             'MENU_ACTION_PDF' : 'Generate PDF',
             'MENU_ACTION_SELECT_ALL' : 'Select all',
-            'MENU_ACTION_CLEAR_SELECTION' : 'Clear selection'
+            'MENU_ACTION_CLEAR_SELECTION' : 'Clear selection',
+
+            'FIELD_REFERENCE' : 'Reference',
+            'FIELD_TIME' : 'Time',
+            'FIELD_LOCATION' : 'Location',
+            'FIELD_DETAILS' : 'Details',
+            'FIELD_ATTACHMENTS' : 'Attachments',
+            'FIELD_NOTE' : 'Note',
+            'FIELD_CHARTS' : 'Charts',
+            'FIELD_PUBLICATION' : 'Publication',
+            'REF_REPETITION' : '(repetition)',
+            'REF_CANCELLED' : '(cancelled)',
+            'REF_UPDATED' : '(updated)'
+
         });
 
         $translateProvider.translations('da', {
@@ -94,7 +107,20 @@ angular.module('niord.conf')
             'MENU_ACTION' : 'Handling',
             'MENU_ACTION_PDF' : 'Generer PDF',
             'MENU_ACTION_SELECT_ALL' : 'Vælg alle',
-            'MENU_ACTION_CLEAR_SELECTION' : 'Vælg ingen'
+            'MENU_ACTION_CLEAR_SELECTION' : 'Vælg ingen',
+
+            'FIELD_REFERENCE' : 'Reference',
+            'FIELD_TIME' : 'Tid',
+            'FIELD_LOCATION' : 'Placering',
+            'FIELD_DETAILS' : 'Detaljer',
+            'FIELD_ATTACHMENTS' : 'Vedhæftninger',
+            'FIELD_NOTE' : 'Note',
+            'FIELD_CHARTS' : 'Søkort',
+            'FIELD_PUBLICATION' : 'Publikation',
+            'REF_REPETITION' : '(gentagelse)',
+            'REF_CANCELLED' : '(udgår)',
+            'REF_UPDATED' : '(ajourført)'
+
         });
 
         $translateProvider.preferredLanguage('da');
