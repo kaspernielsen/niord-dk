@@ -64,7 +64,8 @@ angular.module('niord.conf')
             'REF_CANCELLED' : '(cancelled)',
             'REF_UPDATED' : '(updated)',
             'SHOW_POS' : 'Show positions',
-            'HIDE_POS' : 'Hide positions'
+            'HIDE_POS' : 'Hide positions',
+            'GENERAL_MSGS' : 'General Notifications'
 
         });
 
@@ -123,7 +124,8 @@ angular.module('niord.conf')
             'REF_CANCELLED' : '(udgår)',
             'REF_UPDATED' : '(ajourført)',
             'SHOW_POS' : 'Vis positioner',
-            'HIDE_POS' : 'Skjul positioner'
+            'HIDE_POS' : 'Skjul positioner',
+            'GENERAL_MSGS' : 'Generelle notifikationer'
 
         });
 
