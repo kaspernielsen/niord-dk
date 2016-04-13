@@ -62,7 +62,9 @@ angular.module('niord.conf')
             'FIELD_PUBLICATION' : 'Publication',
             'REF_REPETITION' : '(repetition)',
             'REF_CANCELLED' : '(cancelled)',
-            'REF_UPDATED' : '(updated)'
+            'REF_UPDATED' : '(updated)',
+            'SHOW_POS' : 'Show positions',
+            'HIDE_POS' : 'Hide positions'
 
         });
 
@@ -119,7 +121,9 @@ angular.module('niord.conf')
             'FIELD_PUBLICATION' : 'Publikation',
             'REF_REPETITION' : '(gentagelse)',
             'REF_CANCELLED' : '(udgår)',
-            'REF_UPDATED' : '(ajourført)'
+            'REF_UPDATED' : '(ajourført)',
+            'SHOW_POS' : 'Vis positioner',
+            'HIDE_POS' : 'Skjul positioner'
 
         });
 
