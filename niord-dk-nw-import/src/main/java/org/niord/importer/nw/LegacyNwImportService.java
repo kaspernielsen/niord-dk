@@ -271,6 +271,8 @@ public class LegacyNwImportService {
             l.setCoordinates(coords);
             geometry = GeoJsonUtils.toJts(l);
         } else if ("Polygon".equals(locationType) && coords.length > 2) {
+            // GeoJSON linear rings has the same start and end coordinate
+            coords = toLinearRing(coords);
             PolygonVo p = new PolygonVo();
             p.setCoordinates(new double[][][] { coords });
             geometry = GeoJsonUtils.toJts(p);
@@ -283,6 +285,15 @@ public class LegacyNwImportService {
             feature.setGeometry(geometry);
             message.setGeometry(featureCollection);
         }
+    }
+
+
+    /** GeoJSON linear rings has the same start and end coordinate */
+    private double[][] toLinearRing(double[][] coords) {
+        double[][] linearRing = new double[coords.length + 1][];
+        System.arraycopy(coords, 0, linearRing, 0, coords.length);
+        linearRing[coords.length] = coords[0];
+        return linearRing;
     }
 
 

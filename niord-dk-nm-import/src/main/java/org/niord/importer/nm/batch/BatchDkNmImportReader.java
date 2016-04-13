@@ -48,7 +48,7 @@ public class BatchDkNmImportReader extends BatchMessageImportReader {
         List<Message> messages = extractor.extractNms();
 
         return messages.stream()
-                .map(m -> m.toVo(DataFilter.get().fields(DataFilter.DETAILS, "Area.parent")))
+                .map(m -> m.toVo(DataFilter.get().fields(DataFilter.DETAILS, DataFilter.GEOMETRY, "Area.parent")))
                 .collect(Collectors.toList());
     }
 }

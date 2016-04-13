@@ -24,10 +24,11 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.math.BigInteger;
 import java.net.URL;
 import java.security.MessageDigest;
@@ -77,7 +78,7 @@ public class LegacyNwDatabase {
 
     // The next fields define the local mysql database to which the dump above will be imported
     private static final Setting DB_URL =
-            new Setting("legacyNwDbUrl", "jdbc:mysql://localhost:3306/oldmsi?useSSL=false")
+            new Setting("legacyNwDbUrl", "jdbc:mysql://localhost:3306/oldmsi?useSSL=false&useUnicode=true&characterEncoding=utf8")
                     .description("JDBC Url to the legacy NW database")
                     .editable(true);
 
@@ -217,6 +218,7 @@ public class LegacyNwDatabase {
                 fileOutputStream.write(buffer, 0, bytesRead);
                 m.update(buffer, 0, bytesRead);
             }
+            fileOutputStream.flush();
 
             // Return the checksum
             return new BigInteger(1, m.digest()).toString(16);
@@ -231,7 +233,9 @@ public class LegacyNwDatabase {
     private void importLegacyNwDump(File dbFile) throws SQLException, IOException {
         try (Connection con = openConnection();
              Statement stmt = con.createStatement();
-             BufferedReader bf = new BufferedReader(new FileReader(dbFile))) {
+             FileInputStream fileIn = new FileInputStream(dbFile);
+             InputStreamReader in = new InputStreamReader(fileIn, "utf-8");
+             BufferedReader bf = new BufferedReader(in)) {
 
             StringBuilder sql = new StringBuilder();
             String line;
