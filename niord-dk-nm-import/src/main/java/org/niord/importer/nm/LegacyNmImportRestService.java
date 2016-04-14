@@ -76,9 +76,6 @@ public class LegacyNmImportRestService extends AbstractBatchableRestService {
             throw new Exception("Missing batch data with tag and message series", e);
         }
 
-        if (StringUtils.isBlank(batchData.getTagName())) {
-            throw new Exception("Missing message tag for imported NMs");
-        }
         if (StringUtils.isBlank(batchData.getSeriesId())) {
             throw new Exception("Missing message series for imported NMs");
         }

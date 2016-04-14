@@ -15,17 +15,21 @@
                 <form id="importActiveNw" name="importActive" class="form-horizontal" style="margin-top: 20px">
                     <div class="form-group">
                         <label for="importNwMessageSeries" class="col-sm-4 col-md-3 col-lg-2 control-label">Msg. Series</label>
-                        <div class="col-sm-4 col-md-4 col-lg-2">
+                        <div class="col-sm-4 col-md-4 col-lg-3">
                             <select id="importNwMessageSeries" class="form-control input-sm" required
                                     ng-model="data.seriesId" ng-options="seriesId for seriesId in messageSeriesIds" >
                             </select>
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="importNwTag" class="col-sm-4 col-md-3 col-lg-2 control-label">Tag</label>
-                        <div class="col-sm-4 col-md-4 col-lg-2">
-                            <input type="text" ng-model="data.tagName" class="form-control input-sm"
-                                   id="importNwTag" placeholder="Import Tag" required>
+                        <label for="importNwTag" class="col-sm-4 col-md-3 col-lg-2 control-label">Message Tag</label>
+                        <div class="col-sm-4 col-md-4 col-lg-3">
+                            <div class="input-group">
+                                <input type="text" ng-model="data.tagName" class="form-control input-sm"
+                                       id="importNwTag" placeholder="Import Tag" readonly="readonly">
+                                <span class="input-group-addon clickable" ng-click="openTagsDialog()"><span class="glyphicon glyphicon-tags"></span></span>
+                                <span class="input-group-addon clickable" ng-click="data.tagName = ''"><span class="glyphicon glyphicon-trash"></span></span>
+                            </div>
                         </div>
                     </div>
                     <div class="form-group">
@@ -64,7 +68,7 @@
 
                     <div class="form-group row" style="margin-top: 20px">
                         <label for="importNmMessageSeries" class="col-sm-4 col-md-3 col-lg-2 control-label" style="text-align: right">Msg. Series</label>
-                        <div class="col-sm-4 col-md-4 col-lg-2">
+                        <div class="col-sm-4 col-md-4 col-lg-3">
                             <select id="importNmMessageSeries" class="form-control input-sm" required
                                     ng-model="data.seriesId" ng-options="seriesId for seriesId in messageSeriesIds" >
                             </select>
@@ -72,9 +76,13 @@
                     </div>
                     <div class="form-group row">
                         <label for="importNmTag" class="col-sm-4 col-md-3 col-lg-2 control-label" style="text-align: right">Tag</label>
-                        <div class="col-sm-4 col-md-4 col-lg-2">
-                            <input type="text" ng-model="data.tagName" class="form-control input-sm"
-                                   id="importNmTag" placeholder="Import Tag" required>
+                        <div class="col-sm-4 col-md-4 col-lg-3">
+                            <div class="input-group">
+                                <input type="text" ng-model="data.tagName" class="form-control input-sm"
+                                       id="importNmTag" placeholder="Import Tag" readonly="readonly">
+                                <span class="input-group-addon clickable" ng-click="openTagsDialog()"><span class="glyphicon glyphicon-tags"></span></span>
+                                <span class="input-group-addon clickable" ng-click="data.tagName = ''"><span class="glyphicon glyphicon-trash"></span></span>
+                            </div>
                         </div>
                     </div>
 

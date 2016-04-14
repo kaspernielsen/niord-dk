@@ -51,6 +51,7 @@ angular.module('niord.conf')
             'MENU_ACTION_PDF' : 'Generate PDF',
             'MENU_ACTION_SELECT_ALL' : 'Select all',
             'MENU_ACTION_CLEAR_SELECTION' : 'Clear selection',
+            'MENU_ACTION_TAGS' : 'Tags...',
 
             'FIELD_REFERENCE' : 'Reference',
             'FIELD_TIME' : 'Time',
@@ -111,6 +112,7 @@ angular.module('niord.conf')
             'MENU_ACTION_PDF' : 'Generer PDF',
             'MENU_ACTION_SELECT_ALL' : 'Vælg alle',
             'MENU_ACTION_CLEAR_SELECTION' : 'Vælg ingen',
+            'MENU_ACTION_TAGS' : 'Mærkater...',
 
             'FIELD_REFERENCE' : 'Reference',
             'FIELD_TIME' : 'Tid',

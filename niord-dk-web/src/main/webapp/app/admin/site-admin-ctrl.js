@@ -45,6 +45,18 @@ angular.module('niord.admin')
             };
 
 
+            /** Opens the tags dialog */
+            $scope.openTagsDialog = function () {
+                $rootScope.$broadcast('messageTags', {});
+            };
+
+
+            /** Flags that a given tag has been selected in the tags dialog */
+            $scope.$on('messageTagSelected', function(event, data) {
+                $scope.data.tagName = data.tag.tagId;
+            });
+
+
             /** Imports the active legacy NW messages */
             $scope.importActiveLegacyNw = function () {
                 $scope.legacyNwResult = 'Start import of active legacy MW messages';
@@ -88,6 +100,19 @@ angular.module('niord.admin')
                 seriesId: $scope.messageSeriesIds.length == 1 ? $scope.messageSeriesIds[0] : undefined,
                 tagName: ''
             };
+
+
+            /** Opens the tags dialog */
+            $scope.openTagsDialog = function () {
+                $rootScope.$broadcast('messageTags', {});
+            };
+
+
+            /** Flags that a given tag has been selected in the tags dialog */
+            $scope.$on('messageTagSelected', function(event, data) {
+                $scope.data.tagName = data.tag.tagId;
+            });
+
 
             /** Called when the NM html file has been imported */
             $scope.nmFileUploaded = function(result) {
