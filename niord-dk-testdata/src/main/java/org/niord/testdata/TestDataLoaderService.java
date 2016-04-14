@@ -5,7 +5,9 @@ import org.niord.core.batch.BatchService;
 import org.niord.core.category.Category;
 import org.niord.core.chart.Chart;
 import org.niord.core.domain.Domain;
+import org.niord.core.message.MessageSeries;
 import org.niord.core.service.BaseService;
+import org.niord.model.vo.MainType;
 import org.slf4j.Logger;
 
 import javax.annotation.PostConstruct;
@@ -72,21 +74,45 @@ public class TestDataLoaderService extends BaseService {
     }
 
 
-    /** Creates a couple of domains */
+    /** Creates a couple of message series and domains */
     private void importDomains() {
+
         Domain d = new Domain();
         d.setClientId("niord-client-nw");
         d.setName("NW");
+        d.getMessageSeries().add(createMessageSeries(
+                "dma-nw",
+                MainType.NW,
+                "urn:mrn:iho:nw:dk:dma:${year}:${number}",
+                "NW-DK-${number-3-digits}-${year-2-digits}"
+                ));
         em.persist(d);
 
         d = new Domain();
         d.setClientId("niord-client-nm");
         d.setName("NM");
+        d.getMessageSeries().add(createMessageSeries(
+                "dma-nm",
+                MainType.NM,
+                "urn:mrn:iho:nm:dk:dma:${year}:${number}",
+                "NM-DK-${number-3-digits}-${year-2-digits}"
+        ));
         em.persist(d);
 
         log.info("Created test domains");
     }
 
+
+    /** Creates the given message series */
+    private MessageSeries createMessageSeries(String seriesId, MainType type, String mrnFormat, String shortFormat) {
+        MessageSeries s = new MessageSeries();
+        s.setSeriesId(seriesId);
+        s.setMainType(type);
+        s.setMrnFormat(mrnFormat);
+        s.setShortFormat(shortFormat);
+        em.persist(s);
+        return s;
+    }
 
     /**
      * Starts the batch job with the given name and load the associated batch file data
