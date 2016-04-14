@@ -1,5 +1,7 @@
 [
   {
+    "mrn": "urn:mrn:iho:country:no",
+    "type": "COUNTRY",
     "descs": [
       {
         "lang": "da",
@@ -13,6 +15,8 @@
     "siblingSortOrder": 20.0
   },
   {
+    "mrn": "urn:mrn:iho:country:se",
+    "type": "COUNTRY",
     "descs": [
       {
         "lang": "da",
@@ -26,10 +30,13 @@
     "siblingSortOrder": 10.0
   },
   {
+    "mrn": "urn:mrn:iho:country:dk",
+    "type": "COUNTRY",
     "children": [
       {
         "children": [
           {
+            "type": "FIRING_AREA",
             "descs": [
               {
                 "lang": "da",
@@ -43,6 +50,7 @@
             "siblingSortOrder": 10.51975841825608
           },
           {
+            "type": "FIRING_AREA",
             "descs": [
               {
                 "lang": "da",
@@ -56,6 +64,7 @@
             "siblingSortOrder": 15.519758418256082
           },
           {
+            "type": "FIRING_AREA",
             "descs": [
               {
                 "lang": "da",
@@ -69,6 +78,7 @@
             "siblingSortOrder": 20.51975841825608
           },
           {
+            "type": "FIRING_AREA",
             "descs": [
               {
                 "lang": "da",
@@ -82,6 +92,7 @@
             "siblingSortOrder": 40.51975841825608
           },
           {
+            "type": "FIRING_AREA",
             "descs": [
               {
                 "lang": "da",
@@ -95,6 +106,7 @@
             "siblingSortOrder": 50.51975841825608
           },
           {
+            "type": "FIRING_AREA",
             "descs": [
               {
                 "lang": "da",
@@ -794,6 +806,7 @@
             "siblingSortOrder": 60.688012128474256
           },
           {
+            "type": "FIRING_AREA",
             "descs": [
               {
                 "lang": "da",
@@ -807,6 +820,7 @@
             "siblingSortOrder": 70.68801212847426
           },
           {
+            "type": "FIRING_AREA",
             "descs": [
               {
                 "lang": "da",
@@ -820,6 +834,7 @@
             "siblingSortOrder": 80.68801212847426
           },
           {
+            "type": "FIRING_AREA",
             "descs": [
               {
                 "lang": "da",
@@ -833,6 +848,7 @@
             "siblingSortOrder": 90.68801212847426
           },
           {
+            "type": "FIRING_AREA",
             "descs": [
               {
                 "lang": "da",
@@ -846,6 +862,7 @@
             "siblingSortOrder": 100.68801212847426
           },
           {
+            "type": "FIRING_AREA",
             "descs": [
               {
                 "lang": "da",
@@ -859,6 +876,7 @@
             "siblingSortOrder": 110.68801212847426
           },
           {
+            "type": "FIRING_AREA",
             "descs": [
               {
                 "lang": "da",
@@ -872,6 +890,7 @@
             "siblingSortOrder": 120.68801212847426
           },
           {
+            "type": "FIRING_AREA",
             "descs": [
               {
                 "lang": "da",
@@ -885,6 +904,7 @@
             "siblingSortOrder": 130.68801212847427
           },
           {
+            "type": "FIRING_AREA",
             "descs": [
               {
                 "lang": "da",
@@ -898,6 +918,7 @@
             "siblingSortOrder": 140.68801212847427
           },
           {
+            "type": "FIRING_AREA",
             "descs": [
               {
                 "lang": "da",
@@ -911,6 +932,7 @@
             "siblingSortOrder": 150.68801212847427
           },
           {
+            "type": "FIRING_AREA",
             "descs": [
               {
                 "lang": "da",
@@ -924,6 +946,7 @@
             "siblingSortOrder": 160.68801212847427
           },
           {
+            "type": "FIRING_AREA",
             "descs": [
               {
                 "lang": "da",
@@ -1174,6 +1197,7 @@
       {
         "children": [
           {
+            "type": "FIRING_AREA",
             "descs": [
               {
                 "lang": "da",
@@ -1187,6 +1211,7 @@
             "siblingSortOrder": 0.8307862909453261
           },
           {
+            "type": "FIRING_AREA",
             "descs": [
               {
                 "lang": "da",
@@ -1200,6 +1225,7 @@
             "siblingSortOrder": 10.830786290945326
           },
           {
+            "type": "FIRING_AREA",
             "descs": [
               {
                 "lang": "da",
@@ -1280,6 +1306,7 @@
             "siblingSortOrder": 40.72040801352537
           },
           {
+            "type": "FIRING_AREA",
             "descs": [
               {
                 "lang": "da",
@@ -1293,6 +1320,7 @@
             "siblingSortOrder": 50.72040801352537
           },
           {
+            "type": "FIRING_AREA",
             "descs": [
               {
                 "lang": "da",
@@ -1427,6 +1455,8 @@
     "siblingSortOrder": 0.0
   },
   {
+    "mrn": "urn:mrn:iho:country:de",
+    "type": "COUNTRY",
     "descs": [
       {
         "lang": "da",
@@ -1440,6 +1470,8 @@
     "siblingSortOrder": 50.0
   },
   {
+    "mrn": "urn:mrn:iho:country:uk",
+    "type": "COUNTRY",
     "descs": [
       {
         "lang": "da",
@@ -1453,6 +1485,8 @@
     "siblingSortOrder": 30.0
   },
   {
+    "mrn": "urn:mrn:iho:country:nl",
+    "type": "COUNTRY",
     "descs": [
       {
         "lang": "da",
