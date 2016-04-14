@@ -9,8 +9,12 @@ import org.niord.core.service.BaseService;
 import org.slf4j.Logger;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
+import javax.ejb.Timeout;
+import javax.ejb.TimerConfig;
+import javax.ejb.TimerService;
 import javax.inject.Inject;
 import java.util.Properties;
 
@@ -28,11 +32,23 @@ public class TestDataLoaderService extends BaseService {
     @Inject
     BatchService batchService;
 
+    @Resource
+    TimerService timerService;
+
     /**
      * Called when the system starts up. Loads base data
      */
     @PostConstruct
     public void init() {
+        // In order not to stall webapp deployment, wait 5 seconds before checking for base data
+        timerService.createSingleActionTimer(5000, new TimerConfig());
+    }
+
+    /**
+     * Check if we need to load base data
+     */
+    @Timeout
+    private void checkLoadBaseData() {
 
         // Check if we need to load charts
         if (count(Chart.class) == 0) {
