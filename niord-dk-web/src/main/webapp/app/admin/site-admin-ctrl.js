@@ -19,6 +19,17 @@ angular.module('niord.admin')
                 $scope.legacyNwResult = 'Error:\n' + err;
             };
 
+            $scope.data = {
+                seriesId: undefined,
+                tagName: ''
+            };
+
+            // Load the default parameters
+            $http.get('/rest/import/nw/params')
+                .success(function (result) {
+                    $scope.data = result;
+                });
+
 
             /** Tests the legacy NW database connection */
             $scope.testConnection = function() {
@@ -41,12 +52,6 @@ angular.module('niord.admin')
                 });
             }
 
-            $scope.data = {
-                seriesId: $scope.messageSeriesIds.length == 1 ? $scope.messageSeriesIds[0] : undefined,
-                tagName: ''
-            };
-
-
             /** Opens the tags dialog */
             $scope.openTagsDialog = function () {
                 $rootScope.$broadcast('messageTags', {});
@@ -59,11 +64,11 @@ angular.module('niord.admin')
             });
 
 
-            /** Imports the active legacy NW messages */
-            $scope.importActiveLegacyNw = function () {
-                $scope.legacyNwResult = 'Start import of active legacy MW messages';
+            /** Imports the legacy NW messages */
+            $scope.importLegacyNw = function () {
+                $scope.legacyNwResult = 'Start import of legacy MW messages';
 
-                $http.post('/rest/import/nw/import-active-nw', $scope.data)
+                $http.post('/rest/import/nw/import-nw', $scope.data)
                     .success(function (result) {
                         $scope.legacyNwResult = result;
                     })

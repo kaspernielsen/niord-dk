@@ -17,9 +17,7 @@ package org.niord.importer.nw.batch;
 
 import org.niord.core.message.Message;
 import org.niord.core.message.batch.BatchMessageImportProcessor;
-import org.niord.importer.nw.LegacyNwImportService;
 
-import javax.inject.Inject;
 import javax.inject.Named;
 
 /**
@@ -28,23 +26,38 @@ import javax.inject.Named;
 @Named
 public class BatchDkNwImportProcessor extends BatchMessageImportProcessor {
 
-    @Inject
-    LegacyNwImportService importService;
-
 
     /** {@inheritDoc} **/
     @Override
     public Object processItem(Object item) throws Exception {
 
-        Integer id = (Integer)item;
+        Message message = (Message)item;
 
-        // Read the message with the given ID from the legacy NW database
-        Message message = importService.readMessage(id);
+        // First, check if there is an existing message with the same legacy id
+        Message original = messageService.findByLegacyId(message.getLegacyId());
 
-        // Process related message base data
-        processMessage(message);
+        if (original != null) {
+            if (original.getStatus() == message.getStatus()) {
+                getLog().info("Skipping unchanged legacy NW: " + message.getLegacyId());
+                return null;
+            }
 
-        getLog().info("Importing legacy NW: " + id);
-        return message;
+            // Update the original
+            original.setStatus(message.getStatus());
+            original.setCancellationDate(message.getCancellationDate());
+            original.setPublishDate(message.getPublishDate());
+            // TODO ... determine which other fields to copy
+
+            getLog().info("Processed existing legacy NW: " + message.getLegacyId());
+            return original;
+
+        } else {
+            // We have a new message
+            // Process related message base data
+            message = processMessage(message);
+            getLog().info("Processed new legacy NW: " + message.getLegacyId());
+
+            return message;
+        }
     }
 }

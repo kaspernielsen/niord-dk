@@ -15,6 +15,7 @@
  */
 package org.niord.importer.nw;
 
+import org.apache.commons.lang.StringUtils;
 import org.jboss.resteasy.annotations.cache.NoCache;
 import org.jboss.security.annotation.SecurityDomain;
 import org.niord.core.batch.BatchService;
@@ -29,6 +30,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 
@@ -65,33 +67,61 @@ public class LegacyNwImportRestService {
     }
 
 
+    /**
+     * Tests the database connection and returns success or failure
+     * @return if the database connection works
+     */
+    @GET
+    @Path("/params")
+    @Consumes("application/json;charset=UTF-8")
+    @NoCache
+    public ImportLegacyNwParams getImportLegacyNwParams() {
+        return importService.getImportLegacyNwParams();
+    }
+
+
     @POST
-    @Path("/import-active-nw")
+    @Path("/import-nw")
     @Consumes("application/json;charset=UTF-8")
     @Produces("text/plain")
     @NoCache
-    public String startActiveNwImport(ImportActiveLegacyNwParams params) {
+    public String startNwImport(ImportLegacyNwParams params) {
         try {
-            List<Integer> ids = importService.getActiveLegacyNwIds(true);
+            // Persist the parameters
+            importService.updateImportLegacyNwParams(params);
+
+            // Check validity of parameters
+            if (StringUtils.isBlank(params.getSeriesId())) {
+                throw new Exception("Message series must be specified");
+            }
+            if (StringUtils.isBlank(params.getLocalSeriesId())) {
+                throw new Exception("Local Message series must be specified");
+            }
+            if (params.getStartImportDate() == null) {
+                throw new Exception("Start import date must be specified");
+            }
+
+            List<Integer> ids = importService.getImportLegacyNwIds(params, true);
 
             // No point in importing empty result set
             if (ids.isEmpty()) {
-                return "No active legacy NW found";
+                return "No legacy NW found";
             }
-            params.setIds(ids);
+            ImportLegacyNwData batchData = new ImportLegacyNwData(params, ids);
 
             Properties batchProperties = new Properties();
             batchProperties.setProperty("seriesId", params.getSeriesId());
+            batchProperties.setProperty("localSeriesId", params.getLocalSeriesId());
             batchProperties.setProperty("tagName", params.getTagName());
 
-            batchService.startBatchJobWithJsonData("dk-nw-import", params, "legacy-nw-data.json", batchProperties);
+            batchService.startBatchJobWithJsonData("dk-nw-import", batchData, "legacy-nw-data.json", batchProperties);
 
             String msg = "Started dk-nw-import batch job for " + ids.size() + " legacy NWs";
             log.info(msg);
             return msg;
 
         } catch (Exception e) {
-            String msg = "Error importing active legacy NW: " + e;
+            String msg = "Error importing legacy NW: " + e;
             log.error(msg, e);
             return msg;
         }
@@ -101,11 +131,12 @@ public class LegacyNwImportRestService {
     /**
      * Defines the parameters used when starting an import of legacy NW messages
      */
-    public static class ImportActiveLegacyNwParams implements IJsonSerializable {
+    public static class ImportLegacyNwParams implements IJsonSerializable {
 
         String seriesId;
+        String localSeriesId;
         String tagName;
-        List<Integer> ids;
+        Date startImportDate;
 
         public String getSeriesId() {
             return seriesId;
@@ -115,12 +146,46 @@ public class LegacyNwImportRestService {
             this.seriesId = seriesId;
         }
 
+        public String getLocalSeriesId() {
+            return localSeriesId;
+        }
+
+        public void setLocalSeriesId(String localSeriesId) {
+            this.localSeriesId = localSeriesId;
+        }
+
         public String getTagName() {
             return tagName;
         }
 
         public void setTagName(String tagName) {
             this.tagName = tagName;
+        }
+
+        public Date getStartImportDate() {
+            return startImportDate;
+        }
+
+        public void setStartImportDate(Date startImportDate) {
+            this.startImportDate = startImportDate;
+        }
+    }
+
+    /**
+     * Defines the parameters used when starting an import of legacy NW messages
+     */
+    public static class ImportLegacyNwData extends ImportLegacyNwParams {
+
+        List<Integer> ids;
+
+        public ImportLegacyNwData() {
+        }
+
+        public ImportLegacyNwData(ImportLegacyNwParams params, List<Integer> ids) {
+            this.setSeriesId(params.getSeriesId());
+            this.setLocalSeriesId(params.getLocalSeriesId());
+            this.setTagName(params.getTagName());
+            this.ids = ids;
         }
 
         public List<Integer> getIds() {

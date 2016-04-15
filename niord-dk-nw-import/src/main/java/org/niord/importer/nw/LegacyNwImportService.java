@@ -20,13 +20,22 @@ import org.apache.commons.lang.StringUtils;
 import org.niord.core.area.Area;
 import org.niord.core.category.Category;
 import org.niord.core.conf.TextResource;
+import org.niord.core.domain.Domain;
+import org.niord.core.domain.DomainService;
 import org.niord.core.geojson.Feature;
 import org.niord.core.geojson.FeatureCollection;
 import org.niord.core.message.DateInterval;
 import org.niord.core.message.Message;
 import org.niord.core.message.MessageDesc;
+import org.niord.core.message.MessageSeries;
+import org.niord.core.message.MessageSeriesService;
+import org.niord.core.settings.Setting;
+import org.niord.core.settings.SettingsService;
 import org.niord.core.util.GeoJsonUtils;
 import org.niord.core.util.TextUtils;
+import org.niord.core.util.TimeUtils;
+import org.niord.importer.nw.LegacyNwImportRestService.ImportLegacyNwParams;
+import org.niord.model.vo.MainType;
 import org.niord.model.vo.Status;
 import org.niord.model.vo.Type;
 import org.niord.model.vo.geojson.LineStringVo;
@@ -38,6 +47,7 @@ import org.slf4j.Logger;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -56,8 +66,22 @@ public class LegacyNwImportService {
     Logger log;
 
     @Inject
-    @TextResource("/sql/nw_active_message_ids.sql")
-    String activeMessagesSql;
+    SettingsService settingsService;
+
+    /**
+     * Registers the start date of the legacy message import.
+     * By default, pick the first day of the year
+     */
+    private static final Setting LEGACY_NW_IMPORT_PARAMS
+            = new Setting("legacyMsiImportParams")
+            .type(Setting.Type.json)
+            .description("Parameters used for importing legacy NW params")
+            .editable(true)
+            .cached(false);
+
+    @Inject
+    @TextResource("/sql/nw_all_message_ids.sql")
+    String allMessagesSql;
 
     @Inject
     @TextResource("/sql/nw_message_data.sql")
@@ -70,29 +94,60 @@ public class LegacyNwImportService {
     @Inject
     LegacyNwDatabase db;
 
+    @Inject
+    DomainService domainService;
+
+    @Inject
+    MessageSeriesService messageSeriesService;
+
+    /** Returns or creates new parameters */
+    public ImportLegacyNwParams getImportLegacyNwParams() {
+        ImportLegacyNwParams params = settingsService.getFromJson(LEGACY_NW_IMPORT_PARAMS, ImportLegacyNwParams.class);
+        if (params == null) {
+            params = new ImportLegacyNwParams();
+            params.setStartImportDate(TimeUtils.getDate(null, 0, 1));
+            Domain domain = domainService.currentDomain();
+            if (domain != null) {
+                params.setSeriesId(domain.getMessageSeries().stream()
+                    .filter(s -> MainType.NW.equals(s.getMainType()))
+                    .map(MessageSeries::getSeriesId)
+                    .findFirst()
+                    .orElse(null));
+            }
+        }
+        return params;
+    }
+
+
+    /** Updates the batch import parameters */
+    public void updateImportLegacyNwParams(ImportLegacyNwParams params) {
+        settingsService.set(LEGACY_NW_IMPORT_PARAMS.getKey(), params);
+    }
 
     /**
-     * Returns the IDs of the active legacy NWs
+     * Returns the IDs of the legacy NWs to import
+     * @param params the import parameters
      * @param importDb whether to import the database first
-     * @return the IDs of active legacy NWs
+     * @return the IDs of legacy NWs to import
      */
-    public List<Integer> getActiveLegacyNwIds(boolean importDb) throws Exception {
+    public List<Integer> getImportLegacyNwIds(ImportLegacyNwParams params, boolean importDb) throws Exception {
 
         if (importDb) {
             db.downloadAndImportLegacyNwDump();
         }
 
         try (Connection con = db.openConnection();
-             Statement stmt = con.createStatement()) {
+             PreparedStatement stmt = con.prepareStatement(allMessagesSql)) {
+            stmt.setTimestamp(1, new Timestamp(params.getStartImportDate().getTime()));
 
             List<Integer> result = new ArrayList<>();
-            ResultSet rs = stmt.executeQuery(activeMessagesSql);
+            ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
                 result.add(getInt(rs, "id"));
             }
             rs.close();
 
-            log.info("Fetched " + result.size() + " active legacy NW ids");
+            log.info("Fetched " + result.size() + " legacy NW ids");
             return result;
         }
     }
@@ -104,7 +159,7 @@ public class LegacyNwImportService {
      * @param id the ID of the NW to read in
      */
     @SuppressWarnings("unused")
-    public Message readMessage(Integer id) throws SQLException {
+    public Message readMessage(ImportLegacyNwParams params, Integer id) throws SQLException {
 
         // Inject the id into the SQL
         String sql = messageDataSql.replace(":id", id.toString());
@@ -152,33 +207,45 @@ public class LegacyNwImportService {
             rs.close();
 
             Message message = new Message();
-            //message.setId(id);
+            message.setLegacyId(String.valueOf(messageId));
+            message.setMainType(MainType.NW);
             message.setCreated(created);
             message.setUpdated(updated);
             message.setVersion(version);
             DateInterval dateInterval = new DateInterval();
             dateInterval.setFromDate(validFrom);
-            dateInterval.setToDate(validTo);
+            dateInterval.setToDate((validTo != null) ? validTo : deleted);
             message.getDateIntervals().add(dateInterval);
+            message.setPublishDate(validFrom);
 
             if (StringUtils.isNotBlank(navtexNo) && navtexNo.split("-").length == 3) {
                 // Extract the series identifier from the navtex number
                 String[] parts = navtexNo.split("-");
                 int number = Integer.valueOf(parts[1]);
-                int year = 2000 + Integer.valueOf(parts[2]);
                 message.setNumber(number);
-                message.setShortId(navtexNo);
-                message.setMrn("urn:mrn:iho:nm:dk:dma:legacy:" + year + ":" + number);
-            }
-
-            if ("Navtex".equals(messageType) || "Navwarning".equals(messageType)) {
                 message.setType(Type.SUBAREA_WARNING);
+                message.setMessageSeries(messageSeriesService.findBySeriesId(params.getSeriesId()));
             } else {
-                message.setType(Type.COASTAL_WARNING);
+                message.setType(Type.LOCAL_WARNING);
+                message.setMessageSeries(messageSeriesService.findBySeriesId(params.getLocalSeriesId()));
             }
+            messageSeriesService.updateMessageSeriesIdentifiers(message, false);
 
-            // Assign the status IMPORTED
-            message.setStatus(Status.IMPORTED);
+            // Status
+            Date now = new Date();
+            Status status = Status.PUBLISHED;
+            if (deleted != null && statusDraft) {
+                status = Status.DELETED;
+            } else if (deleted != null && validTo != null && deleted.after(validTo)) {
+                status = Status.EXPIRED;
+            } else if (deleted != null) {
+                status = Status.CANCELLED;
+            } else if (statusDraft) {
+                status = Status.DRAFT;
+            } else if (validTo != null && now.after(validTo)) {
+                status = Status.EXPIRED;
+            }
+            message.setStatus(status);
 
             // Message Desc
             String titleDa = title;

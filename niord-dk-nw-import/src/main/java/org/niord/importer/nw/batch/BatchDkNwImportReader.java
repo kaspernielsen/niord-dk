@@ -16,9 +16,12 @@
 package org.niord.importer.nw.batch;
 
 import org.niord.core.batch.AbstractItemHandler;
+import org.niord.core.message.Message;
 import org.niord.core.util.JsonUtils;
-import org.niord.importer.nw.LegacyNwImportRestService.ImportActiveLegacyNwParams;
+import org.niord.importer.nw.LegacyNwImportRestService.ImportLegacyNwData;
+import org.niord.importer.nw.LegacyNwImportService;
 
+import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.Serializable;
 
@@ -42,7 +45,10 @@ import java.io.Serializable;
 @Named
 public class BatchDkNwImportReader extends AbstractItemHandler {
 
-    ImportActiveLegacyNwParams importParams;
+    @Inject
+    LegacyNwImportService importService;
+
+    ImportLegacyNwData importParams;
     int nwNo = 0;
 
     /** {@inheritDoc} **/
@@ -51,7 +57,7 @@ public class BatchDkNwImportReader extends AbstractItemHandler {
 
         // Load the import params from the batch data
         importParams = JsonUtils.readJson(
-                ImportActiveLegacyNwParams.class,
+                ImportLegacyNwData.class,
                 batchService.getBatchJobDataFile(jobContext.getInstanceId()));
 
         if (prevCheckpointInfo != null) {
@@ -66,13 +72,16 @@ public class BatchDkNwImportReader extends AbstractItemHandler {
     public Object readItem() throws Exception {
         if (nwNo < importParams.getIds().size()) {
 
+            Integer id = importParams.getIds().get(nwNo++);
+            Message message = importService.readMessage(importParams, id);
+
             // Every now and then, update the progress
             if (nwNo % 10 == 0) {
                 updateProgress((int)(100.0 * nwNo / importParams.getIds().size()));
             }
 
             getLog().info("Reading legacy NW no " + nwNo);
-            return importParams.getIds().get(nwNo++);
+            return message;
         }
         return null;
     }
