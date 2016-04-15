@@ -35,7 +35,9 @@ angular.module('niord.admin')
             $scope.messageSeriesIds = [];
             if ($rootScope.domain && $rootScope.domain.messageSeries) {
                 angular.forEach($rootScope.domain.messageSeries, function (series) {
-                    $scope.messageSeriesIds.push(series.seriesId);
+                    if (series.mainType == 'NW') {
+                        $scope.messageSeriesIds.push(series.seriesId);
+                    }
                 });
             }
 
@@ -92,7 +94,9 @@ angular.module('niord.admin')
             $scope.messageSeriesIds = [];
             if ($rootScope.domain && $rootScope.domain.messageSeries) {
                 angular.forEach($rootScope.domain.messageSeries, function (series) {
-                    $scope.messageSeriesIds.push(series.seriesId);
+                    if (series.mainType == 'NM') {
+                        $scope.messageSeriesIds.push(series.seriesId);
+                    }
                 });
             }
 
