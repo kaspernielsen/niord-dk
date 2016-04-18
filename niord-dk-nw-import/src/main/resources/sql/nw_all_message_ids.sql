@@ -10,5 +10,6 @@ WHERE
   c.abbreviation = 'DK'
   AND m.isLatest = 1
   AND m.draft = 0
+  AND m.messageId IS NOT NULL
   AND m.validFrom > ?
 ORDER BY m.validFrom ASC
