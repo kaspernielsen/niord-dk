@@ -7,8 +7,8 @@ angular.module('niord.admin')
     /**
      * Legacy NW import Controller
      */
-    .controller('NwIntegrationCtrl', ['$scope', '$rootScope', '$http', 'growl',
-        function ($scope, $rootScope, $http, growl) {
+    .controller('NwIntegrationCtrl', ['$scope', '$rootScope', '$http', 'growl', 'MessageService',
+        function ($scope, $rootScope, $http, growl, MessageService) {
             'use strict';
 
             $scope.legacyNwResult = '';
@@ -54,14 +54,13 @@ angular.module('niord.admin')
 
             /** Opens the tags dialog */
             $scope.openTagsDialog = function () {
-                $rootScope.$broadcast('messageTags', {});
+                MessageService.messageTagsDialog().result
+                    .then(function (tag) {
+                        if (tag) {
+                            $scope.data.tagName = tag.tagId;
+                        }
+                    });
             };
-
-
-            /** Flags that a given tag has been selected in the tags dialog */
-            $scope.$on('messageTagSelected', function(event, data) {
-                $scope.data.tagName = data.tag.tagId;
-            });
 
 
             /** Imports the legacy NW messages */
@@ -81,8 +80,8 @@ angular.module('niord.admin')
     /**
      * Legacy NM import Controller
      */
-    .controller('NmIntegrationCtrl', ['$scope', '$rootScope', '$http', 'growl',
-        function ($scope, $rootScope, $http, growl) {
+    .controller('NmIntegrationCtrl', ['$scope', '$rootScope', '$http', 'growl', 'MessageService',
+        function ($scope, $rootScope, $http, growl, MessageService) {
             'use strict';
 
             $scope.nmImportUrl = '/rest/import/nm/import-nm';
@@ -113,14 +112,13 @@ angular.module('niord.admin')
 
             /** Opens the tags dialog */
             $scope.openTagsDialog = function () {
-                $rootScope.$broadcast('messageTags', {});
+                MessageService.messageTagsDialog().result
+                    .then(function (tag) {
+                        if (tag) {
+                            $scope.data.tagName = tag.tagId;
+                        }
+                    });
             };
-
-
-            /** Flags that a given tag has been selected in the tags dialog */
-            $scope.$on('messageTagSelected', function(event, data) {
-                $scope.data.tagName = data.tag.tagId;
-            });
 
 
             /** Called when the NM html file has been imported */
