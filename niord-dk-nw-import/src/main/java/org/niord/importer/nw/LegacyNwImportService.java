@@ -249,7 +249,7 @@ public class LegacyNwImportService {
 
             // Message Desc
             String titleDa = title;
-            String titleEn = null;
+            String titleEn = title;
             if (title != null && title.indexOf('/') != -1) {
                 // By convention, the "enctext" field is the Danish title.
                 // However, if it contains a "/" character, it is the "Danish / English" title
