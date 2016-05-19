@@ -23,11 +23,9 @@ import org.niord.core.aton.AtonService;
 import org.niord.core.aton.batch.BatchAtonImportProcessor;
 
 import javax.inject.Inject;
-import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Properties;
 
 /**
  * Base class for Excel-based AtoN import batch processor classes
@@ -70,9 +68,8 @@ public abstract class AbstractDkAtonImportProcessor extends BatchAtonImportProce
      */
     public int getChangeSet() {
         try {
-            Properties batchProperties = job.readProperties();
-            return (Integer)batchProperties.get(CHANGE_SET_PROPERTY);
-        } catch (IOException e) {
+            return (Integer)job.getProperties().get(CHANGE_SET_PROPERTY);
+        } catch (Exception e) {
             return -1;
         }
     }
