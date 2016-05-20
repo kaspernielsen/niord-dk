@@ -29,14 +29,6 @@
     "editable"    : true
   },
   {
-    "key"         : "editorLanguages",
-    "description" : "The languages available in the message editor",
-    "value"       : [ "da", "en", "gl" ],
-    "type"        : "json",
-    "web"         : true,
-    "editable"    : true
-  },
-  {
     "key"         : "siteLanguages",
     "description" : "The languages of the website",
     "value"       : [ "da", "en" ],
