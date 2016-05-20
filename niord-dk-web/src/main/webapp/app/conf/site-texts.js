@@ -21,7 +21,7 @@ angular.module('niord.conf')
             'MENU_LOGIN': 'Login',
             'MENU_LOGOUT': 'Logout',
 
-            'FOOTER_COPYRIGHT': '&copy; 2015 Danish Maritime Authority',
+            'FOOTER_COPYRIGHT': '&copy; 2016 Danish Maritime Authority',
             'FOOTER_LINK': 'http://www.soefartsstyrelsen.dk/',
             'FOOTER_DISCLAIMER': 'Disclaimer',
             'FOOTER_COOKIES': 'Cookies',
@@ -84,7 +84,7 @@ angular.module('niord.conf')
             'MENU_LOGIN': 'Log ind',
             'MENU_LOGOUT': 'Log ud',
 
-            'FOOTER_COPYRIGHT': '&copy; 2015 Søfartsstyrelsen',
+            'FOOTER_COPYRIGHT': '&copy; 2016 Søfartsstyrelsen',
             'FOOTER_LINK': 'http://www.soefartsstyrelsen.dk/',
             'FOOTER_DISCLAIMER': 'Disclaimer',
             'FOOTER_COOKIES': 'Cookies',
