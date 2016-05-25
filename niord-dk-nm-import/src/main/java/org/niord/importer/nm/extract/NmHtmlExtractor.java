@@ -6,6 +6,7 @@ import org.jsoup.nodes.Element;
 import org.niord.core.area.Area;
 import org.niord.core.geojson.Feature;
 import org.niord.core.message.Message;
+import org.niord.core.util.TimeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,6 +16,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 /**
@@ -118,6 +120,17 @@ public class NmHtmlExtractor implements IHtmlExtractor {
 
         // Merge Danish and English messages
         messages = mergeNms(messages);
+
+        // Assign a publish date as the Friday of the published year and week
+        Calendar publishDate = Calendar.getInstance();
+        publishDate.set(Calendar.YEAR, year);
+        publishDate.set(Calendar.WEEK_OF_YEAR, week);
+        publishDate.set(Calendar.DAY_OF_WEEK, Calendar.FRIDAY);
+        TimeUtils.resetTime(publishDate).set(Calendar.HOUR_OF_DAY, 12);
+        messages.forEach(m -> {
+            m.setCreated(publishDate.getTime());
+            m.setPublishDate(publishDate.getTime());
+        });
 
         return messages;
     }

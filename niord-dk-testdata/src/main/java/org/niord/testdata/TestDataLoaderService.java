@@ -84,8 +84,14 @@ public class TestDataLoaderService extends BaseService {
                 "dma-nw",
                 MainType.NW,
                 "urn:mrn:iho:nw:dk:dma:${year}:${number}",
-                "NW-DK-${number-3-digits}-${year-2-digits}"
+                "NW-${number-3-digits}-${year-2-digits}"
                 ));
+        d.getMessageSeries().add(createMessageSeries(
+                "dma-nw-local",
+                MainType.NW,
+                "urn:mrn:iho:nw:dk:dma:local:${legacy-id}",
+                "NW-LOCAL-${legacy-id}"
+        ));
         em.persist(d);
 
         d = new Domain();
@@ -95,7 +101,7 @@ public class TestDataLoaderService extends BaseService {
                 "dma-nm",
                 MainType.NM,
                 "urn:mrn:iho:nm:dk:dma:${year}:${number}",
-                "NM-DK-${number-3-digits}-${year-2-digits}"
+                "NM-${number-3-digits}-${year-2-digits}"
         ));
         em.persist(d);
 
