@@ -215,7 +215,7 @@ public class LegacyNwImportService {
             DateInterval dateInterval = new DateInterval();
             dateInterval.setFromDate(validFrom);
             dateInterval.setToDate((validTo != null) ? validTo : deleted);
-            message.getDateIntervals().add(dateInterval);
+            message.addDateInterval(dateInterval);
             message.setPublishDate(validFrom);
 
             if (StringUtils.isNotBlank(navtexNo) && navtexNo.split("-").length == 3) {
