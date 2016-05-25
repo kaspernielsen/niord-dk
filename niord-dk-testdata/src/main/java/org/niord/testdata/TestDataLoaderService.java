@@ -89,8 +89,8 @@ public class TestDataLoaderService extends BaseService {
         d.getMessageSeries().add(createMessageSeries(
                 "dma-nw-local",
                 MainType.NW,
-                "urn:mrn:iho:nw:dk:dma:local:${legacy-id}",
-                "NW-LOCAL-${legacy-id}"
+                "urn:mrn:iho:nw:dk:dma:local:${year}:${legacy-id}",
+                "NW-LOCAL-${legacy-id}-${year-2-digits}"
         ));
         em.persist(d);
 
