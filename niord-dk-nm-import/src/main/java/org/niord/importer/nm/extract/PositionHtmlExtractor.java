@@ -4,8 +4,8 @@ import org.apache.commons.lang.StringUtils;
 import org.jsoup.nodes.Element;
 import org.niord.core.geojson.Feature;
 import org.niord.core.geojson.FeatureCollection;
+import org.niord.core.geojson.JtsConverter;
 import org.niord.core.message.Message;
-import org.niord.core.geojson.GeoJsonUtils;
 import org.niord.model.vo.geojson.MultiPointVo;
 import org.niord.model.vo.geojson.PointVo;
 import org.slf4j.Logger;
@@ -107,7 +107,7 @@ public class PositionHtmlExtractor implements IHtmlExtractor {
                     feature.getProperties().put("name:0:" + lang, pos.getDesc());
                 }
                 p.setCoordinates(coordinates);
-                feature.setGeometry(GeoJsonUtils.toJts(p));
+                feature.setGeometry(JtsConverter.toJts(p));
             } else {
                 MultiPointVo mp = new MultiPointVo();
                 double[][] coordinates = new double[positions.size()][2];
@@ -120,7 +120,7 @@ public class PositionHtmlExtractor implements IHtmlExtractor {
                     }
                 }
                 mp.setCoordinates(coordinates);
-                feature.setGeometry(GeoJsonUtils.toJts(mp));
+                feature.setGeometry(JtsConverter.toJts(mp));
             }
         }
     }

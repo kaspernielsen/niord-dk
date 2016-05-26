@@ -24,6 +24,7 @@ import org.niord.core.domain.Domain;
 import org.niord.core.domain.DomainService;
 import org.niord.core.geojson.Feature;
 import org.niord.core.geojson.FeatureCollection;
+import org.niord.core.geojson.JtsConverter;
 import org.niord.core.message.DateInterval;
 import org.niord.core.message.Message;
 import org.niord.core.message.MessageDesc;
@@ -31,7 +32,6 @@ import org.niord.core.message.MessageSeries;
 import org.niord.core.message.MessageSeriesService;
 import org.niord.core.settings.Setting;
 import org.niord.core.settings.SettingsService;
-import org.niord.core.geojson.GeoJsonUtils;
 import org.niord.core.util.TextUtils;
 import org.niord.core.util.TimeUtils;
 import org.niord.importer.nw.LegacyNwImportRestService.ImportLegacyNwParams;
@@ -328,21 +328,21 @@ public class LegacyNwImportService {
         if (coords.length == 1) {
             PointVo pt = new PointVo();
             pt.setCoordinates(coords[0]);
-            geometry = GeoJsonUtils.toJts(pt);
+            geometry = JtsConverter.toJts(pt);
         } else if (("Point".equals(locationType) || "Points".equals(locationType)) && coords.length >= 1) {
             MultiPointVo pts = new MultiPointVo();
             pts.setCoordinates(coords);
-            geometry = GeoJsonUtils.toJts(pts);
+            geometry = JtsConverter.toJts(pts);
         } else if ("Polyline".equals(locationType) && coords.length > 1) {
             LineStringVo l = new LineStringVo();
             l.setCoordinates(coords);
-            geometry = GeoJsonUtils.toJts(l);
+            geometry = JtsConverter.toJts(l);
         } else if ("Polygon".equals(locationType) && coords.length > 2) {
             // GeoJSON linear rings has the same start and end coordinate
             coords = toLinearRing(coords);
             PolygonVo p = new PolygonVo();
             p.setCoordinates(new double[][][] { coords });
-            geometry = GeoJsonUtils.toJts(p);
+            geometry = JtsConverter.toJts(p);
         }
 
         if (geometry != null) {
