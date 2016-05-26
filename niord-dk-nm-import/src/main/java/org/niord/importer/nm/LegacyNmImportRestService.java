@@ -34,7 +34,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import java.io.IOException;
-import java.util.Properties;
+import java.util.Map;
 
 /**
  * Imports NM from an HTML page generated from the original Word document.
@@ -67,11 +67,11 @@ public class LegacyNmImportRestService extends AbstractBatchableRestService {
 
     /** {@inheritDoc} */
     @Override
-    protected void checkBatchJob(String batchJobName, FileItem fileItem, Properties params) throws Exception {
+    protected void checkBatchJob(String batchJobName, FileItem fileItem, Map<String, Object> params) throws Exception {
 
         ImportLegacyNmParams batchData;
         try {
-            batchData = new ObjectMapper().readValue(params.getProperty("data"), ImportLegacyNmParams.class);
+            batchData = new ObjectMapper().readValue((String)params.get("data"), ImportLegacyNmParams.class);
         } catch (IOException e) {
             throw new Exception("Missing batch data with tag and message series", e);
         }
@@ -82,8 +82,8 @@ public class LegacyNmImportRestService extends AbstractBatchableRestService {
 
         // Update parameters
         params.remove("data");
-        params.setProperty("seriesId", batchData.getSeriesId());
-        params.setProperty("tagName", batchData.getTagName());
+        params.put("seriesId", batchData.getSeriesId());
+        params.put("tagName", batchData.getTagName());
     }
 
 

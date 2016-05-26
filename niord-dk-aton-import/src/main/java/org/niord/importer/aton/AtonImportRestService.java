@@ -47,8 +47,9 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import java.io.InputStream;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Properties;
+import java.util.Map;
 
 /**
  * Imports AtoN from Excel sheets.
@@ -228,9 +229,9 @@ public class AtonImportRestService {
 
 
     /** Initializes the properties to use with the batch data */
-    private Properties initBatchProperties() {
+    private Map<String, Object> initBatchProperties() {
         int changeset = (int)sequenceService.getNextValue(AFM_SEQUENCE);
-        Properties properties = new Properties();
+        Map<String, Object> properties = new HashMap<>();
         properties.put(AbstractDkAtonImportProcessor.CHANGE_SET_PROPERTY, changeset);
         return properties;
     }

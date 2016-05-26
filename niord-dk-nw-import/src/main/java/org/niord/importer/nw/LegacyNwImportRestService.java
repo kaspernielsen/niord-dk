@@ -31,8 +31,9 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Properties;
+import java.util.Map;
 
 /**
  * Imports legacy NW from an "oldmsi" database.
@@ -109,10 +110,10 @@ public class LegacyNwImportRestService {
             }
             ImportLegacyNwData batchData = new ImportLegacyNwData(params, ids);
 
-            Properties batchProperties = new Properties();
-            batchProperties.setProperty("seriesId", params.getSeriesId());
-            batchProperties.setProperty("localSeriesId", params.getLocalSeriesId());
-            batchProperties.setProperty("tagName", params.getTagName());
+            Map<String, Object> batchProperties = new HashMap<>();
+            batchProperties.put("seriesId", params.getSeriesId());
+            batchProperties.put("localSeriesId", params.getLocalSeriesId());
+            batchProperties.put("tagName", params.getTagName());
 
             batchService.startBatchJobWithJsonData("dk-nw-import", batchData, "legacy-nw-data.json", batchProperties);
 

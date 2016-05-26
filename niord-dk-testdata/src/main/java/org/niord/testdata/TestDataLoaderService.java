@@ -18,6 +18,7 @@ import javax.ejb.Timeout;
 import javax.ejb.TimerConfig;
 import javax.ejb.TimerService;
 import javax.inject.Inject;
+import java.util.HashMap;
 import java.util.Properties;
 
 /**
@@ -130,7 +131,7 @@ public class TestDataLoaderService extends BaseService {
                     batchJobName,
                     getClass().getResourceAsStream("/" + batchFileName),
                     batchFileName,
-                    new Properties());
+                    new HashMap<>());
 
             log.info("**** Started " + batchJobName + " batch job");
 
