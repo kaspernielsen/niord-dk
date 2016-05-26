@@ -31,7 +31,7 @@ import org.niord.core.message.MessageSeries;
 import org.niord.core.message.MessageSeriesService;
 import org.niord.core.settings.Setting;
 import org.niord.core.settings.SettingsService;
-import org.niord.core.util.GeoJsonUtils;
+import org.niord.core.geojson.GeoJsonUtils;
 import org.niord.core.util.TextUtils;
 import org.niord.core.util.TimeUtils;
 import org.niord.importer.nw.LegacyNwImportRestService.ImportLegacyNwParams;

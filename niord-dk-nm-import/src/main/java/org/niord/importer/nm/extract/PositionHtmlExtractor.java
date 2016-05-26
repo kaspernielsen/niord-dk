@@ -5,7 +5,7 @@ import org.jsoup.nodes.Element;
 import org.niord.core.geojson.Feature;
 import org.niord.core.geojson.FeatureCollection;
 import org.niord.core.message.Message;
-import org.niord.core.util.GeoJsonUtils;
+import org.niord.core.geojson.GeoJsonUtils;
 import org.niord.model.vo.geojson.MultiPointVo;
 import org.niord.model.vo.geojson.PointVo;
 import org.slf4j.Logger;
