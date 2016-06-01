@@ -128,5 +128,12 @@
     "value"       : "http://osm.e-navigation.net/staticmap.php",
     "web"         : false,
     "editable"    : true
+  },
+  {
+    "key"         : "osmSourceUrl",
+    "description" : "URL of OSM tile server",
+    "value"       : "http://services.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}",
+    "web"         : true,
+    "editable"    : true
   }
 ]
