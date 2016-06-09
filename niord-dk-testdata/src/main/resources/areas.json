@@ -130,6 +130,10 @@
             "name": "Baltic"
           }
         ],
+        "messageSorting": "CW",
+        "originLatitude": 54.5,
+        "originLongitude": 12.0,
+        "originAngle": 180,
         "siblingSortOrder": -19.038817863745905
       },
       {
@@ -247,6 +251,7 @@
             "name": "The Sound"
           }
         ],
+        "messageSorting": "NS",
         "siblingSortOrder": -9.038817863745905
       },
       {
@@ -346,6 +351,7 @@
             "name": "Waters south of Sealand"
           }
         ],
+        "messageSorting": "EW",
         "siblingSortOrder": -6.538817863745905
       },
       {
@@ -458,6 +464,7 @@
             "name": "Great Belt"
           }
         ],
+        "messageSorting": "NS",
         "siblingSortOrder": -4.038817863745905
       },
       {
@@ -471,6 +478,7 @@
             "name": "Waters south of Funen"
           }
         ],
+        "messageSorting": "EW",
         "siblingSortOrder": 9.711182136254095
       },
       {
@@ -609,6 +617,7 @@
             "name": "Little Belt"
           }
         ],
+        "messageSorting": "NS",
         "siblingSortOrder": 23.461182136254095
       },
       {
@@ -1039,6 +1048,10 @@
             "name": "Kattegat"
           }
         ],
+        "messageSorting": "CW",
+        "originLatitude": 56.5,
+        "originLongitude": 11.5,
+        "originAngle": 310,
         "siblingSortOrder": 37.211182136254095
       },
       {
@@ -1192,6 +1205,7 @@
             "name": "Liimfiord"
           }
         ],
+        "messageSorting": "EW",
         "siblingSortOrder": 70.9611821362541
       },
       {
@@ -1249,6 +1263,7 @@
             "name": "Skagerak"
           }
         ],
+        "messageSorting": "NS",
         "siblingSortOrder": 110.9611821362541
       },
       {
@@ -1439,6 +1454,7 @@
             "name": "North Sea"
           }
         ],
+        "messageSorting": "NS",
         "siblingSortOrder": 120.9611821362541
       }
     ],
