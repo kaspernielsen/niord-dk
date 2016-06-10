@@ -6,7 +6,7 @@
     <uib-tabset class="framed-tabs">
 
         <!-- Legacy NW Import -->
-        <uib-tab>
+        <uib-tab ng-if="supportsMainType('NW')">
             <tab-heading>
                 Legacy NW import
             </tab-heading>
@@ -67,7 +67,7 @@
 
 
         <!-- Legacy NM Import -->
-        <uib-tab>
+        <uib-tab  ng-if="supportsMainType('NM')">
             <tab-heading>
                 Legacy NM import
             </tab-heading>
@@ -114,7 +114,7 @@
 
 
         <!-- AtoN Import -->
-        <uib-tab>
+        <uib-tab ng-if="true">
             <tab-heading>
                 AtoN Import
             </tab-heading>
