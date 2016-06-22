@@ -46,6 +46,7 @@ public class BatchDkNwImportProcessor extends BatchMessageImportProcessor {
             original.setStatus(message.getStatus());
             original.setCancellationDate(message.getCancellationDate());
             original.setPublishDate(message.getPublishDate());
+            original.setAutoTitle(message.isAutoTitle());
             // TODO ... determine which other fields to copy
 
             getLog().info("Processed existing legacy NW: " + message.getLegacyId());

@@ -268,6 +268,7 @@ public class LegacyNwImportService {
                 descDa.setDescription(TextUtils.txt2html(descriptionDa));
                 descDa.setVicinity(area3Da);
             }
+            message.setAutoTitle(true);
 
             // Areas
             Area area = createAreaTemplate(area1Id, area1En, area1Da, null);
