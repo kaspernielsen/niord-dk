@@ -44,8 +44,8 @@ public class BatchDkNwImportProcessor extends BatchMessageImportProcessor {
 
             // Update the original
             original.setStatus(message.getStatus());
-            original.setCancellationDate(message.getCancellationDate());
             original.setPublishDate(message.getPublishDate());
+            original.setUnpublishDate(message.getUnpublishDate());
             original.setAutoTitle(message.isAutoTitle());
             // TODO ... determine which other fields to copy
 

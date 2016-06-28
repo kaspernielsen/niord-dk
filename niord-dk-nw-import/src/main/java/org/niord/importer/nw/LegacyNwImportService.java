@@ -238,12 +238,15 @@ public class LegacyNwImportService {
                 status = Status.DELETED;
             } else if (deleted != null && validTo != null && deleted.after(validTo)) {
                 status = Status.EXPIRED;
+                message.setUnpublishDate(validTo);
             } else if (deleted != null) {
                 status = Status.CANCELLED;
+                message.setUnpublishDate(deleted);
             } else if (statusDraft) {
                 status = Status.DRAFT;
             } else if (validTo != null && now.after(validTo)) {
                 status = Status.EXPIRED;
+                message.setUnpublishDate(validTo);
             }
             message.setStatus(status);
 
