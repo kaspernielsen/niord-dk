@@ -19,7 +19,6 @@ import javax.ejb.TimerConfig;
 import javax.ejb.TimerService;
 import javax.inject.Inject;
 import java.util.HashMap;
-import java.util.Properties;
 
 /**
  * Loads test base data into an empty system
@@ -93,6 +92,7 @@ public class TestDataLoaderService extends BaseService {
                 "urn:mrn:iho:nw:dk:dma:local:${year}:${legacy-id}",
                 "NW-LOCAL-${legacy-id}-${year-2-digits}"
         ));
+        d.setTimeZone("Europe/Copenhagen");
         em.persist(d);
 
         d = new Domain();
@@ -104,6 +104,7 @@ public class TestDataLoaderService extends BaseService {
                 "urn:mrn:iho:nm:dk:dma:${year}:${number}",
                 "NM-${number-3-digits}-${year-2-digits}"
         ));
+        d.setTimeZone("Europe/Copenhagen");
         em.persist(d);
 
         log.info("Created test domains");
