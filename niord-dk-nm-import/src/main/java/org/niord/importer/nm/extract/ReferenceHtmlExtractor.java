@@ -1,5 +1,6 @@
 package org.niord.importer.nm.extract;
 
+import org.apache.commons.lang.StringUtils;
 import org.jsoup.nodes.Element;
 import org.niord.core.message.Message;
 import org.niord.core.message.Reference;
@@ -81,7 +82,9 @@ public class ReferenceHtmlExtractor implements IHtmlExtractor {
             Reference reference = new Reference();
             reference.setType(refType);
             reference.setMessageId(String.format("NM-%03d-%02d", id, year - 2000));
-            reference.setDescription(description);
+            if (StringUtils.isNotBlank(description)) {
+                reference.checkCreateDesc(lang).setDescription(description);
+            }
             message.getReferences().add(reference);
         } else {
             log.warn("Unknown reference format " + ref);
