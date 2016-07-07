@@ -40,10 +40,20 @@
                         <label for="importNwTag" class="col-sm-4 col-md-3 col-lg-2 control-label">Message Tag</label>
                         <div class="col-sm-4 col-md-4 col-lg-3">
                             <div class="input-group">
-                                <input type="text" ng-model="data.tagName" class="form-control input-sm"
-                                       id="importNwTag" placeholder="Import Tag" readonly="readonly">
+                                <ui-select ng-model="tagData.tag" id="importNwTag">
+                                    <ui-select-match placeholder="Select tag">
+                                        {{tagData.tag.name}}
+                                    </ui-select-match>
+                                    <ui-select-choices repeat="tag in tags"
+                                                       refresh="refreshTags($select.search)"
+                                                       refresh-delay="100">
+                                        <div>
+                                            <span ng-bind-html="tag.name | highlight: $select.search"></span>
+                                        </div>
+                                    </ui-select-choices>
+                                </ui-select>
                                 <span class="input-group-addon clickable" ng-click="openTagsDialog()"><span class="glyphicon glyphicon-tags"></span></span>
-                                <span class="input-group-addon clickable" ng-click="data.tagName = ''"><span class="glyphicon glyphicon-trash"></span></span>
+                                <span class="input-group-addon clickable" ng-click="removeTag()"><span class="glyphicon glyphicon-trash"></span></span>
                             </div>
                         </div>
                     </div>
@@ -93,10 +103,20 @@
                         <label for="importNmTag" class="col-sm-4 col-md-3 col-lg-2 control-label" style="text-align: right">Tag</label>
                         <div class="col-sm-4 col-md-4 col-lg-3">
                             <div class="input-group">
-                                <input type="text" ng-model="data.tagName" class="form-control input-sm"
-                                       id="importNmTag" placeholder="Import Tag" readonly="readonly">
+                                <ui-select ng-model="tagData.tag" id="importNmTag">
+                                    <ui-select-match placeholder="Select tag">
+                                        {{tagData.tag.name}}
+                                    </ui-select-match>
+                                    <ui-select-choices repeat="tag in tags"
+                                                       refresh="refreshTags($select.search)"
+                                                       refresh-delay="100">
+                                        <div>
+                                            <span ng-bind-html="tag.name | highlight: $select.search"></span>
+                                        </div>
+                                    </ui-select-choices>
+                                </ui-select>
                                 <span class="input-group-addon clickable" ng-click="openTagsDialog()"><span class="glyphicon glyphicon-tags"></span></span>
-                                <span class="input-group-addon clickable" ng-click="data.tagName = ''"><span class="glyphicon glyphicon-trash"></span></span>
+                                <span class="input-group-addon clickable" ng-click="removeTag()"><span class="glyphicon glyphicon-trash"></span></span>
                             </div>
                         </div>
                     </div>

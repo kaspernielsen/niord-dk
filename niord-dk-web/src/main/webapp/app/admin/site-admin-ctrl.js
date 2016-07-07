@@ -23,11 +23,23 @@ angular.module('niord.admin')
                 seriesId: undefined,
                 tagName: ''
             };
+            $scope.tagData = {
+                tag: undefined
+            };
 
             // Load the default parameters
             $http.get('/rest/import/nw/params')
                 .success(function (result) {
                     $scope.data = result;
+
+                    $scope.tagData.tag = undefined;
+                    if (result && result.tagName) {
+                        $http.get('/rest/tags/tag/' + result.tagName).then(function(response) {
+                            if (response.data && response.data.length > 0) {
+                                $scope.tagData.tag = response.data[0];
+                            }
+                        });
+                    }
                 });
 
 
@@ -52,15 +64,39 @@ angular.module('niord.admin')
                 });
             }
 
+
+            /** Refreshes the tags search result */
+            $scope.tags = [];
+            $scope.refreshTags = function(name) {
+                if (!name || name.length == 0) {
+                    return [];
+                }
+                return $http.get(
+                    '/rest/tags/search?name=' + encodeURIComponent(name) + '&limit=10'
+                ).then(function(response) {
+                    $scope.tags = response.data;
+                });
+            };
+
+
             /** Opens the tags dialog */
             $scope.openTagsDialog = function () {
                 MessageService.messageTagsDialog().result
                     .then(function (tag) {
-                        if (tag) {
-                            $scope.data.tagName = tag.tagId;
-                        }
+                        $scope.tagData.tag = tag;
                     });
             };
+
+
+            /** Removes the current tag selection */
+            $scope.removeTag = function () {
+                $scope.tagData.tag = undefined;
+            };
+
+            // Sync the tagData.tag with the data.tagName
+            $scope.$watch("tagData", function () {
+                $scope.data.tagName = $scope.tagData.tag ? $scope.tagData.tag.tagId : undefined;
+            }, true);
 
 
             /** Imports the legacy NW messages */
@@ -110,15 +146,40 @@ angular.module('niord.admin')
             };
 
 
+            /** Refreshes the tags search result */
+            $scope.tags = [];
+            $scope.tagData = { tag: undefined };
+            $scope.refreshTags = function(name) {
+                if (!name || name.length == 0) {
+                    return [];
+                }
+                return $http.get(
+                    '/rest/tags/search?name=' + encodeURIComponent(name) + '&limit=10'
+                ).then(function(response) {
+                    $scope.tags = response.data;
+                });
+            };
+
             /** Opens the tags dialog */
             $scope.openTagsDialog = function () {
                 MessageService.messageTagsDialog().result
                     .then(function (tag) {
                         if (tag) {
-                            $scope.data.tagName = tag.tagId;
+                            $scope.tagData.tag = tag;
                         }
                     });
             };
+
+            /** Removes the current tag selection */
+            $scope.removeTag = function () {
+                $scope.tagData.tag = undefined;
+            };
+
+
+            // Sync the tagData.tag with the data.tagName
+            $scope.$watch("tagData", function () {
+                $scope.data.tagName = $scope.tagData.tag ? $scope.tagData.tag.tagId : undefined;
+            }, true);
 
 
             /** Called when the NM html file has been imported */
