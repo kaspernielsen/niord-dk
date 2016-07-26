@@ -230,7 +230,7 @@ public class AtonImportRestService {
 
     /** Initializes the properties to use with the batch data */
     private Map<String, Object> initBatchProperties() {
-        int changeset = (int)sequenceService.getNextValue(AFM_SEQUENCE);
+        int changeset = (int)sequenceService.nextValue(AFM_SEQUENCE);
         Map<String, Object> properties = new HashMap<>();
         properties.put(AbstractDkAtonImportProcessor.CHANGE_SET_PROPERTY, changeset);
         return properties;
