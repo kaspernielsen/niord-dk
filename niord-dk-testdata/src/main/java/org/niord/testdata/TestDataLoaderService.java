@@ -8,6 +8,7 @@ import org.niord.core.domain.Domain;
 import org.niord.core.message.MessageSeries;
 import org.niord.core.service.BaseService;
 import org.niord.model.vo.MainType;
+import org.niord.model.vo.MessageSeriesVo.NumberSequenceType;
 import org.slf4j.Logger;
 
 import javax.annotation.PostConstruct;
@@ -83,12 +84,14 @@ public class TestDataLoaderService extends BaseService {
         d.getMessageSeries().add(createMessageSeries(
                 "dma-nw",
                 MainType.NW,
+                NumberSequenceType.YEARLY,
                 "urn:mrn:iho:nw:dk:dma:${year}:${number}",
                 "NW-${number-3-digits}-${year-2-digits}"
                 ));
         d.getMessageSeries().add(createMessageSeries(
                 "dma-nw-local",
                 MainType.NW,
+                NumberSequenceType.YEARLY,
                 "urn:mrn:iho:nw:dk:dma:local:${year}:${legacy-id}",
                 "NW-LOCAL-${legacy-id}-${year-2-digits}"
         ));
@@ -101,6 +104,7 @@ public class TestDataLoaderService extends BaseService {
         d.getMessageSeries().add(createMessageSeries(
                 "dma-nm",
                 MainType.NM,
+                NumberSequenceType.YEARLY,
                 "urn:mrn:iho:nm:dk:dma:${year}:${number}",
                 "NM-${number-3-digits}-${year-2-digits}"
         ));
@@ -112,10 +116,11 @@ public class TestDataLoaderService extends BaseService {
 
 
     /** Creates the given message series */
-    private MessageSeries createMessageSeries(String seriesId, MainType type, String mrnFormat, String shortFormat) {
+    private MessageSeries createMessageSeries(String seriesId, MainType type, NumberSequenceType numberSequenceType, String mrnFormat, String shortFormat) {
         MessageSeries s = new MessageSeries();
         s.setSeriesId(seriesId);
         s.setMainType(type);
+        s.setNumberSequenceType(numberSequenceType);
         s.setMrnFormat(mrnFormat);
         s.setShortFormat(shortFormat);
         em.persist(s);
