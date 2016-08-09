@@ -149,7 +149,15 @@ public class TestDataLoaderService extends BaseService {
                 report.setTemplatePath("/templates/messages/nm-report-pdf.ftl");
                 report.getDomains().add(nmDomain);
                 em.persist(report);
-                log.info("Created NM report");}
+
+                report = new FmReport();
+                report.setReportId("nm-tp-report");
+                report.setName("NM T&P report");
+                report.setTemplatePath("/templates/messages/nm-tp-report-pdf.ftl");
+                report.getDomains().add(nmDomain);
+                em.persist(report);
+
+                log.info("Created NM reports");}
         } catch (Exception e) {
             log.error("Error creating NM reports", e);
         }
