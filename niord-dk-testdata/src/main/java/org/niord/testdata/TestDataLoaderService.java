@@ -5,6 +5,7 @@ import org.niord.core.batch.BatchService;
 import org.niord.core.category.Category;
 import org.niord.core.chart.Chart;
 import org.niord.core.domain.Domain;
+import org.niord.core.fm.FmReport;
 import org.niord.core.message.MessageSeries;
 import org.niord.core.service.BaseService;
 import org.niord.model.vo.MainType;
@@ -20,6 +21,7 @@ import javax.ejb.TimerConfig;
 import javax.ejb.TimerService;
 import javax.inject.Inject;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Loads test base data into an empty system
@@ -72,6 +74,9 @@ public class TestDataLoaderService extends BaseService {
         if (count(Domain.class) == 0) {
             importDomains();
         }
+
+        // Check if we need to create reports
+        checkCreateReports();
     }
 
 
@@ -126,6 +131,30 @@ public class TestDataLoaderService extends BaseService {
         em.persist(s);
         return s;
     }
+
+
+    /** Creates a standard NM report */
+    private void checkCreateReports() {
+        try {
+            List<FmReport> reports = em.createNamedQuery("FmReport.findByReportId", FmReport.class)
+                    .setParameter("reportId", "nm-report")
+                    .getResultList();
+            if (reports.isEmpty()) {
+                Domain nmDomain = em.createNamedQuery("Domain.findByClientId", Domain.class)
+                        .setParameter("clientId", "niord-client-nm")
+                        .getSingleResult();
+                FmReport report = new FmReport();
+                report.setReportId("nm-report");
+                report.setName("NM report");
+                report.setTemplatePath("/templates/messages/nm-report-pdf.ftl");
+                report.getDomains().add(nmDomain);
+                em.persist(report);
+                log.info("Created NM report");}
+        } catch (Exception e) {
+            log.error("Error creating NM reports", e);
+        }
+    }
+
 
     /**
      * Starts the batch job with the given name and load the associated batch file data
