@@ -27,11 +27,14 @@ public class ChartHtmlExtractor implements IHtmlExtractor {
     }
 
     public List<String> extractCharts() throws NmHtmlFormatException {
-
-        // Strip field header
-        e.select("i").first().remove();
-        String charts = removeLastPeriod(extractText(e));
-
+        String charts;
+        try {
+            // Strip field header
+            e.select("i").first().remove();
+            charts = removeLastPeriod(extractText(e));
+        } catch (Exception e1) {
+            return null;
+        }
 
         for (String chart : charts.split(",")) {
             Matcher m1 = p1.matcher(chart.trim());

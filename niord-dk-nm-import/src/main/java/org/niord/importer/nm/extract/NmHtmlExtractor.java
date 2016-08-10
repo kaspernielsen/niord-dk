@@ -83,22 +83,29 @@ public class NmHtmlExtractor implements IHtmlExtractor {
      * Throws an exception if this fails.
      * TODO: Handle accumulated NtM documents with week-ranges
      **/
-    private void extractWeekAndYear() throws NmHtmlFormatException {
-        Element weekElement = body.select("table tr").first().select("td p span").last();
-        if (weekElement == null) {
-            throw new NmHtmlFormatException("No week number found in the HTML");
-        }
-        week = Integer.valueOf(extractText(weekElement));
+    private void extractWeekAndYear() {
+        try {
+            Element weekElement = body.select("table tr").first().select("td p span").last();
+            if (weekElement == null) {
+                throw new NmHtmlFormatException("No week number found in the HTML");
+            }
+            week = Integer.valueOf(extractText(weekElement));
 
-        Element publishDateElement = body.select("table tr").get(1).select("td p span").first();
-        if (publishDateElement == null) {
-            throw new NmHtmlFormatException("No publish date found in the HTML");
-        }
-        String publishDate = extractText(publishDateElement);
-        publishDate = publishDate.substring(publishDate.lastIndexOf(' ')).trim();
-        year = Integer.valueOf(publishDate);
+            Element publishDateElement = body.select("table tr").get(1).select("td p span").first();
+            if (publishDateElement == null) {
+                throw new NmHtmlFormatException("No publish date found in the HTML");
+            }
+            String publishDate = extractText(publishDateElement);
+            publishDate = publishDate.substring(publishDate.lastIndexOf(' ')).trim();
+            year = Integer.valueOf(publishDate);
 
-        log.info(String.format("Extracted year %d week %d", year, week));
+            log.info(String.format("Extracted year %d week %d", year, week));
+        } catch (Exception e) {
+            Calendar cal = Calendar.getInstance();
+            year = cal.get(Calendar.YEAR);
+            week = cal.get(Calendar.WEEK_OF_YEAR);
+            log.warn(String.format("Failed extracting week and year. Using current year %d week %d", year, week));
+        }
     }
 
 
@@ -329,28 +336,40 @@ public class NmHtmlExtractor implements IHtmlExtractor {
 
     /** Extracts the message publication **/
     private String extractPublication(Element e) throws NmHtmlFormatException {
-        // Strip field header
-        e.select("i").first().remove();
-        return extractText(e);
+        try {
+            // Strip field header
+            e.select("i").first().remove();
+            return extractText(e);
+        } catch (Exception e1) {
+            return null;
+        }
     }
 
 
     /** Extracts the message note **/
     private String extractNote(Element e) throws NmHtmlFormatException {
-        // Strip field header
-        e.select("i").first().remove();
-        return extractText(e);
+        try {
+            // Strip field header
+            e.select("i").first().remove();
+            return extractText(e);
+        } catch (Exception e1) {
+            return null;
+        }
     }
 
 
     /** Extracts the message details **/
     private String extractDescription(Element e) throws NmHtmlFormatException {
-        // Strip field header
-        e.select("i").first().remove();
-        if (e.getElementsByTag("span").size() == 1){
-            e = e.getElementsByTag("span").get(0);
+        try {
+            // Strip field header
+            e.select("i").first().remove();
+            if (e.getElementsByTag("span").size() == 1){
+                e = e.getElementsByTag("span").get(0);
+            }
+            return e.html();
+        } catch (Exception e1) {
+            return null;
         }
-        return e.html();
     }
 
 
@@ -364,10 +383,14 @@ public class NmHtmlExtractor implements IHtmlExtractor {
 
     /** Extracts the message time **/
     private String extractTime(Element e) throws NmHtmlFormatException {
-        // Strip field header
-        e.select("i").first().remove();
-        // TODO: Check for multi-line support
-        return extractTextPreserveLineBreak(e);
+        try {
+            // Strip field header
+            e.select("i").first().remove();
+            // TODO: Check for multi-line support
+            return extractTextPreserveLineBreak(e);
+        } catch (Exception e1) {
+            return null;
+        }
     }
 
 }
