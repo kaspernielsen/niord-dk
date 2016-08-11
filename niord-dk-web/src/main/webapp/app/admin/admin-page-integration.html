@@ -39,22 +39,7 @@
                     <div class="form-group">
                         <label for="importNwTag" class="col-sm-4 col-md-3 col-lg-2 control-label">Message Tag</label>
                         <div class="col-sm-4 col-md-4 col-lg-3">
-                            <div class="input-group">
-                                <ui-select ng-model="tagData.tag" id="importNwTag">
-                                    <ui-select-match placeholder="Select tag">
-                                        {{tagData.tag.name}}
-                                    </ui-select-match>
-                                    <ui-select-choices repeat="tag in tags"
-                                                       refresh="refreshTags($select.search)"
-                                                       refresh-delay="100">
-                                        <div>
-                                            <span ng-bind-html="tag.name | highlight: $select.search"></span>
-                                        </div>
-                                    </ui-select-choices>
-                                </ui-select>
-                                <span class="input-group-addon clickable" ng-click="openTagsDialog()"><span class="glyphicon glyphicon-tags"></span></span>
-                                <span class="input-group-addon clickable" ng-click="removeTag()"><span class="glyphicon glyphicon-trash"></span></span>
-                            </div>
+                            <message-tag-field id="importNwTag" tag-data="tagData"></message-tag-field>
                         </div>
                     </div>
                     <div class="form-group">
@@ -70,33 +55,6 @@
                     <div class="col-sm-12 col-md-10 col-lg-8" style="margin-top: 20px">
                         <label class="control-label" for="legacyNwResult">Result</label>
                         <textarea ng-model="legacyNwResult" id="legacyNwResult" class="form-control input-sm" style="font-size: 10px;" rows="3" readonly></textarea>
-                    </div>
-                </div>
-
-            </div>
-        </uib-tab>
-
-
-        <!-- Legacy Firing Areas -->
-        <uib-tab ng-if="supportsMainType('NW')">
-            <tab-heading>
-                Legacy Firing Areas
-            </tab-heading>
-            <div ng-controller="FaIntegrationCtrl">
-
-                <form id="importFaForm" name="importFaForm" class="form-horizontal" style="margin-top: 20px">
-                    <div class="form-group">
-                        <div class="col-sm-offset-4 col-md-offset-3 col-lg-offset-2 col-sm-6">
-                            <button class="btn btn-sm btn-default" ng-click="importLegacyFa()">Import</button>
-                            <button class="btn btn-sm btn-default" ng-click="testConnection()">Test Connection</button>
-                        </div>
-                    </div>
-                </form>
-
-                <div class="row">
-                    <div class="col-sm-12 col-md-10 col-lg-8" style="margin-top: 20px">
-                        <label class="control-label" for="legacyNwResult">Result</label>
-                        <textarea ng-model="legacyFaResult" id="legacyFaResult" class="form-control input-sm" style="font-size: 10px;" rows="3" readonly></textarea>
                     </div>
                 </div>
 
@@ -129,22 +87,7 @@
                     <div class="form-group row">
                         <label for="importNmTag" class="col-sm-4 col-md-3 col-lg-2 control-label" style="text-align: right">Tag</label>
                         <div class="col-sm-4 col-md-4 col-lg-3">
-                            <div class="input-group">
-                                <ui-select ng-model="tagData.tag" id="importNmTag">
-                                    <ui-select-match placeholder="Select tag">
-                                        {{tagData.tag.name}}
-                                    </ui-select-match>
-                                    <ui-select-choices repeat="tag in tags"
-                                                       refresh="refreshTags($select.search)"
-                                                       refresh-delay="100">
-                                        <div>
-                                            <span ng-bind-html="tag.name | highlight: $select.search"></span>
-                                        </div>
-                                    </ui-select-choices>
-                                </ui-select>
-                                <span class="input-group-addon clickable" ng-click="openTagsDialog()"><span class="glyphicon glyphicon-tags"></span></span>
-                                <span class="input-group-addon clickable" ng-click="removeTag()"><span class="glyphicon glyphicon-trash"></span></span>
-                            </div>
+                            <message-tag-field id="importNmTag" tag-data="tagData"></message-tag-field>
                         </div>
                     </div>
 
@@ -154,6 +97,58 @@
                     <div class="col-sm-12 col-md-10 col-lg-8" style="margin-top: 20px">
                         <label class="control-label" for="legacyNmResult">Result</label>
                         <textarea ng-model="legacyNmResult" id="legacyNmResult" class="form-control input-sm" style="font-size: 10px;" rows="3" readonly></textarea>
+                    </div>
+                </div>
+
+            </div>
+        </uib-tab>
+
+
+        <!-- Legacy Firing Areas -->
+        <uib-tab ng-if="supportsMainType('NM')">
+            <tab-heading>
+                Legacy Firing Area Templates
+            </tab-heading>
+            <div ng-controller="FaIntegrationCtrl">
+
+                <form id="importFaForm" name="importFaForm" class="form-horizontal" style="margin-top: 20px">
+
+                    <div class="form-group">
+                        <div class="col-sm-12">
+                            First, import firing areas and then create a batch of firing area message templates.
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="importFaMessageSeries" class="col-sm-4 col-md-3 col-lg-2 control-label">Msg. Series</label>
+                        <div class="col-sm-4 col-md-4 col-lg-3">
+                            <select id="importFaMessageSeries" class="form-control input-sm" required
+                                    ng-model="data.seriesId" ng-options="seriesId for seriesId in messageSeriesIds" >
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="importFaTag" class="col-sm-4 col-md-3 col-lg-2 control-label">Message Tag</label>
+                        <div class="col-sm-4 col-md-4 col-lg-3">
+                            <message-tag-field id="importFaTag" tag-data="tagData"></message-tag-field>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-sm-offset-4 col-md-offset-3 col-lg-offset-2 col-sm-6">
+                            <button class="btn btn-sm btn-default" ng-click="importLegacyFa()">Import Areas</button>
+                            <button class="btn btn-sm btn-default" ng-click="generateFaTemplates()"
+                                    ng-disabled="importFaForm.$invalid">Generate Firing Area Templates</button>
+                            <button class="btn btn-sm btn-default" ng-click="testConnection()">Test Connection</button>
+                        </div>
+                    </div>
+                </form>
+
+                <div class="row">
+                    <div class="col-sm-12 col-md-10 col-lg-8" style="margin-top: 20px">
+                        <label class="control-label" for="legacyNwResult">Result</label>
+                        <textarea ng-model="legacyFaResult" id="legacyFaResult" class="form-control input-sm" style="font-size: 10px;" rows="3" readonly></textarea>
                     </div>
                 </div>
 

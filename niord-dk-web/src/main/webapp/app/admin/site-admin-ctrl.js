@@ -7,8 +7,8 @@ angular.module('niord.admin')
     /**
      * Legacy NW import Controller
      */
-    .controller('NwIntegrationCtrl', ['$scope', '$rootScope', '$http', 'growl', 'MessageService',
-        function ($scope, $rootScope, $http, growl, MessageService) {
+    .controller('NwIntegrationCtrl', ['$scope', '$rootScope', '$http', 'growl',
+        function ($scope, $rootScope, $http, growl) {
             'use strict';
 
             $scope.legacyNwResult = '';
@@ -65,34 +65,6 @@ angular.module('niord.admin')
             }
 
 
-            /** Refreshes the tags search result */
-            $scope.tags = [];
-            $scope.refreshTags = function(name) {
-                if (!name || name.length == 0) {
-                    return [];
-                }
-                return $http.get(
-                    '/rest/tags/search?name=' + encodeURIComponent(name) + '&limit=10'
-                ).then(function(response) {
-                    $scope.tags = response.data;
-                });
-            };
-
-
-            /** Opens the tags dialog */
-            $scope.openTagsDialog = function () {
-                MessageService.messageTagsDialog().result
-                    .then(function (tag) {
-                        $scope.tagData.tag = tag;
-                    });
-            };
-
-
-            /** Removes the current tag selection */
-            $scope.removeTag = function () {
-                $scope.tagData.tag = undefined;
-            };
-
             // Sync the tagData.tag with the data.tagName
             $scope.$watch("tagData", function () {
                 $scope.data.tagName = $scope.tagData.tag ? $scope.tagData.tag.tagId : undefined;
@@ -121,6 +93,21 @@ angular.module('niord.admin')
             'use strict';
 
             $scope.legacyFaResult = '';
+            $scope.tagData = { tag: undefined };
+
+            // Determine the message series for the current domain
+            $scope.messageSeriesIds = [];
+            if ($rootScope.domain && $rootScope.domain.messageSeries) {
+                angular.forEach($rootScope.domain.messageSeries, function (series) {
+                    if (series.mainType == 'NM') {
+                        $scope.messageSeriesIds.push(series.seriesId);
+                    }
+                });
+            }
+            $scope.data = {
+                seriesId: $scope.messageSeriesIds.length == 1 ? $scope.messageSeriesIds[0] : undefined,
+                tagName: ''
+            };
 
             /** Displays the error message */
             $scope.displayError = function (data, status) {
@@ -142,9 +129,21 @@ angular.module('niord.admin')
 
             /** Imports the legacy firing areas */
             $scope.importLegacyFa = function () {
-                $scope.legacyFaResult = 'Start import of legacy MW messages';
+                $scope.legacyFaResult = 'Start import of legacy firing areas';
 
-                $http.post('/rest/import/nw/import-fa', $scope.data)
+                $http.post('/rest/import/nw/import-fa')
+                    .success(function (result) {
+                        $scope.legacyFaResult = result;
+                    })
+                    .error($scope.displayError);
+            };
+
+
+            /** Generates message templates for all firing areas */
+            $scope.generateFaTemplates = function () {
+                $scope.legacyFaResult = 'Start generating firing area template messages';
+
+                $http.post('/rest/import/nw/generate-fa-messages', $scope.data)
                     .success(function (result) {
                         $scope.legacyFaResult = result;
                     })
@@ -158,8 +157,8 @@ angular.module('niord.admin')
     /**
      * Legacy NM import Controller
      */
-    .controller('NmIntegrationCtrl', ['$scope', '$rootScope', '$http', 'growl', 'MessageService',
-        function ($scope, $rootScope, $http, growl, MessageService) {
+    .controller('NmIntegrationCtrl', ['$scope', '$rootScope', '$http', 'growl',
+        function ($scope, $rootScope, $http, growl) {
             'use strict';
 
             $scope.nmImportUrl = '/rest/import/nm/import-nm';
@@ -182,39 +181,10 @@ angular.module('niord.admin')
                 });
             }
 
+            $scope.tagData = { tag: undefined };
             $scope.data = {
                 seriesId: $scope.messageSeriesIds.length == 1 ? $scope.messageSeriesIds[0] : undefined,
                 tagName: ''
-            };
-
-
-            /** Refreshes the tags search result */
-            $scope.tags = [];
-            $scope.tagData = { tag: undefined };
-            $scope.refreshTags = function(name) {
-                if (!name || name.length == 0) {
-                    return [];
-                }
-                return $http.get(
-                    '/rest/tags/search?name=' + encodeURIComponent(name) + '&limit=10'
-                ).then(function(response) {
-                    $scope.tags = response.data;
-                });
-            };
-
-            /** Opens the tags dialog */
-            $scope.openTagsDialog = function () {
-                MessageService.messageTagsDialog().result
-                    .then(function (tag) {
-                        if (tag) {
-                            $scope.tagData.tag = tag;
-                        }
-                    });
-            };
-
-            /** Removes the current tag selection */
-            $scope.removeTag = function () {
-                $scope.tagData.tag = undefined;
             };
 
 
@@ -231,7 +201,7 @@ angular.module('niord.admin')
             };
 
             /** Called when the NM html import has failed */
-            $scope.nmFileUploadError = function(status, statusText) {
+            $scope.nmFileUploadError = function(status) {
                 $scope.legacyNmResult = "Error importing NMs (error " + status + ")";
                 $scope.$$phase || $scope.$apply();
             };
@@ -254,7 +224,7 @@ angular.module('niord.admin')
                 $scope.$$phase || $scope.$apply();
             };
 
-            $scope.xlsFileUploadError = function(status, statusText) {
+            $scope.xlsFileUploadError = function(status) {
                 $scope.importResult = "Error importing AtoNs (error " + status + ")";
                 $scope.$$phase || $scope.$apply();
             };

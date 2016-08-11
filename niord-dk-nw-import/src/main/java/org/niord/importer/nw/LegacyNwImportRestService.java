@@ -20,7 +20,9 @@ import org.jboss.resteasy.annotations.cache.NoCache;
 import org.jboss.security.annotation.SecurityDomain;
 import org.niord.core.area.Area;
 import org.niord.core.batch.BatchService;
+import org.niord.model.DataFilter;
 import org.niord.model.IJsonSerializable;
+import org.niord.model.vo.MessageVo;
 import org.slf4j.Logger;
 
 import javax.annotation.security.RolesAllowed;
@@ -35,9 +37,13 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Imports legacy NW from an "oldmsi" database.
+ * <p>
+ * Additionally, handles import of firing area from the "oldmsi" database,
+ * and creation of firing area message templates (which area actually created as NM's).
  */
 @Path("/import/nw")
 @Stateless
@@ -179,6 +185,47 @@ public class LegacyNwImportRestService {
         }
     }
 
+
+    /**
+     * Generates firing exercise message templates for each firing area
+     * @return the status
+     */
+    @POST
+    @Path("/generate-fa-messages")
+    @Consumes("application/json;charset=UTF-8")
+    @Produces("text/plain")
+    @NoCache
+    public String generateFaTemplates(GenerateFaTemplateParams params) {
+
+        try {
+
+            DataFilter filter = DataFilter.get()
+                    .fields("Message.details", "Message.geometry", "Area.parent", "Category.parent");
+
+            List<MessageVo> messages = faImportService.generateFiringAreaMessageTemplates(params.getSeriesId())
+                    .stream()
+                    .map(m -> m.toVo(filter))
+                    .collect(Collectors.toList());
+
+            Map<String, Object> batchProperties = new HashMap<>();
+            batchProperties.put("seriesId", params.getSeriesId());
+            batchProperties.put("tagName", params.getTagName());
+
+            batchService.startBatchJobWithJsonData("message-import", messages, "message-data.json", batchProperties);
+
+            String msg = "Started message-import batch job for " + messages.size() + " template firing area messages";
+            log.info(msg);
+            return msg;
+
+        } catch (Exception e) {
+            String msg = "Error generating template firing area messages: " + e;
+            log.error(msg, e);
+            return msg;
+        }
+
+    }
+
+
     /**
      * Defines the parameters used when starting an import of legacy NW messages
      */
@@ -247,4 +294,31 @@ public class LegacyNwImportRestService {
             this.ids = ids;
         }
     }
+
+
+    /**
+     * Defines the parameters used when starting an import of legacy NW messages
+     */
+    public static class GenerateFaTemplateParams implements IJsonSerializable {
+
+        String seriesId;
+        String tagName;
+
+        public String getSeriesId() {
+            return seriesId;
+        }
+
+        public void setSeriesId(String seriesId) {
+            this.seriesId = seriesId;
+        }
+
+        public String getTagName() {
+            return tagName;
+        }
+
+        public void setTagName(String tagName) {
+            this.tagName = tagName;
+        }
+    }
+
 }

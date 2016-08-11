@@ -18,10 +18,23 @@ package org.niord.importer.nw;
 import com.vividsolutions.jts.geom.Geometry;
 import org.apache.commons.lang.StringUtils;
 import org.niord.core.area.Area;
+import org.niord.core.area.AreaDesc;
+import org.niord.core.area.AreaSearchParams;
 import org.niord.core.area.AreaService;
+import org.niord.core.category.Category;
+import org.niord.core.chart.Chart;
 import org.niord.core.conf.TextResource;
+import org.niord.core.geojson.Feature;
+import org.niord.core.geojson.FeatureCollection;
 import org.niord.core.geojson.JtsConverter;
+import org.niord.core.message.Message;
+import org.niord.core.message.MessageDesc;
+import org.niord.core.message.MessageSeries;
+import org.niord.core.message.MessageSeriesService;
 import org.niord.model.vo.AreaType;
+import org.niord.model.vo.MainType;
+import org.niord.model.vo.Status;
+import org.niord.model.vo.Type;
 import org.niord.model.vo.geojson.PointVo;
 import org.niord.model.vo.geojson.PolygonVo;
 import org.slf4j.Logger;
@@ -34,6 +47,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -58,10 +74,19 @@ public class LegacyFiringAreaImportService {
     String geometrySql;
 
     @Inject
+    @TextResource("/sql/fa_information_data.sql")
+    String infoSql;
+
+    String idForAreaSql = "select id from firing_area where name_dk = ?";
+
+    @Inject
     LegacyNwDatabase db;
 
     @Inject
     AreaService areaService;
+
+    @Inject
+    MessageSeriesService messageSeriesService;
 
     /**
      * Imports the firing areas
@@ -220,6 +245,155 @@ public class LegacyFiringAreaImportService {
             area.setParent(parent);
         }
         return area;
+    }
+
+
+    /** Creates message templates for all firing areas **/
+    public List<Message> generateFiringAreaMessageTemplates(String seriesId) {
+
+        MessageSeries messageSeries = messageSeriesService.findBySeriesId(seriesId);
+        if (messageSeries == null) {
+            return Collections.emptyList();
+        }
+
+        // Get hold of the list of firing areas
+        AreaSearchParams params = new AreaSearchParams()
+                .type(AreaType.FIRING_AREA);
+        List<Area> firingAreas = areaService.searchAreas(params);
+
+        List<Message> messages = new ArrayList<>();
+        for (Area area : firingAreas) {
+            Message message = createMessageTemplateForArea(area, messageSeries);
+            if (message != null) {
+                messages.add(message);
+            }
+        }
+
+        return messages;
+    }
+
+
+    /**
+     * Creates a message template for the given firing area
+     * @param area the firing area
+     * @param messageSeries the message series to use for the message
+     * @return the message template
+     */
+    private Message createMessageTemplateForArea(Area area, MessageSeries messageSeries) {
+        Integer id = getLegacyIdForArea(area);
+        if (id == null) {
+            return null;
+        }
+
+        Message message = new Message();
+        message.setMessageSeries(messageSeries);
+        message.setMainType(MainType.NM);
+        message.setType(Type.MISCELLANEOUS_NOTICE);
+        message.setStatus(Status.IMPORTED);
+        message.setAutoTitle(true);
+        message.getAreas().add(area);
+        if (area != null) {
+            FeatureCollection featureCollection = new FeatureCollection();
+            Feature feature = new Feature();
+            featureCollection.addFeature(feature);
+            feature.setGeometry(area.getGeometry());
+            message.setGeometry(featureCollection);
+        }
+
+        // Fill out the description fields
+        MessageDesc daDesc = message.createDesc("da");
+        MessageDesc enDesc = message.createDesc("en");
+        Map<Integer, String> daInfo = new HashMap<>();
+        Map<Integer, String> enInfo = new HashMap<>();
+        getLegacyInformationForArea(id, daInfo, enInfo);
+        composeMessageDescFromLegacyInfo(daDesc, daInfo, "da");
+        composeMessageDescFromLegacyInfo(enDesc, enInfo, "en");
+
+        // Charts
+        String chartInfo = daInfo.get(3);
+        if (StringUtils.isNotBlank(chartInfo)) {
+            chartInfo = chartInfo.replace(".", ""); // Remove trailing blanks
+            Arrays.stream(chartInfo.split(","))
+                    .map(Chart::parse)
+                    .filter(c -> c != null)
+                    .forEach(c -> message.getCharts().add(c));
+        }
+
+        // Categories
+        Category firingExercise = new Category();
+        firingExercise.createDesc("da").setName("Skydeøvelser");
+        firingExercise.createDesc("en").setName("Firing Exercises");
+        message.getCategories().add(firingExercise);
+
+        return message;
+    }
+
+
+    /** Composes the message descriptor from the legacy firing area information **/
+    private void composeMessageDescFromLegacyInfo(MessageDesc desc, Map<Integer, String> info, String lang) {
+        // 2: Note
+        if (StringUtils.isNotBlank(info.get(2))) {
+            desc.setNote(info.get(2).replace("\n", "<br>"));
+        }
+        // 1: Details, 5: Prohibition, 6: Signals merged into description
+        StringBuilder d = new StringBuilder();
+        if (StringUtils.isNotBlank(info.get(1))) {
+            d.append("<p>").append(info.get(1).replace("\n", "<br>")).append("</p>");
+        }
+        if (StringUtils.isNotBlank(info.get(5))) {
+            d.append("da".equals(lang) ? "<p><i>Forbud</i></p>" : "<p><i>Prohibition</i></p>");
+            d.append("<p>").append(info.get(5).replace("\n", "<br>")).append("</p>");
+        }
+        if (StringUtils.isNotBlank(info.get(6))) {
+            d.append("da".equals(lang) ? "<p><i>Skydesignaler</i></p>" : "<p><i>Signals</i></p>");
+            d.append("<p>").append(info.get(6).replace("\n", "<br>")).append("</p>");
+        }
+        desc.setDescription(d.toString());
+    }
+
+
+    /** Looks up the legacy id for the given area **/
+    private Integer getLegacyIdForArea(Area area) {
+        AreaDesc desc = area.getDesc("da");
+        if (desc == null || StringUtils.isBlank(desc.getName())) {
+            return null;
+        }
+
+        try (Connection con = db.openConnection();
+             PreparedStatement stmt = con.prepareStatement(idForAreaSql)) {
+            stmt.setString(1, desc.getName());
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return getInt(rs, "id");
+            }
+        } catch (SQLException ignored) {
+        }
+        return null;
+    }
+
+
+    /** Loads the information associated with the legacy firing area **/
+    private void getLegacyInformationForArea(Integer id, Map<Integer, String> daInfo, Map<Integer, String> enInfo) {
+        try (Connection con = db.openConnection();
+             PreparedStatement stmt = con.prepareStatement(infoSql)) {
+            stmt.setInt(1, id);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                Integer infoType    = getInt(rs, "info_type");
+                String  descDa      = getString(rs, "description_da");
+                String  descEn      = getString(rs, "description_en");
+                if (infoType != null) {
+                    if (StringUtils.isNotBlank(descDa)) {
+                        daInfo.put(infoType, descDa);
+                    }
+                    if (StringUtils.isNotBlank(descEn)) {
+                        enInfo.put(infoType, descEn);
+                    }
+                }
+            }
+            rs.close();
+        } catch (SQLException ignored) {
+        }
     }
 
 
