@@ -114,6 +114,48 @@ angular.module('niord.admin')
 
 
     /**
+     * Legacy Firing Area import Controller
+     */
+    .controller('FaIntegrationCtrl', ['$scope', '$rootScope', '$http', 'growl',
+        function ($scope, $rootScope, $http, growl) {
+            'use strict';
+
+            $scope.legacyFaResult = '';
+
+            /** Displays the error message */
+            $scope.displayError = function (data, status) {
+                var error = "Error (code " + status + ")";
+                growl.error(error);
+                $scope.legacyFaResult = error;
+            };
+
+            /** Tests the legacy NW database connection - also used for firing area imports */
+            $scope.testConnection = function() {
+                $scope.legacyFaResult = 'Trying to connect...';
+                $http.get('/rest/import/nw/test-connection')
+                    .success(function (result) {
+                        $scope.legacyFaResult = 'Connection status: ' + result;
+                    })
+                    .error($scope.displayError);
+
+            };
+
+            /** Imports the legacy firing areas */
+            $scope.importLegacyFa = function () {
+                $scope.legacyFaResult = 'Start import of legacy MW messages';
+
+                $http.post('/rest/import/nw/import-fa', $scope.data)
+                    .success(function (result) {
+                        $scope.legacyFaResult = result;
+                    })
+                    .error($scope.displayError);
+            }
+
+        }])
+
+
+
+    /**
      * Legacy NM import Controller
      */
     .controller('NmIntegrationCtrl', ['$scope', '$rootScope', '$http', 'growl', 'MessageService',

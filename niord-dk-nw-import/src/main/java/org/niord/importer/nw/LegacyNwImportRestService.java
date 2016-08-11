@@ -18,6 +18,7 @@ package org.niord.importer.nw;
 import org.apache.commons.lang.StringUtils;
 import org.jboss.resteasy.annotations.cache.NoCache;
 import org.jboss.security.annotation.SecurityDomain;
+import org.niord.core.area.Area;
 import org.niord.core.batch.BatchService;
 import org.niord.model.IJsonSerializable;
 import org.slf4j.Logger;
@@ -52,7 +53,10 @@ public class LegacyNwImportRestService {
     LegacyNwDatabase db;
 
     @Inject
-    LegacyNwImportService importService;
+    LegacyNwImportService nwImportService;
+
+    @Inject
+    LegacyFiringAreaImportService faImportService;
 
     @Inject
     BatchService batchService;
@@ -77,7 +81,7 @@ public class LegacyNwImportRestService {
     @Consumes("application/json;charset=UTF-8")
     @NoCache
     public ImportLegacyNwParams getImportLegacyNwParams() {
-        return importService.getImportLegacyNwParams();
+        return nwImportService.getImportLegacyNwParams();
     }
 
 
@@ -89,7 +93,7 @@ public class LegacyNwImportRestService {
     public String startNwImport(ImportLegacyNwParams params) {
         try {
             // Persist the parameters
-            importService.updateImportLegacyNwParams(params);
+            nwImportService.updateImportLegacyNwParams(params);
 
             // Check validity of parameters
             if (StringUtils.isBlank(params.getSeriesId())) {
@@ -102,7 +106,7 @@ public class LegacyNwImportRestService {
                 throw new Exception("Start import date must be specified");
             }
 
-            List<Integer> ids = importService.getImportLegacyNwIds(params, true);
+            List<Integer> ids = nwImportService.getImportLegacyNwIds(params, true);
 
             // No point in importing empty result set
             if (ids.isEmpty()) {
@@ -128,6 +132,52 @@ public class LegacyNwImportRestService {
         }
     }
 
+
+    /**
+     * Imports legacy firing areas
+     * @return the status
+     */
+    @POST
+    @Path("/import-fa")
+    @Consumes("application/json;charset=UTF-8")
+    @Produces("text/plain")
+    @NoCache
+    public String startFaImport() {
+        try {
+
+            Map<Integer, Area> areas = faImportService.importFiringAreas(true);
+
+            // No point in importing empty result set
+            if (areas.isEmpty()) {
+                return "No legacy Firing Area found";
+            }
+
+            StringBuilder result = new StringBuilder();
+            for (Map.Entry<Integer, Area> area : areas.entrySet()) {
+                try {
+                    faImportService.mergeArea(area.getValue());
+                } catch (Exception e) {
+                    result.append("Error merging area with legacy id ")
+                            .append(area.getKey())
+                            .append(": ")
+                            .append(e.getMessage())
+                            .append("\n");
+                }
+            }
+
+            result.append("Imported ")
+                    .append(areas.size())
+                    .append(" legacy firing areas");
+
+            log.info(result.toString());
+            return result.toString();
+
+        } catch (Exception e) {
+            String msg = "Error importing legacy firing areas: " + e;
+            log.error(msg, e);
+            return msg;
+        }
+    }
 
     /**
      * Defines the parameters used when starting an import of legacy NW messages

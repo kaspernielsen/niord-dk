@@ -360,7 +360,7 @@ public class LegacyNwImportService {
 
 
     /** GeoJSON linear rings has the same start and end coordinate */
-    private double[][] toLinearRing(double[][] coords) {
+    public static double[][] toLinearRing(double[][] coords) {
         double[][] linearRing = new double[coords.length + 1][];
         System.arraycopy(coords, 0, linearRing, 0, coords.length);
         linearRing[coords.length] = coords[0];
