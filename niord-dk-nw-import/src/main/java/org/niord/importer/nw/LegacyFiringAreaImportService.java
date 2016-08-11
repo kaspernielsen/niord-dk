@@ -34,7 +34,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -79,7 +79,7 @@ public class LegacyFiringAreaImportService {
 
 
             // First load all areas
-            Map<Integer, Area> areas = new HashMap<>();
+            Map<Integer, Area> areas = new LinkedHashMap<>();
             ResultSet rs = faStmt.executeQuery();
             while (rs.next()) {
                 Integer id          = getInt(rs, "id");
