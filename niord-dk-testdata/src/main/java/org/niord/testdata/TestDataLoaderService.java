@@ -5,6 +5,7 @@ import org.niord.core.batch.BatchService;
 import org.niord.core.category.Category;
 import org.niord.core.chart.Chart;
 import org.niord.core.domain.Domain;
+import org.niord.core.domain.DomainService;
 import org.niord.core.fm.FmReport;
 import org.niord.core.message.MessageSeries;
 import org.niord.core.service.BaseService;
@@ -36,6 +37,9 @@ public class TestDataLoaderService extends BaseService {
 
     @Inject
     BatchService batchService;
+
+    @Inject
+    DomainService domainService;
 
     @Resource
     TimerService timerService;
@@ -116,6 +120,20 @@ public class TestDataLoaderService extends BaseService {
         d.setTimeZone("Europe/Copenhagen");
         em.persist(d);
 
+
+        d = new Domain();
+        d.setClientId("niord-client-fa");
+        d.setName("FA");
+        d.getMessageSeries().add(createMessageSeries(
+                "dma-fa",
+                MainType.NM,
+                NumberSequenceType.MANUAL,
+                null,
+                null
+        ));
+        d.setTimeZone("Europe/Copenhagen");
+        em.persist(d);
+
         log.info("Created test domains");
     }
 
@@ -140,22 +158,32 @@ public class TestDataLoaderService extends BaseService {
                     .setParameter("reportId", "nm-report")
                     .getResultList();
             if (reports.isEmpty()) {
-                Domain nmDomain = em.createNamedQuery("Domain.findByClientId", Domain.class)
-                        .setParameter("clientId", "niord-client-nm")
-                        .getSingleResult();
-                FmReport report = new FmReport();
-                report.setReportId("nm-report");
-                report.setName("NM report");
-                report.setTemplatePath("/templates/messages/nm-report-pdf.ftl");
-                report.getDomains().add(nmDomain);
-                em.persist(report);
+                Domain nmDomain = domainService.findByClientId("niord-client-nm");
+                if (nmDomain != null) {
+                    FmReport report = new FmReport();
+                    report.setReportId("nm-report");
+                    report.setName("NM report");
+                    report.setTemplatePath("/templates/messages/nm-report-pdf.ftl");
+                    report.getDomains().add(nmDomain);
+                    em.persist(report);
 
-                report = new FmReport();
-                report.setReportId("nm-tp-report");
-                report.setName("NM T&P report");
-                report.setTemplatePath("/templates/messages/nm-tp-report-pdf.ftl");
-                report.getDomains().add(nmDomain);
-                em.persist(report);
+                    report = new FmReport();
+                    report.setReportId("nm-tp-report");
+                    report.setName("NM T&P report");
+                    report.setTemplatePath("/templates/messages/nm-tp-report-pdf.ftl");
+                    report.getDomains().add(nmDomain);
+                    em.persist(report);
+                }
+
+                Domain faDomain = domainService.findByClientId("niord-client-fa");
+                if (faDomain != null) {
+                    FmReport report = new FmReport();
+                    report.setReportId("fa-list");
+                    report.setName("Firing Areas");
+                    report.setTemplatePath("/templates/messages/fa-list-pdf.ftl");
+                    report.getDomains().add(faDomain);
+                    em.persist(report);
+                }
 
                 log.info("Created NM reports");}
         } catch (Exception e) {

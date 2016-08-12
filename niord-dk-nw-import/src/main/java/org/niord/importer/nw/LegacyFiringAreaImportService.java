@@ -313,7 +313,7 @@ public class LegacyFiringAreaImportService {
         message.setMainType(MainType.NM);
         message.setType(Type.MISCELLANEOUS_NOTICE);
         message.setStatus(Status.IMPORTED);
-        message.setShortId(extractShortId(area));
+        message.setShortId(extractShortId(area, "FA-"));
         message.setMrn(extractMrn(area, "fe:"));
         message.setAutoTitle(true);
         message.getAreas().add(area);
@@ -369,7 +369,7 @@ public class LegacyFiringAreaImportService {
      *   "ES D 139 Bornholm E." -> "ES D 139"
      *   "13 Seden" -> "13"
      **/
-    private String extractShortId(Area area) {
+    private String extractLegacyId(Area area) {
         if (area.getDesc("da") != null && StringUtils.isNotBlank(area.getDesc("da").getName())) {
             String name = area.getDesc("da").getName();
 
@@ -387,15 +387,30 @@ public class LegacyFiringAreaImportService {
 
 
     /**
+     * Extracts the short id from an area name.
+     * Examples:
+     *   "ES D 139 Bornholm E." -> "FA-ES-D-139"
+     *   "13 Seden" -> "FA-13"
+     **/
+    private String extractShortId(Area area, String prefix) {
+        String shortId = extractLegacyId(area);
+        if (shortId != null) {
+            return prefix + shortId.replace(" ", "-");
+        }
+        return null;
+    }
+
+
+    /**
      * Extracts the MRN from an area name.
      * Examples:
      *   "ES D 139 Bornholm E." -> "urn:mrn:iho:nm:dk:fe:ed-d-139"
      *   "13 Seden" -> "urn:mrn:iho:nm:dk:fe:13"
      **/
-    private String extractMrn(Area area, String suffix) {
-        String shortId = extractShortId(area);
+    private String extractMrn(Area area, String infix) {
+        String shortId = extractLegacyId(area);
         if (shortId != null) {
-            return nmMrnPrefix + suffix + shortId.toLowerCase().replace(" ", "-");
+            return nmMrnPrefix + infix + shortId.toLowerCase().replace(" ", "-");
         }
         return null;
     }
