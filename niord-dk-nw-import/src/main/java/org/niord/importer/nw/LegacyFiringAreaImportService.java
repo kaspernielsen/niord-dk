@@ -31,6 +31,7 @@ import org.niord.core.message.Message;
 import org.niord.core.message.MessageDesc;
 import org.niord.core.message.MessageSeries;
 import org.niord.core.message.MessageSeriesService;
+import org.niord.core.settings.annotation.Setting;
 import org.niord.model.vo.AreaType;
 import org.niord.model.vo.MainType;
 import org.niord.model.vo.Status;
@@ -53,6 +54,8 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static javax.ejb.TransactionAttributeType.REQUIRES_NEW;
 
@@ -61,6 +64,15 @@ import static javax.ejb.TransactionAttributeType.REQUIRES_NEW;
  */
 @Stateless
 public class LegacyFiringAreaImportService {
+
+    public static Pattern FIRING_AREA_NAME_FORMAT_1 = Pattern.compile(
+            "^(?<id>\\d+) .+$",
+            Pattern.CASE_INSENSITIVE
+    );
+    public static Pattern FIRING_AREA_NAME_FORMAT_2 = Pattern.compile(
+            "^(?<id>(EK|ES) (D|R) \\d+) .+$",
+            Pattern.CASE_INSENSITIVE
+    );
 
     @Inject
     Logger log;
@@ -78,6 +90,11 @@ public class LegacyFiringAreaImportService {
     String infoSql;
 
     String idForAreaSql = "select id from firing_area where name_dk = ?";
+
+    @Inject
+    @Setting(value = "nmMrnPrefix", defaultValue = "urn:mrn:iho:nm:dk:", web = true,
+            description = "The MRN prefix to use for NM messages")
+    String nmMrnPrefix;
 
     @Inject
     LegacyNwDatabase db;
@@ -120,6 +137,7 @@ public class LegacyFiringAreaImportService {
                 area = createAreaTemplate(area2En, area2Da, area);
                 area = createAreaTemplate(area3En, area3Da, area);
                 area.setActive(active == 1);
+                area.setMrn(extractMrn(area, "fa:"));
                 areas.put(id, area);
             }
             rs.close();
@@ -213,6 +231,11 @@ public class LegacyFiringAreaImportService {
                     updated = true;
                     log.info("Updated type of area " + area.getId());
                 }
+                if (area.getMrn() == null && areaTemplate.getMrn() != null) {
+                    area.setMrn(areaTemplate.getMrn());
+                    updated = true;
+                    log.info("Updated MRN of area " + area.getId());
+                }
                 if (updated) {
                     areaService.saveEntity(area);
                 }
@@ -290,6 +313,8 @@ public class LegacyFiringAreaImportService {
         message.setMainType(MainType.NM);
         message.setType(Type.MISCELLANEOUS_NOTICE);
         message.setStatus(Status.IMPORTED);
+        message.setShortId(extractShortId(area));
+        message.setMrn(extractMrn(area, "fe:"));
         message.setAutoTitle(true);
         message.getAreas().add(area);
         if (area.getGeometry() != null) {
@@ -335,6 +360,44 @@ public class LegacyFiringAreaImportService {
         message.getCategories().add(firingExercise);
 
         return message;
+    }
+
+
+    /**
+     * Extracts the short id from an area name.
+     * Examples:
+     *   "ES D 139 Bornholm E." -> "ES D 139"
+     *   "13 Seden" -> "13"
+     **/
+    private String extractShortId(Area area) {
+        if (area.getDesc("da") != null && StringUtils.isNotBlank(area.getDesc("da").getName())) {
+            String name = area.getDesc("da").getName();
+
+            Matcher m = FIRING_AREA_NAME_FORMAT_1.matcher(name);
+            if (m.find()) {
+                return m.group("id");
+            }
+            m = FIRING_AREA_NAME_FORMAT_2.matcher(name);
+            if (m.find()) {
+                return m.group("id");
+            }
+        }
+        return null;
+    }
+
+
+    /**
+     * Extracts the MRN from an area name.
+     * Examples:
+     *   "ES D 139 Bornholm E." -> "urn:mrn:iho:nm:dk:fe:ed-d-139"
+     *   "13 Seden" -> "urn:mrn:iho:nm:dk:fe:13"
+     **/
+    private String extractMrn(Area area, String suffix) {
+        String shortId = extractShortId(area);
+        if (shortId != null) {
+            return nmMrnPrefix + suffix + shortId.toLowerCase().replace(" ", "-");
+        }
+        return null;
     }
 
 
