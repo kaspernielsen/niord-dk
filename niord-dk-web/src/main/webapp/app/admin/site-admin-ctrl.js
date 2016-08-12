@@ -116,6 +116,13 @@ angular.module('niord.admin')
                 $scope.legacyFaResult = error;
             };
 
+
+            // Sync the tagData.tag with the data.tagName
+            $scope.$watch("tagData", function () {
+                $scope.data.tagName = $scope.tagData.tag ? $scope.tagData.tag.tagId : undefined;
+            }, true);
+
+
             /** Tests the legacy NW database connection - also used for firing area imports */
             $scope.testConnection = function() {
                 $scope.legacyFaResult = 'Trying to connect...';

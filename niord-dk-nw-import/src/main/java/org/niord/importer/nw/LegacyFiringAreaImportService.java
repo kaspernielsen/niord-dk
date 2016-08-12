@@ -309,6 +309,9 @@ public class LegacyFiringAreaImportService {
         composeMessageDescFromLegacyInfo(daDesc, daInfo, "da");
         composeMessageDescFromLegacyInfo(enDesc, enInfo, "en");
 
+        // Update the title line
+        message.updateMessageTitle();
+
         // Charts
         String chartInfo = daInfo.get(3);
         if (StringUtils.isNotBlank(chartInfo)) {
@@ -333,7 +336,7 @@ public class LegacyFiringAreaImportService {
     private void composeMessageDescFromLegacyInfo(MessageDesc desc, Map<Integer, String> info, String lang) {
         // 2: Note
         if (StringUtils.isNotBlank(info.get(2))) {
-            desc.setNote(info.get(2).replace("\n", "<br>"));
+            desc.setNote(info.get(2));
         }
         // 1: Details, 5: Prohibition, 6: Signals merged into description
         StringBuilder d = new StringBuilder();
