@@ -6,8 +6,8 @@ import org.niord.core.geojson.Feature;
 import org.niord.core.geojson.FeatureCollection;
 import org.niord.core.geojson.JtsConverter;
 import org.niord.core.message.Message;
-import org.niord.model.message.geojson.MultiPointVo;
-import org.niord.model.message.geojson.PointVo;
+import org.niord.model.geojson.MultiPointVo;
+import org.niord.model.geojson.PointVo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -36,8 +36,8 @@ import org.niord.model.message.AreaType;
 import org.niord.model.message.MainType;
 import org.niord.model.message.Status;
 import org.niord.model.message.Type;
-import org.niord.model.message.geojson.PointVo;
-import org.niord.model.message.geojson.PolygonVo;
+import org.niord.model.geojson.PointVo;
+import org.niord.model.geojson.PolygonVo;
 import org.slf4j.Logger;
 
 import javax.ejb.Stateless;

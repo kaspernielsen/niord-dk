@@ -27,8 +27,8 @@ import org.niord.core.sequence.Sequence;
 import org.niord.core.sequence.SequenceService;
 import org.niord.core.user.UserService;
 import org.niord.importer.aton.batch.AbstractDkAtonImportProcessor;
-import org.niord.model.message.aton.AtonNodeVo;
-import org.niord.model.message.aton.AtonOsmVo;
+import org.niord.model.aton.AtonNodeVo;
+import org.niord.model.aton.AtonOsmVo;
 import org.slf4j.Logger;
 
 import javax.annotation.security.PermitAll;
