@@ -9,8 +9,8 @@ import org.niord.core.domain.DomainService;
 import org.niord.core.fm.FmReport;
 import org.niord.core.message.MessageSeries;
 import org.niord.core.service.BaseService;
-import org.niord.model.vo.MainType;
-import org.niord.model.vo.MessageSeriesVo.NumberSequenceType;
+import org.niord.model.message.MainType;
+import org.niord.model.message.MessageSeriesVo.NumberSequenceType;
 import org.slf4j.Logger;
 
 import javax.annotation.PostConstruct;

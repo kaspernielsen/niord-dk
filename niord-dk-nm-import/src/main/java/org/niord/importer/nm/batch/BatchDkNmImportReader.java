@@ -19,7 +19,7 @@ import org.niord.core.message.Message;
 import org.niord.core.message.batch.BatchMessageImportReader;
 import org.niord.importer.nm.extract.NmHtmlExtractor;
 import org.niord.model.DataFilter;
-import org.niord.model.vo.MessageVo;
+import org.niord.model.message.MessageVo;
 
 import javax.inject.Named;
 import java.nio.file.Path;

@@ -4,7 +4,7 @@ import org.apache.commons.lang.StringUtils;
 import org.jsoup.nodes.Element;
 import org.niord.core.message.Message;
 import org.niord.core.message.Reference;
-import org.niord.model.vo.ReferenceType;
+import org.niord.model.message.ReferenceType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

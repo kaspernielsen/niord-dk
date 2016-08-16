@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
 import org.niord.importer.nm.extract.NmHtmlExtractor;
 import org.niord.model.DataFilter;
-import org.niord.model.vo.MessageVo;
+import org.niord.model.message.MessageVo;
 
 import java.net.URL;
 import java.util.List;

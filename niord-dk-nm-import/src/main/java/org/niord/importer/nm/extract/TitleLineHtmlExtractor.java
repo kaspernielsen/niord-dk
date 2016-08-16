@@ -4,7 +4,7 @@ import org.apache.commons.lang.StringUtils;
 import org.jsoup.nodes.Element;
 import org.niord.core.area.Area;
 import org.niord.core.message.Message;
-import org.niord.model.vo.Type;
+import org.niord.model.message.Type;
 
 /**
  * Extracts the components of the title line from the HTML element

@@ -32,12 +32,12 @@ import org.niord.core.message.MessageDesc;
 import org.niord.core.message.MessageSeries;
 import org.niord.core.message.MessageSeriesService;
 import org.niord.core.settings.annotation.Setting;
-import org.niord.model.vo.AreaType;
-import org.niord.model.vo.MainType;
-import org.niord.model.vo.Status;
-import org.niord.model.vo.Type;
-import org.niord.model.vo.geojson.PointVo;
-import org.niord.model.vo.geojson.PolygonVo;
+import org.niord.model.message.AreaType;
+import org.niord.model.message.MainType;
+import org.niord.model.message.Status;
+import org.niord.model.message.Type;
+import org.niord.model.message.geojson.PointVo;
+import org.niord.model.message.geojson.PolygonVo;
 import org.slf4j.Logger;
 
 import javax.ejb.Stateless;

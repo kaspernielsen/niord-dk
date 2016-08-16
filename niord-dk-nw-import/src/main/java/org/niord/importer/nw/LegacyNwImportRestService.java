@@ -22,7 +22,7 @@ import org.niord.core.area.Area;
 import org.niord.core.batch.BatchService;
 import org.niord.model.DataFilter;
 import org.niord.model.IJsonSerializable;
-import org.niord.model.vo.MessageVo;
+import org.niord.model.message.MessageVo;
 import org.slf4j.Logger;
 
 import javax.annotation.security.RolesAllowed;
