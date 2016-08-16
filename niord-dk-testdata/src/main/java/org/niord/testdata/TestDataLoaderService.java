@@ -123,7 +123,7 @@ public class TestDataLoaderService extends BaseService {
 
         d = new Domain();
         d.setClientId("niord-client-fa");
-        d.setName("FA");
+        d.setName("Firing Areas");
         d.getMessageSeries().add(createMessageSeries(
                 "dma-fa",
                 MainType.NM,
