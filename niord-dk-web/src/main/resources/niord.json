@@ -123,6 +123,13 @@
     "editable"    : true
   },
   {
+    "key"         : "openSeaMapLayerEnabled",
+    "description" : "Whether or not to display the OpenSeaMap layer in maps",
+    "value"       : false,
+    "web"         : true,
+    "editable"    : true
+  },
+  {
     "key"         : "mapImageServer",
     "description" : "URL of static-map service used for generation map thumbnails",
     "value"       : "http://osm.e-navigation.net/staticmap.php",
