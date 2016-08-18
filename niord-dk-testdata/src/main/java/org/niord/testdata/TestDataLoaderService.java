@@ -104,7 +104,7 @@ public class TestDataLoaderService extends BaseService {
     private void importDomains() {
 
         Domain d = new Domain();
-        d.setClientId("niord-client-nw");
+        d.setDomainId("niord-client-nw");
         d.setName("NW");
         d.getMessageSeries().add(createMessageSeries(
                 "dma-nw",
@@ -124,7 +124,7 @@ public class TestDataLoaderService extends BaseService {
         em.persist(d);
 
         d = new Domain();
-        d.setClientId("niord-client-nm");
+        d.setDomainId("niord-client-nm");
         d.setName("NM");
         d.getMessageSeries().add(createMessageSeries(
                 "dma-nm",
@@ -138,7 +138,7 @@ public class TestDataLoaderService extends BaseService {
 
 
         d = new Domain();
-        d.setClientId("niord-client-fa");
+        d.setDomainId("niord-client-fa");
         d.setName("Firing Areas");
         d.getMessageSeries().add(createMessageSeries(
                 "dma-fa",
@@ -174,7 +174,7 @@ public class TestDataLoaderService extends BaseService {
                     .setParameter("reportId", "nm-report")
                     .getResultList();
             if (reports.isEmpty()) {
-                Domain nmDomain = domainService.findByClientId("niord-client-nm");
+                Domain nmDomain = domainService.findByDomainId("niord-client-nm");
                 if (nmDomain != null) {
                     FmReport report = new FmReport();
                     report.setReportId("nm-report");
@@ -191,7 +191,7 @@ public class TestDataLoaderService extends BaseService {
                     em.persist(report);
                 }
 
-                Domain faDomain = domainService.findByClientId("niord-client-fa");
+                Domain faDomain = domainService.findByDomainId("niord-client-fa");
                 if (faDomain != null) {
                     FmReport report = new FmReport();
                     report.setReportId("fa-list");
