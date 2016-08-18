@@ -148,6 +148,7 @@ public class TestDataLoaderService extends BaseService {
                 null
         ));
         d.setTimeZone("Europe/Copenhagen");
+        d.setSchedule(true);
         em.persist(d);
 
         log.info("Created test domains");
