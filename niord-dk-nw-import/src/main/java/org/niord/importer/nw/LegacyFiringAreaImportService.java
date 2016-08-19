@@ -18,7 +18,6 @@ package org.niord.importer.nw;
 import com.vividsolutions.jts.geom.Geometry;
 import org.apache.commons.lang.StringUtils;
 import org.niord.core.area.Area;
-import org.niord.core.area.AreaDesc;
 import org.niord.core.area.AreaSearchParams;
 import org.niord.core.area.AreaService;
 import org.niord.core.category.Category;
@@ -32,12 +31,12 @@ import org.niord.core.message.MessageDesc;
 import org.niord.core.message.MessageSeries;
 import org.niord.core.message.MessageSeriesService;
 import org.niord.core.settings.annotation.Setting;
+import org.niord.model.geojson.PointVo;
+import org.niord.model.geojson.PolygonVo;
 import org.niord.model.message.AreaType;
 import org.niord.model.message.MainType;
 import org.niord.model.message.Status;
 import org.niord.model.message.Type;
-import org.niord.model.geojson.PointVo;
-import org.niord.model.geojson.PolygonVo;
 import org.slf4j.Logger;
 
 import javax.ejb.Stateless;
@@ -89,7 +88,7 @@ public class LegacyFiringAreaImportService {
     @TextResource("/sql/fa_information_data.sql")
     String infoSql;
 
-    String idForAreaSql = "select id from firing_area where name_dk = ?";
+    String validateAreaIdSql = "select id from firing_area where id = ?";
 
     @Inject
     @Setting(value = "nmMrnPrefix", defaultValue = "urn:mrn:iho:nm:dk:", web = true,
@@ -447,14 +446,15 @@ public class LegacyFiringAreaImportService {
 
     /** Looks up the legacy id for the given area **/
     private Integer getLegacyIdForArea(Area area) {
-        AreaDesc desc = area.getDesc("da");
-        if (desc == null || StringUtils.isBlank(desc.getName())) {
+        String legacyId = area.getLegacyId();
+        if (!StringUtils.isNumeric(legacyId)) {
             return null;
         }
+        Integer id = Integer.valueOf(legacyId);
 
         try (Connection con = db.openConnection();
-             PreparedStatement stmt = con.prepareStatement(idForAreaSql)) {
-            stmt.setString(1, desc.getName());
+             PreparedStatement stmt = con.prepareStatement(validateAreaIdSql)) {
+            stmt.setInt(1, id);
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
                 return getInt(rs, "id");
