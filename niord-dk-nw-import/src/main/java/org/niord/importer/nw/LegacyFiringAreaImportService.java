@@ -137,6 +137,7 @@ public class LegacyFiringAreaImportService {
                 area = createAreaTemplate(area2En, area2Da, area);
                 area = createAreaTemplate(area3En, area3Da, area);
                 area.setActive(active == 1);
+                area.setLegacyId(String.valueOf(id));
                 area.setMrn(extractMrn(area, "fa:"));
                 areas.put(id, area);
             }
@@ -230,6 +231,11 @@ public class LegacyFiringAreaImportService {
                     area.setType(AreaType.FIRING_AREA);
                     updated = true;
                     log.info("Updated type of area " + area.getId());
+                }
+                if (area.getLegacyId() == null && areaTemplate.getLegacyId() != null) {
+                    area.setLegacyId(areaTemplate.getLegacyId());
+                    updated = true;
+                    log.info("Updated legacy-ID of area " + area.getId());
                 }
                 if (area.getMrn() == null && areaTemplate.getMrn() != null) {
                     area.setMrn(areaTemplate.getMrn());
