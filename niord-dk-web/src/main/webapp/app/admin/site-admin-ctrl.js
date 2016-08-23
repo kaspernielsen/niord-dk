@@ -39,7 +39,7 @@ angular.module('niord.admin')
                 seriesId: undefined,
                 tagName: ''
             };
-            $scope.tags = [ undefined ];
+            $scope.tagData = { tag: undefined };
             $scope.initTagIds = [];
 
 
@@ -48,7 +48,7 @@ angular.module('niord.admin')
                 .success(function (result) {
                     $scope.data = result;
 
-                    $scope.tags[0] = undefined;
+                    $scope.tagData.tag = undefined;
                     if (result && result.tagName) {
                         $scope.initTagIds.push(result.tagName);
                     }
@@ -78,8 +78,8 @@ angular.module('niord.admin')
 
 
             // Sync the selected tag with the data.tagName
-            $scope.$watch("tags", function () {
-                $scope.data.tagName = $scope.tags[0] !== undefined ? $scope.tags[0].tagId : undefined;
+            $scope.$watch("tagData", function () {
+                $scope.data.tagName = $scope.tagData.tag !== undefined ? $scope.tagData.tag.tagId : undefined;
             }, true);
 
 
@@ -105,7 +105,7 @@ angular.module('niord.admin')
             'use strict';
 
             $scope.legacyFaResult = '';
-            $scope.tags = [ undefined ];
+            $scope.tagData = { tag: undefined };
 
             // Determine the message series for the current domain
             $scope.messageSeriesIds = [];
@@ -130,8 +130,8 @@ angular.module('niord.admin')
 
 
             // Sync the selected tag with the data.tagName
-            $scope.$watch("tags", function () {
-                $scope.data.tagName = $scope.tags[0] !== undefined ? $scope.tags[0].tagId : undefined;
+            $scope.$watch("tagData", function () {
+                $scope.data.tagName = $scope.tagData.tag !== undefined ? $scope.tagData.tag.tagId : undefined;
             }, true);
 
 
@@ -200,7 +200,7 @@ angular.module('niord.admin')
                 });
             }
 
-            $scope.tags = [ undefined ];
+            $scope.tagData = { tag: undefined };
             $scope.data = {
                 seriesId: $scope.messageSeriesIds.length == 1 ? $scope.messageSeriesIds[0] : undefined,
                 tagName: ''
@@ -208,8 +208,8 @@ angular.module('niord.admin')
 
 
             // Sync the selected tag with the data.tagName
-            $scope.$watch("tags", function () {
-                $scope.data.tagName = $scope.tags[0] !== undefined ? $scope.tags[0].tagId : undefined;
+            $scope.$watch("tagData", function () {
+                $scope.data.tagName = $scope.tagData.tag !== undefined ? $scope.tagData.tag.tagId : undefined;
             }, true);
 
 
