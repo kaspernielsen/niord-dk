@@ -39,22 +39,18 @@ angular.module('niord.admin')
                 seriesId: undefined,
                 tagName: ''
             };
-            $scope.tagData = {
-                tag: undefined
-            };
+            $scope.tags = [ undefined ];
+            $scope.initTagIds = [];
+
 
             // Load the default parameters
             $http.get('/rest/import/nw/params')
                 .success(function (result) {
                     $scope.data = result;
 
-                    $scope.tagData.tag = undefined;
+                    $scope.tags[0] = undefined;
                     if (result && result.tagName) {
-                        $http.get('/rest/tags/tag/' + result.tagName).then(function(response) {
-                            if (response.data && response.data.length > 0) {
-                                $scope.tagData.tag = response.data[0];
-                            }
-                        });
+                        $scope.initTagIds.push(result.tagName);
                     }
                 });
 
@@ -81,9 +77,9 @@ angular.module('niord.admin')
             }
 
 
-            // Sync the tagData.tag with the data.tagName
-            $scope.$watch("tagData", function () {
-                $scope.data.tagName = $scope.tagData.tag ? $scope.tagData.tag.tagId : undefined;
+            // Sync the selected tag with the data.tagName
+            $scope.$watch("tags", function () {
+                $scope.data.tagName = $scope.tags[0] !== undefined ? $scope.tags[0].tagId : undefined;
             }, true);
 
 
@@ -109,7 +105,7 @@ angular.module('niord.admin')
             'use strict';
 
             $scope.legacyFaResult = '';
-            $scope.tagData = { tag: undefined };
+            $scope.tags = [ undefined ];
 
             // Determine the message series for the current domain
             $scope.messageSeriesIds = [];
@@ -133,9 +129,9 @@ angular.module('niord.admin')
             };
 
 
-            // Sync the tagData.tag with the data.tagName
-            $scope.$watch("tagData", function () {
-                $scope.data.tagName = $scope.tagData.tag ? $scope.tagData.tag.tagId : undefined;
+            // Sync the selected tag with the data.tagName
+            $scope.$watch("tags", function () {
+                $scope.data.tagName = $scope.tags[0] !== undefined ? $scope.tags[0].tagId : undefined;
             }, true);
 
 
@@ -204,16 +200,16 @@ angular.module('niord.admin')
                 });
             }
 
-            $scope.tagData = { tag: undefined };
+            $scope.tags = [ undefined ];
             $scope.data = {
                 seriesId: $scope.messageSeriesIds.length == 1 ? $scope.messageSeriesIds[0] : undefined,
                 tagName: ''
             };
 
 
-            // Sync the tagData.tag with the data.tagName
-            $scope.$watch("tagData", function () {
-                $scope.data.tagName = $scope.tagData.tag ? $scope.tagData.tag.tagId : undefined;
+            // Sync the selected tag with the data.tagName
+            $scope.$watch("tags", function () {
+                $scope.data.tagName = $scope.tags[0] !== undefined ? $scope.tags[0].tagId : undefined;
             }, true);
 
 
