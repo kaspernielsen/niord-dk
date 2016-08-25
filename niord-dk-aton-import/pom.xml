@@ -27,7 +27,7 @@
         <dependency>
             <groupId>org.picketbox</groupId>
             <artifactId>picketbox</artifactId>
-            <version>4.9.3.Final</version>
+            <version>4.9.6.Final</version>
             <scope>provided</scope>
         </dependency>
 
