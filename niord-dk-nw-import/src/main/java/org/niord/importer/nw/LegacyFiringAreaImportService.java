@@ -342,8 +342,8 @@ public class LegacyFiringAreaImportService {
         Map<Integer, String> daInfo = new HashMap<>();
         Map<Integer, String> enInfo = new HashMap<>();
         getLegacyInformationForArea(id, daInfo, enInfo);
-        composeMessageDescFromLegacyInfo(daDesc, daInfo, "da");
-        composeMessageDescFromLegacyInfo(enDesc, enInfo, "en");
+        composeMessageDescFromLegacyInfo(daDesc, daInfo);
+        composeMessageDescFromLegacyInfo(enDesc, enInfo);
 
         // Update the title line
         message.updateMessageTitle();
@@ -422,25 +422,21 @@ public class LegacyFiringAreaImportService {
 
 
     /** Composes the message descriptor from the legacy firing area information **/
-    private void composeMessageDescFromLegacyInfo(MessageDesc desc, Map<Integer, String> info, String lang) {
+    private void composeMessageDescFromLegacyInfo(MessageDesc desc, Map<Integer, String> info) {
         // 2: Note
         if (StringUtils.isNotBlank(info.get(2))) {
             desc.setNote(info.get(2));
         }
         // 1: Details, 5: Prohibition, 6: Signals merged into description
-        StringBuilder d = new StringBuilder();
         if (StringUtils.isNotBlank(info.get(1))) {
-            d.append("<p>").append(info.get(1).replace("\n", "<br>")).append("</p>");
+            desc.setDescription("<p>" + info.get(1).replace("\n", "<br>") + "</p>");
         }
         if (StringUtils.isNotBlank(info.get(5))) {
-            d.append("da".equals(lang) ? "<p><i>Forbud</i></p>" : "<p><i>Prohibition</i></p>");
-            d.append("<p>").append(info.get(5).replace("\n", "<br>")).append("</p>");
+            desc.setProhibition(info.get(5));
         }
         if (StringUtils.isNotBlank(info.get(6))) {
-            d.append("da".equals(lang) ? "<p><i>Skydesignaler</i></p>" : "<p><i>Signals</i></p>");
-            d.append("<p>").append(info.get(6).replace("\n", "<br>")).append("</p>");
+            desc.setSignals(info.get(6));
         }
-        desc.setDescription(d.toString());
     }
 
 
