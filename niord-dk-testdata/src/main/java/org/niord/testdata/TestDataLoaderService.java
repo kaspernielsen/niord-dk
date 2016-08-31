@@ -162,6 +162,7 @@ public class TestDataLoaderService extends BaseService {
                 "A/${number} ${year}"
         ));
         d.setTimeZone("Europe/Copenhagen");
+        d.setMessageSortOrder("ID ASC");
         em.persist(d);
 
 
