@@ -151,6 +151,20 @@ public class TestDataLoaderService extends BaseService {
         d.setSchedule(true);
         em.persist(d);
 
+        d = new Domain();
+        d.setDomainId("niord-client-annex");
+        d.setName("NM Annex");
+        d.getMessageSeries().add(createMessageSeries(
+                "dma-nm-annex",
+                MainType.NM,
+                NumberSequenceType.YEARLY,
+                "urn:mrn:iho:nm:dk:dma:annex:${year}:${number}",
+                "A/${number} ${year}"
+        ));
+        d.setTimeZone("Europe/Copenhagen");
+        em.persist(d);
+
+
         log.info("Created test domains");
     }
 
@@ -199,6 +213,18 @@ public class TestDataLoaderService extends BaseService {
                     report.setName("Firing Areas");
                     report.setTemplatePath("/templates/messages/fa-list-pdf.ftl");
                     report.getDomains().add(faDomain);
+                    em.persist(report);
+                }
+
+                Domain annexDomain = domainService.findByDomainId("niord-client-annex");
+                if (annexDomain != null) {
+                    FmReport report = new FmReport();
+                    report.setReportId("nm-annex");
+                    report.setName("NM Annex");
+                    report.setTemplatePath("/templates/messages/nm-annex-report-pdf.ftl");
+                    report.getDomains().add(annexDomain);
+                    report.getProperties().put("mapThumbnails", Boolean.FALSE);
+                    report.getProperties().put("positions", Boolean.FALSE);
                     em.persist(report);
                 }
 
