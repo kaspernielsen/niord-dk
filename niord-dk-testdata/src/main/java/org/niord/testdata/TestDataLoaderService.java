@@ -116,9 +116,9 @@ public class TestDataLoaderService extends BaseService {
         d.getMessageSeries().add(createMessageSeries(
                 "dma-nw-local",
                 MainType.NW,
-                NumberSequenceType.YEARLY,
-                "urn:mrn:iho:nw:dk:dma:local:${year}:${legacy-id}",
-                "NW-LOCAL-${legacy-id}-${year-2-digits}"
+                NumberSequenceType.NONE,
+                null,
+                null
         ));
         d.setTimeZone("Europe/Copenhagen");
         em.persist(d);
