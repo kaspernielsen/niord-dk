@@ -150,7 +150,7 @@ angular.module('niord.admin')
             $scope.importLegacyFa = function () {
                 $scope.legacyFaResult = 'Start import of legacy firing areas';
 
-                $http.post('/rest/import/nw/import-fa')
+                $http.post('/rest/import/fa/import-fa')
                     .success(function (result) {
                         $scope.legacyFaResult = result;
                     })
@@ -162,7 +162,7 @@ angular.module('niord.admin')
             $scope.generateFaTemplates = function () {
                 $scope.legacyFaResult = 'Start generating firing area template messages';
 
-                $http.post('/rest/import/nw/generate-fa-messages', $scope.data)
+                $http.post('/rest/import/fa/generate-fa-messages', $scope.data)
                     .success(function (result) {
                         $scope.legacyFaResult = result;
                     })

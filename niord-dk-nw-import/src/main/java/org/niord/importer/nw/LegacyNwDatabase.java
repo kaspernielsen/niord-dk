@@ -135,7 +135,7 @@ public class LegacyNwDatabase {
                 if (!rs.next()) {
                     throw new Exception("Error testing legacy NW database");
                 }
-                log.info("Testing legacy NW database. Result: " + rs.getInt(1));
+                log.debug("Testing legacy NW database. Result: " + rs.getInt(1));
                 rs.close();
             }
 
@@ -145,6 +145,22 @@ public class LegacyNwDatabase {
         } catch (Exception e) {
             log.error("Failed creating a legacy NW database connection", e);
             return false;
+        }
+    }
+
+
+    /** Utility function that returns a single result **/
+    public Object getSingleResult(String sql) throws SQLException {
+        try (Connection con = openConnection();
+             Statement stmt = con.createStatement()) {
+
+            ResultSet rs = stmt.executeQuery(sql);
+            Object result = null;
+            if (rs.next()) {
+                result = rs.getObject(1);
+            }
+            rs.close();
+            return result;
         }
     }
 

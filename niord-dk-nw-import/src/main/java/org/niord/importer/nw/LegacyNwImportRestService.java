@@ -18,14 +18,12 @@ package org.niord.importer.nw;
 import org.apache.commons.lang.StringUtils;
 import org.jboss.resteasy.annotations.cache.NoCache;
 import org.jboss.security.annotation.SecurityDomain;
-import org.niord.core.area.Area;
 import org.niord.core.batch.BatchService;
-import org.niord.model.DataFilter;
 import org.niord.model.IJsonSerializable;
-import org.niord.model.message.MessageVo;
 import org.slf4j.Logger;
 
 import javax.annotation.security.RolesAllowed;
+import javax.ejb.Schedule;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
@@ -37,13 +35,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  * Imports legacy NW from an "oldmsi" database.
- * <p>
- * Additionally, handles import of firing area from the "oldmsi" database,
- * and creation of firing area message templates (which area actually created as NM's).
  */
 @Path("/import/nw")
 @Stateless
@@ -62,10 +56,8 @@ public class LegacyNwImportRestService {
     LegacyNwImportService nwImportService;
 
     @Inject
-    LegacyFiringAreaImportService faImportService;
-
-    @Inject
     BatchService batchService;
+
 
     /**
      * Tests the database connection and returns success or failure
@@ -91,6 +83,11 @@ public class LegacyNwImportRestService {
     }
 
 
+    /**
+     * Will import legacy NW messages based on the submitted parameters.
+     * @param params the batch import parameters
+     * @return a textual status
+     */
     @POST
     @Path("/import-nw")
     @Consumes("application/json;charset=UTF-8")
@@ -98,38 +95,26 @@ public class LegacyNwImportRestService {
     @NoCache
     public String startNwImport(ImportLegacyNwParams params) {
         try {
+            params = params.validate();
+
             // Persist the parameters
             nwImportService.updateImportLegacyNwParams(params);
 
-            // Check validity of parameters
-            if (StringUtils.isBlank(params.getSeriesId())) {
-                throw new Exception("Message series must be specified");
+            // If a start data is defined, start the batch job
+            if (params.getStartImportDate() != null) {
+                List<Integer> ids = nwImportService.getImportLegacyNwIds(params, true);
+
+                // No point in importing empty result set
+                if (ids.isEmpty()) {
+                    return "No legacy NW found";
+                }
+
+                // Start the import batch job
+                ImportLegacyNwData batchData = new ImportLegacyNwData(params, ids);
+                return startNwImportBatchJob(batchData);
             }
-            if (StringUtils.isBlank(params.getLocalSeriesId())) {
-                throw new Exception("Local Message series must be specified");
-            }
-            if (params.getStartImportDate() == null) {
-                throw new Exception("Start import date must be specified");
-            }
 
-            List<Integer> ids = nwImportService.getImportLegacyNwIds(params, true);
-
-            // No point in importing empty result set
-            if (ids.isEmpty()) {
-                return "No legacy NW found";
-            }
-            ImportLegacyNwData batchData = new ImportLegacyNwData(params, ids);
-
-            Map<String, Object> batchProperties = new HashMap<>();
-            batchProperties.put("seriesId", params.getSeriesId());
-            batchProperties.put("localSeriesId", params.getLocalSeriesId());
-            batchProperties.put("tagId", params.getTagId());
-
-            batchService.startBatchJobWithJsonData("dk-nw-import", batchData, "legacy-nw-data.json", batchProperties);
-
-            String msg = "Started dk-nw-import batch job for " + ids.size() + " legacy NWs";
-            log.info(msg);
-            return msg;
+            return "Updated NW import parameters";
 
         } catch (Exception e) {
             String msg = "Error importing legacy NW: " + e;
@@ -140,89 +125,65 @@ public class LegacyNwImportRestService {
 
 
     /**
-     * Imports legacy firing areas
-     * @return the status
+     * Called periodically to auto-import legacy NW messages (if the auto-import flag is turned on)
      */
-    @POST
-    @Path("/import-fa")
-    @Consumes("application/json;charset=UTF-8")
-    @Produces("text/plain")
-    @NoCache
-    public String startFaImport() {
+    @Schedule(persistent = false, second = "40", minute = "*/10", hour = "*")
+    private void periodicAutoImportNwMessages() {
         try {
+            long now = System.currentTimeMillis();
 
-            Map<Integer, Area> areas = faImportService.importFiringAreas(true);
+            // Check if auto-import is turned on
+            ImportLegacyNwParams params = nwImportService
+                    .getImportLegacyNwParams()
+                    .validate();
+
+            if (params.getAutoImport() == null || !params.getAutoImport()) {
+                // Auto-import NOT turned on
+                return;
+            }
+
+            // If this periodic job is called right after (within 5 minutes of) a manual execution, bail out.
+            if (params.getLastUpdated() != null && now - params.getLastUpdated().getTime() < 1000L * 60L * 5L) {
+                return;
+            }
+
+            // Get the ID's of the active legacy NW to import
+            List<Integer> ids = nwImportService.getActiveLegacyNwIds(params, true);
 
             // No point in importing empty result set
-            if (areas.isEmpty()) {
-                return "No legacy Firing Area found";
+            if (ids.isEmpty()) {
+                log.info("Periodic legacy NW auto-import: 0 messages imported");
+                return;
             }
 
-            StringBuilder result = new StringBuilder();
-            for (Map.Entry<Integer, Area> area : areas.entrySet()) {
-                try {
-                    faImportService.mergeArea(area.getValue());
-                } catch (Exception e) {
-                    result.append("Error merging area with legacy id ")
-                            .append(area.getKey())
-                            .append(": ")
-                            .append(e.getMessage())
-                            .append("\n");
-                }
-            }
-
-            result.append("Imported ")
-                    .append(areas.size())
-                    .append(" legacy firing areas");
-
-            log.info(result.toString());
-            return result.toString();
+            // Start the import batch job
+            ImportLegacyNwData batchData = new ImportLegacyNwData(params, ids);
+            String result = startNwImportBatchJob(batchData);
+            log.info(result);
 
         } catch (Exception e) {
-            String msg = "Error importing legacy firing areas: " + e;
-            log.error(msg, e);
-            return msg;
+            log.error("Error performing periodic legacy NW auto-import", e);
         }
     }
 
 
     /**
-     * Generates firing exercise message templates for each firing area
-     * @return the status
+     * Starts the NW import batch job
+     * @param batchData the batch job parameters
+     * @return a textual status
      */
-    @POST
-    @Path("/generate-fa-messages")
-    @Consumes("application/json;charset=UTF-8")
-    @Produces("text/plain")
-    @NoCache
-    public String generateFaTemplates(GenerateFaTemplateParams params) {
+    private String startNwImportBatchJob(ImportLegacyNwData batchData) throws Exception {
 
-        try {
+        Map<String, Object> batchProperties = new HashMap<>();
+        batchProperties.put("seriesId", batchData.getSeriesId());
+        batchProperties.put("localSeriesId", batchData.getLocalSeriesId());
+        batchProperties.put("tagId", batchData.getTagId());
 
-            DataFilter filter = DataFilter.get()
-                    .fields("Message.details", "Message.geometry", "Area.parent", "Category.parent");
+        batchService.startBatchJobWithJsonData("dk-nw-import", batchData, "legacy-nw-data.json", batchProperties);
 
-            List<MessageVo> messages = faImportService.generateFiringAreaMessageTemplates(params.getSeriesId())
-                    .stream()
-                    .map(m -> m.toVo(filter))
-                    .collect(Collectors.toList());
-
-            Map<String, Object> batchProperties = new HashMap<>();
-            batchProperties.put("seriesId", params.getSeriesId());
-            batchProperties.put("tagId", params.getTagId());
-
-            batchService.startBatchJobWithJsonData("message-import", messages, "message-data.json", batchProperties);
-
-            String msg = "Started message-import batch job for " + messages.size() + " template firing area messages";
-            log.info(msg);
-            return msg;
-
-        } catch (Exception e) {
-            String msg = "Error generating template firing area messages: " + e;
-            log.error(msg, e);
-            return msg;
-        }
-
+        String msg = "Started dk-nw-import batch job for " + batchData.getIds().size() + " legacy NWs";
+        log.info(msg);
+        return msg;
     }
 
 
@@ -235,6 +196,21 @@ public class LegacyNwImportRestService {
         String localSeriesId;
         String tagId;
         Date startImportDate;
+        Boolean autoImport;
+        Date lastUpdated;
+
+
+        /** Validates that the paramters are valid, i.e. defines required parameters **/
+        public ImportLegacyNwParams validate() throws Exception {
+            // Check validity of parameters
+            if (StringUtils.isBlank(seriesId)) {
+                throw new Exception("Message series must be specified");
+            }
+            if (StringUtils.isBlank(localSeriesId)) {
+                throw new Exception("Local Message series must be specified");
+            }
+            return this;
+        }
 
         public String getSeriesId() {
             return seriesId;
@@ -267,6 +243,22 @@ public class LegacyNwImportRestService {
         public void setStartImportDate(Date startImportDate) {
             this.startImportDate = startImportDate;
         }
+
+        public Boolean getAutoImport() {
+            return autoImport;
+        }
+
+        public void setAutoImport(Boolean autoImport) {
+            this.autoImport = autoImport;
+        }
+
+        public Date getLastUpdated() {
+            return lastUpdated;
+        }
+
+        public void setLastUpdated(Date lastUpdated) {
+            this.lastUpdated = lastUpdated;
+        }
     }
 
     /**
@@ -294,31 +286,4 @@ public class LegacyNwImportRestService {
             this.ids = ids;
         }
     }
-
-
-    /**
-     * Defines the parameters used when starting an import of legacy NW messages
-     */
-    public static class GenerateFaTemplateParams implements IJsonSerializable {
-
-        String seriesId;
-        String tagId;
-
-        public String getSeriesId() {
-            return seriesId;
-        }
-
-        public void setSeriesId(String seriesId) {
-            this.seriesId = seriesId;
-        }
-
-        public String getTagId() {
-            return tagId;
-        }
-
-        public void setTagId(String tagId) {
-            this.tagId = tagId;
-        }
-    }
-
 }

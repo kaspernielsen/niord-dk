@@ -1,0 +1,175 @@
+/*
+ * Copyright 2016 Danish Maritime Authority.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.niord.importer.nw;
+
+import org.jboss.resteasy.annotations.cache.NoCache;
+import org.jboss.security.annotation.SecurityDomain;
+import org.niord.core.area.Area;
+import org.niord.core.batch.BatchService;
+import org.niord.model.DataFilter;
+import org.niord.model.IJsonSerializable;
+import org.niord.model.message.MessageVo;
+import org.slf4j.Logger;
+
+import javax.annotation.security.RolesAllowed;
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+/**
+ * Handles import of firing area from the "oldmsi" database,
+ * and creation of firing area message templates (which area actually created as NM's).
+ */
+@Path("/import/fa")
+@Stateless
+@SecurityDomain("keycloak")
+@RolesAllowed("admin")
+@SuppressWarnings("unused")
+public class LegacyFiringAreaImportRestService {
+
+    @Inject
+    Logger log;
+
+    @Inject
+    LegacyNwDatabase db;
+
+    @Inject
+    LegacyFiringAreaImportService faImportService;
+
+    @Inject
+    BatchService batchService;
+
+    /**
+     * Imports legacy firing areas
+     * @return the status
+     */
+    @POST
+    @Path("/import-fa")
+    @Consumes("application/json;charset=UTF-8")
+    @Produces("text/plain")
+    @NoCache
+    public String startFaImport() {
+        try {
+
+            Map<Integer, Area> areas = faImportService.importFiringAreas(true);
+
+            // No point in importing empty result set
+            if (areas.isEmpty()) {
+                return "No legacy Firing Area found";
+            }
+
+            StringBuilder result = new StringBuilder();
+            for (Map.Entry<Integer, Area> area : areas.entrySet()) {
+                try {
+                    faImportService.mergeArea(area.getValue());
+                } catch (Exception e) {
+                    result.append("Error merging area with legacy id ")
+                            .append(area.getKey())
+                            .append(": ")
+                            .append(e.getMessage())
+                            .append("\n");
+                }
+            }
+
+            result.append("Imported ")
+                    .append(areas.size())
+                    .append(" legacy firing areas");
+
+            log.info(result.toString());
+            return result.toString();
+
+        } catch (Exception e) {
+            String msg = "Error importing legacy firing areas: " + e;
+            log.error(msg, e);
+            return msg;
+        }
+    }
+
+
+    /**
+     * Generates firing exercise message templates for each firing area
+     * @return the status
+     */
+    @POST
+    @Path("/generate-fa-messages")
+    @Consumes("application/json;charset=UTF-8")
+    @Produces("text/plain")
+    @NoCache
+    public String generateFaTemplates(GenerateFaTemplateParams params) {
+
+        try {
+
+            DataFilter filter = DataFilter.get()
+                    .fields("Message.details", "Message.geometry", "Area.parent", "Category.parent");
+
+            List<MessageVo> messages = faImportService.generateFiringAreaMessageTemplates(params.getSeriesId())
+                    .stream()
+                    .map(m -> m.toVo(filter))
+                    .collect(Collectors.toList());
+
+            Map<String, Object> batchProperties = new HashMap<>();
+            batchProperties.put("seriesId", params.getSeriesId());
+            batchProperties.put("tagId", params.getTagId());
+
+            batchService.startBatchJobWithJsonData("message-import", messages, "message-data.json", batchProperties);
+
+            String msg = "Started message-import batch job for " + messages.size() + " template firing area messages";
+            log.info(msg);
+            return msg;
+
+        } catch (Exception e) {
+            String msg = "Error generating template firing area messages: " + e;
+            log.error(msg, e);
+            return msg;
+        }
+
+    }
+
+
+    /**
+     * Defines the parameters used when starting an import of legacy NW messages
+     */
+    public static class GenerateFaTemplateParams implements IJsonSerializable {
+
+        String seriesId;
+        String tagId;
+
+        public String getSeriesId() {
+            return seriesId;
+        }
+
+        public void setSeriesId(String seriesId) {
+            this.seriesId = seriesId;
+        }
+
+        public String getTagId() {
+            return tagId;
+        }
+
+        public void setTagId(String tagId) {
+            this.tagId = tagId;
+        }
+    }
+
+}

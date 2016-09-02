@@ -28,20 +28,22 @@ import org.niord.core.geojson.JtsConverter;
 import org.niord.core.message.DateInterval;
 import org.niord.core.message.Message;
 import org.niord.core.message.MessageDesc;
+import org.niord.core.message.MessageSearchParams;
 import org.niord.core.message.MessageSeries;
 import org.niord.core.message.MessageSeriesService;
+import org.niord.core.message.MessageService;
 import org.niord.core.settings.Setting;
 import org.niord.core.settings.SettingsService;
 import org.niord.core.util.TextUtils;
 import org.niord.core.util.TimeUtils;
 import org.niord.importer.nw.LegacyNwImportRestService.ImportLegacyNwParams;
-import org.niord.model.message.MainType;
-import org.niord.model.message.Status;
-import org.niord.model.message.Type;
 import org.niord.model.geojson.LineStringVo;
 import org.niord.model.geojson.MultiPointVo;
 import org.niord.model.geojson.PointVo;
 import org.niord.model.geojson.PolygonVo;
+import org.niord.model.message.MainType;
+import org.niord.model.message.Status;
+import org.niord.model.message.Type;
 import org.slf4j.Logger;
 
 import javax.ejb.Stateless;
@@ -53,8 +55,12 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Imports messages from a local db dump of the Danish MSI database
@@ -69,8 +75,9 @@ public class LegacyNwImportService {
     SettingsService settingsService;
 
     /**
-     * Registers the start date of the legacy message import.
-     * By default, pick the first day of the year
+     * Registers the start date of the legacy message import along
+     * with the messages series to use, optionally a message tag,
+     * and whether or not to auto-import messages.
      */
     private static final Setting LEGACY_NW_IMPORT_PARAMS
             = new Setting("legacyMsiImportParams")
@@ -82,6 +89,10 @@ public class LegacyNwImportService {
     @Inject
     @TextResource("/sql/nw_all_message_ids.sql")
     String allMessagesSql;
+
+    @Inject
+    @TextResource("/sql/nw_active_message_ids.sql")
+    String activeMessagesSql;
 
     @Inject
     @TextResource("/sql/nw_message_data.sql")
@@ -98,7 +109,11 @@ public class LegacyNwImportService {
     DomainService domainService;
 
     @Inject
+    MessageService messageService;
+
+    @Inject
     MessageSeriesService messageSeriesService;
+
 
     /** Returns or creates new parameters */
     public ImportLegacyNwParams getImportLegacyNwParams() {
@@ -121,8 +136,10 @@ public class LegacyNwImportService {
 
     /** Updates the batch import parameters */
     public void updateImportLegacyNwParams(ImportLegacyNwParams params) {
+        params.setLastUpdated(new Date());
         settingsService.set(LEGACY_NW_IMPORT_PARAMS.getKey(), params);
     }
+
 
     /**
      * Returns the IDs of the legacy NWs to import
@@ -149,6 +166,74 @@ public class LegacyNwImportService {
 
             log.info("Fetched " + result.size() + " legacy NW ids");
             return result;
+        }
+    }
+
+
+    /**
+     * Returns the IDs of the active legacy NWs to import or update (i.e. cancel)
+     * @param params the import parameters
+     * @param importDb whether to import the database first
+     * @return the IDs of legacy NWs to import
+     */
+    public List<Integer> getActiveLegacyNwIds(ImportLegacyNwParams params, boolean importDb) throws Exception {
+
+        if (importDb) {
+            db.downloadAndImportLegacyNwDump();
+        }
+
+
+        // First, find the published messages with the given message series
+        MessageSearchParams publishedMsgParams = new MessageSearchParams()
+                .statuses(toSet(Status.PUBLISHED))
+                .seriesIds(toSet(params.getSeriesId(), params.getLocalSeriesId()));
+        Set<Integer> publishedNiordIds = messageService.search(publishedMsgParams)
+                .getData()
+                .stream()
+                .filter(m -> m.getLegacyId() != null && m.getLegacyId().matches("^-?\\d+$"))
+                .map(m -> Integer.valueOf(m.getLegacyId()))
+                .collect(Collectors.toSet());
+        log.debug("Found " + publishedNiordIds.size() + " published legacy messages in Niord");
+
+
+        // Next, find the active legacy messages
+        Set<Integer> publishedLegacyMsiIds = new HashSet<>();
+        try (Connection con = db.openConnection();
+             PreparedStatement stmt = con.prepareStatement(activeMessagesSql)) {
+
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                publishedLegacyMsiIds.add(getInt(rs, "id"));
+            }
+            rs.close();
+            log.debug("Found " + publishedLegacyMsiIds.size() + " active legacy NW ids");
+        }
+
+
+        // The resulting set of IDs are a combination of:
+        // 1) Those messages that are published in Niord but not in the legacy MSI system
+        // 2) Those messages that are published in the legacy MSI system, but not (present) in Niord
+        List<Integer> result = new ArrayList<>();
+        publishedNiordIds.stream()
+                .filter(id -> !publishedLegacyMsiIds.contains(id))
+                .filter(this::legacyIdExists)
+                .forEach(result::add);
+        publishedLegacyMsiIds.stream()
+                .filter(id -> !publishedNiordIds.contains(id))
+                .forEach(result::add);
+        log.info("New or cancelled legacy NW IDs " + result);
+
+        return result;
+    }
+
+
+    /** Validates that the legacy ID exists in the legacy MSI system or not **/
+    public boolean legacyIdExists(Integer id) {
+        try {
+            Object result = db.getSingleResult("select count(*) from message where id = " + id);
+            return ((Number)result).intValue() == 1;
+        } catch (Exception e) {
+            return false;
         }
     }
 
@@ -207,7 +292,7 @@ public class LegacyNwImportService {
             rs.close();
 
             Message message = new Message();
-            message.setLegacyId(String.valueOf(messageId));
+            message.setLegacyId(String.valueOf(id));
             message.setMainType(MainType.NW);
             message.setCreated(created);
             message.setUpdated(updated);
@@ -418,6 +503,17 @@ public class LegacyNwImportService {
             category.setParent(parent);
         }
         return category;
+    }
+
+
+    /** Utility funciton that converts an array to a set **/
+    @SafeVarargs
+    private final <T> Set<T> toSet(T... vals) {
+        Set<T> result = new HashSet<>();
+        if (vals != null) {
+            Arrays.stream(vals).forEach(result::add);
+        }
+        return result;
     }
 
     /*************************/
