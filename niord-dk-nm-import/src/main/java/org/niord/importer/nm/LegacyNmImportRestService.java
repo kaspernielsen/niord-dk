@@ -83,7 +83,7 @@ public class LegacyNmImportRestService extends AbstractBatchableRestService {
         // Update parameters
         params.remove("data");
         params.put("seriesId", batchData.getSeriesId());
-        params.put("tagName", batchData.getTagName());
+        params.put("tagId", batchData.getTagId());
     }
 
 
@@ -93,7 +93,7 @@ public class LegacyNmImportRestService extends AbstractBatchableRestService {
     public static class ImportLegacyNmParams implements IJsonSerializable {
 
         String seriesId;
-        String tagName;
+        String tagId;
 
         public String getSeriesId() {
             return seriesId;
@@ -103,12 +103,12 @@ public class LegacyNmImportRestService extends AbstractBatchableRestService {
             this.seriesId = seriesId;
         }
 
-        public String getTagName() {
-            return tagName;
+        public String getTagId() {
+            return tagId;
         }
 
-        public void setTagName(String tagName) {
-            this.tagName = tagName;
+        public void setTagId(String tagId) {
+            this.tagId = tagId;
         }
     }
 

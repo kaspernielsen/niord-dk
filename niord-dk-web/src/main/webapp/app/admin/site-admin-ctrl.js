@@ -37,7 +37,7 @@ angular.module('niord.admin')
 
             $scope.data = {
                 seriesId: undefined,
-                tagName: ''
+                tagId: ''
             };
             $scope.tagData = { tag: undefined };
             $scope.initTagIds = [];
@@ -49,8 +49,8 @@ angular.module('niord.admin')
                     $scope.data = result;
 
                     $scope.tagData.tag = undefined;
-                    if (result && result.tagName) {
-                        $scope.initTagIds.push(result.tagName);
+                    if (result && result.tagId) {
+                        $scope.initTagIds.push(result.tagId);
                     }
                 });
 
@@ -77,9 +77,9 @@ angular.module('niord.admin')
             }
 
 
-            // Sync the selected tag with the data.tagName
+            // Sync the selected tag with the data.tagId
             $scope.$watch("tagData", function () {
-                $scope.data.tagName = $scope.tagData.tag !== undefined ? $scope.tagData.tag.tagId : undefined;
+                $scope.data.tagId = $scope.tagData.tag !== undefined ? $scope.tagData.tag.tagId : undefined;
             }, true);
 
 
@@ -118,7 +118,7 @@ angular.module('niord.admin')
             }
             $scope.data = {
                 seriesId: $scope.messageSeriesIds.length == 1 ? $scope.messageSeriesIds[0] : undefined,
-                tagName: ''
+                tagId: ''
             };
 
             /** Displays the error message */
@@ -129,9 +129,9 @@ angular.module('niord.admin')
             };
 
 
-            // Sync the selected tag with the data.tagName
+            // Sync the selected tag with the data.tagId
             $scope.$watch("tagData", function () {
-                $scope.data.tagName = $scope.tagData.tag !== undefined ? $scope.tagData.tag.tagId : undefined;
+                $scope.data.tagId = $scope.tagData.tag !== undefined ? $scope.tagData.tag.tagId : undefined;
             }, true);
 
 
@@ -203,13 +203,13 @@ angular.module('niord.admin')
             $scope.tagData = { tag: undefined };
             $scope.data = {
                 seriesId: $scope.messageSeriesIds.length == 1 ? $scope.messageSeriesIds[0] : undefined,
-                tagName: ''
+                tagId: ''
             };
 
 
-            // Sync the selected tag with the data.tagName
+            // Sync the selected tag with the data.tagId
             $scope.$watch("tagData", function () {
-                $scope.data.tagName = $scope.tagData.tag !== undefined ? $scope.tagData.tag.tagId : undefined;
+                $scope.data.tagId = $scope.tagData.tag !== undefined ? $scope.tagData.tag.tagId : undefined;
             }, true);
 
 

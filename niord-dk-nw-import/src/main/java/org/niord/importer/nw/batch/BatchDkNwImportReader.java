@@ -37,7 +37,7 @@ import java.io.Serializable;
  * <pre>
  * {
  *     "seriesId": "dma-legacy-nw",
- *     "tagName": "NW import 2. april",
+ *     "tagId": "8a1e1610-1521-41fb-ac46-a46450bbd998",
  *     "ids": [ 14831,14782,14722,14714,14824,14829,14846,14809,14719 ]
  * }
  * </pre>

@@ -123,7 +123,7 @@ public class LegacyNwImportRestService {
             Map<String, Object> batchProperties = new HashMap<>();
             batchProperties.put("seriesId", params.getSeriesId());
             batchProperties.put("localSeriesId", params.getLocalSeriesId());
-            batchProperties.put("tagName", params.getTagName());
+            batchProperties.put("tagId", params.getTagId());
 
             batchService.startBatchJobWithJsonData("dk-nw-import", batchData, "legacy-nw-data.json", batchProperties);
 
@@ -209,7 +209,7 @@ public class LegacyNwImportRestService {
 
             Map<String, Object> batchProperties = new HashMap<>();
             batchProperties.put("seriesId", params.getSeriesId());
-            batchProperties.put("tagName", params.getTagName());
+            batchProperties.put("tagId", params.getTagId());
 
             batchService.startBatchJobWithJsonData("message-import", messages, "message-data.json", batchProperties);
 
@@ -233,7 +233,7 @@ public class LegacyNwImportRestService {
 
         String seriesId;
         String localSeriesId;
-        String tagName;
+        String tagId;
         Date startImportDate;
 
         public String getSeriesId() {
@@ -252,12 +252,12 @@ public class LegacyNwImportRestService {
             this.localSeriesId = localSeriesId;
         }
 
-        public String getTagName() {
-            return tagName;
+        public String getTagId() {
+            return tagId;
         }
 
-        public void setTagName(String tagName) {
-            this.tagName = tagName;
+        public void setTagId(String tagId) {
+            this.tagId = tagId;
         }
 
         public Date getStartImportDate() {
@@ -282,7 +282,7 @@ public class LegacyNwImportRestService {
         public ImportLegacyNwData(ImportLegacyNwParams params, List<Integer> ids) {
             this.setSeriesId(params.getSeriesId());
             this.setLocalSeriesId(params.getLocalSeriesId());
-            this.setTagName(params.getTagName());
+            this.setTagId(params.getTagId());
             this.ids = ids;
         }
 
@@ -302,7 +302,7 @@ public class LegacyNwImportRestService {
     public static class GenerateFaTemplateParams implements IJsonSerializable {
 
         String seriesId;
-        String tagName;
+        String tagId;
 
         public String getSeriesId() {
             return seriesId;
@@ -312,12 +312,12 @@ public class LegacyNwImportRestService {
             this.seriesId = seriesId;
         }
 
-        public String getTagName() {
-            return tagName;
+        public String getTagId() {
+            return tagId;
         }
 
-        public void setTagName(String tagName) {
-            this.tagName = tagName;
+        public void setTagId(String tagId) {
+            this.tagId = tagId;
         }
     }
 
