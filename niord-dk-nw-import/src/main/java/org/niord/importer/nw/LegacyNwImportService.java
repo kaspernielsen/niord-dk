@@ -221,7 +221,10 @@ public class LegacyNwImportService {
         publishedLegacyMsiIds.stream()
                 .filter(id -> !publishedNiordIds.contains(id))
                 .forEach(result::add);
-        log.info("New or cancelled legacy NW IDs " + result);
+
+        if (!result.isEmpty()) {
+            log.info("New or cancelled legacy NW IDs " + result);
+        }
 
         return result;
     }

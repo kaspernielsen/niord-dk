@@ -152,14 +152,13 @@ public class LegacyNwImportRestService {
 
             // No point in importing empty result set
             if (ids.isEmpty()) {
-                log.info("Periodic legacy NW auto-import: 0 messages imported");
+                log.debug("Periodic legacy NW auto-import: 0 messages imported");
                 return;
             }
 
             // Start the import batch job
             ImportLegacyNwData batchData = new ImportLegacyNwData(params, ids);
             String result = startNwImportBatchJob(batchData);
-            log.info(result);
 
         } catch (Exception e) {
             log.error("Error performing periodic legacy NW auto-import", e);

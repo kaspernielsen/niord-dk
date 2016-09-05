@@ -184,13 +184,13 @@ public class LegacyNwDatabase {
             File dbFile = File.createTempFile("msi-safe-dump-", ".sql");
 
             String checksum = downloadLegacyNwDump(dbFile);
-            log.info(String.format("File %s decompressed to %s in %d ms",
+            log.debug(String.format("File %s decompressed to %s in %d ms",
                     DB_LOCATION, dbFile, System.currentTimeMillis() -  t0));
 
             String oldChecksum = settingsService.getString(DB_CHECKSUM);
 
             if (Objects.equals(checksum, oldChecksum)) {
-                log.info("Downloaded legacy NW dump unchanged. Skipping import");
+                log.debug("Downloaded legacy NW dump unchanged. Skipping import");
 
                 log.debug("Deleting legacy NW dump file with result: " + dbFile.delete());
                 return false;
@@ -199,7 +199,7 @@ public class LegacyNwDatabase {
                 // Import step
                 t0 = System.currentTimeMillis();
                 importLegacyNwDump(dbFile);
-                log.info(String.format("File %s imported in %d ms",
+                log.debug(String.format("File %s imported in %d ms",
                         dbFile, System.currentTimeMillis() -  t0));
 
                 settingsService.set("legacyNwDbChecksum", checksum);
