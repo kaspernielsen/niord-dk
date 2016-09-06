@@ -265,6 +265,7 @@ public class LegacyNwImportService {
 
             Integer messageId           = getInt(rs, "messageId");
             Boolean statusDraft         = getBoolean(rs, "statusDraft");
+            Boolean latest              = getBoolean(rs, "latest");
             String  navtexNo            = getString(rs, "navtexNo");
             String  descriptionEn       = getString(rs, "description_en");
             String  descriptionDa       = getString(rs, "description_da");
@@ -322,7 +323,9 @@ public class LegacyNwImportService {
             // Status
             Date now = new Date();
             Status status = Status.PUBLISHED;
-            if (deleted != null && statusDraft) {
+            if (latest != null && !latest) {
+                status = Status.DELETED;
+            } else if (deleted != null && statusDraft) {
                 status = Status.DELETED;
             } else if (deleted != null && validTo != null && deleted.after(validTo)) {
                 status = Status.EXPIRED;

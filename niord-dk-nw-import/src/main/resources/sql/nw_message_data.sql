@@ -1,6 +1,7 @@
  SELECT
   msg.messageId            AS messageId,
   msg.draft                AS statusDraft,
+  msg.isLatest             AS latest,
   msg.navtexNo             AS navtexNo,
   msg.navwarning           AS description_en,
   msg.localLanguage        AS description_da,

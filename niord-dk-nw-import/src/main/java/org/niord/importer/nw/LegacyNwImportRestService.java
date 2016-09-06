@@ -127,7 +127,7 @@ public class LegacyNwImportRestService {
     /**
      * Called periodically to auto-import legacy NW messages (if the auto-import flag is turned on)
      */
-    @Schedule(persistent = false, second = "40", minute = "*/10", hour = "*")
+    @Schedule(persistent = false, second = "40", minute = "*/2", hour = "*")
     private void periodicAutoImportNwMessages() {
         try {
             long now = System.currentTimeMillis();
