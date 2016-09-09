@@ -317,7 +317,7 @@ public class LegacyFiringAreaImportService {
         message.setMessageSeries(messageSeries);
         message.setMainType(MainType.NM);
         message.setType(Type.MISCELLANEOUS_NOTICE);
-        message.setStatus(Status.IMPORTED);
+        message.setStatus(Status.DRAFT);
         message.setShortId(extractShortId(area, "FA-"));
         message.setMrn(extractMrn(area, "fe:"));
         message.setAutoTitle(true);
