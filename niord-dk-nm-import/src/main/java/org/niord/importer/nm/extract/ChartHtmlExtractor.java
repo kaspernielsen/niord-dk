@@ -55,13 +55,15 @@ public class ChartHtmlExtractor implements IHtmlExtractor {
         for (String chart : charts.split(",")) {
             Matcher m1 = p1.matcher(chart.trim());
             Matcher m2 = p2.matcher(chart.trim());
-            String chartNumber = null;
+            String chartNumber;
             String internationalChartNumber = null;
             if (m1.matches()) {
                 chartNumber = m1.group(1);
             } else if (m2.matches()) {
                 chartNumber = m2.group(1);
                 internationalChartNumber = m2.group(2);
+            } else {
+                continue;
             }
 
             Chart c = new Chart(

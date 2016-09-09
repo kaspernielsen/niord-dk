@@ -67,7 +67,7 @@ public class TitleLineHtmlExtractor implements IHtmlExtractor {
         }
         message.checkCreateDesc(lang).setTitle(title.toString().trim());
 
-        int areaParts = (parts.length  - i > 2) ? 2 : 1;
+        int areaParts = 1;
         int vicinityNo = (parts.length  - i > 4) ? 1 : 0;
 
         Area area = null;
