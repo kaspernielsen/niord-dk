@@ -1,5 +1,198 @@
 [
   {
+    "mrn": "urn:mrn:iho:country:dk",
+    "type": "COUNTRY",
+    "children": [
+      {
+        "descs": [
+          {
+            "lang": "da",
+            "name": "Østersøen"
+          },
+          {
+            "lang": "en",
+            "name": "Baltic"
+          }
+        ],
+        "messageSorting": "CW",
+        "originLatitude": 54.5,
+        "originLongitude": 12.0,
+        "originAngle": 180,
+        "siblingSortOrder": 10.0
+      },
+      {
+        "descs": [
+          {
+            "lang": "da",
+            "name": "Sundet"
+          },
+          {
+            "lang": "en",
+            "name": "The Sound"
+          }
+        ],
+        "messageSorting": "NS",
+        "siblingSortOrder": 20.0
+      },
+      {
+        "descs": [
+          {
+            "lang": "da",
+            "name": "Smålandsfarvandet"
+          },
+          {
+            "lang": "en",
+            "name": "Waters south of Sealand"
+          }
+        ],
+        "messageSorting": "EW",
+        "siblingSortOrder": 30.0
+      },
+      {
+        "descs": [
+          {
+            "lang": "da",
+            "name": "Storebælt"
+          },
+          {
+            "lang": "en",
+            "name": "Great Belt"
+          }
+        ],
+        "messageSorting": "NS",
+        "siblingSortOrder": 40.0
+      },
+      {
+        "descs": [
+          {
+            "lang": "da",
+            "name": "Farvandet syd for Fyn"
+          },
+          {
+            "lang": "en",
+            "name": "Waters south of Funen"
+          }
+        ],
+        "messageSorting": "EW",
+        "siblingSortOrder": 50.0
+      },
+      {
+        "descs": [
+          {
+            "lang": "da",
+            "name": "Lillebælt"
+          },
+          {
+            "lang": "en",
+            "name": "Little Belt"
+          }
+        ],
+        "messageSorting": "NS",
+        "siblingSortOrder": 60.0
+      },
+      {
+        "descs": [
+          {
+            "lang": "da",
+            "name": "Kattegat"
+          },
+          {
+            "lang": "en",
+            "name": "Kattegat"
+          }
+        ],
+        "messageSorting": "CW",
+        "originLatitude": 56.5,
+        "originLongitude": 11.5,
+        "originAngle": 310,
+        "siblingSortOrder": 70.0
+      },
+      {
+        "descs": [
+          {
+            "lang": "da",
+            "name": "Limfjorden"
+          },
+          {
+            "lang": "en",
+            "name": "Liimfiord"
+          }
+        ],
+        "messageSorting": "EW",
+        "siblingSortOrder": 80.0
+      },
+      {
+        "descs": [
+          {
+            "lang": "da",
+            "name": "Skagerak"
+          },
+          {
+            "lang": "en",
+            "name": "Skagerak"
+          }
+        ],
+        "messageSorting": "NS",
+        "siblingSortOrder": 90.0
+      },
+      {
+        "descs": [
+          {
+            "lang": "da",
+            "name": "Nordsøen"
+          },
+          {
+            "lang": "en",
+            "name": "North Sea"
+          }
+        ],
+        "messageSorting": "NS",
+        "siblingSortOrder": 100.0
+      }
+    ],
+    "descs": [
+      {
+        "lang": "da",
+        "name": "Danmark"
+      },
+      {
+        "lang": "en",
+        "name": "Denmark"
+      }
+    ],
+    "siblingSortOrder": 0.0
+  },
+  {
+    "mrn": "urn:mrn:iho:country:fo",
+    "type": "COUNTRY",
+    "descs": [
+      {
+        "lang": "da",
+        "name": "Færøerne"
+      },
+      {
+        "lang": "en",
+        "name": "Faroe Islands"
+      }
+    ],
+    "siblingSortOrder": 5.0
+  },
+  {
+    "mrn": "urn:mrn:iho:country:gl",
+    "type": "COUNTRY",
+    "descs": [
+      {
+        "lang": "da",
+        "name": "Grønland"
+      },
+      {
+        "lang": "en",
+        "name": "Greenland"
+      }
+    ],
+    "siblingSortOrder": 6.0
+  },
+  {
     "mrn": "urn:mrn:iho:country:no",
     "type": "COUNTRY",
     "descs": [
@@ -30,1447 +223,6 @@
     "siblingSortOrder": 10.0
   },
   {
-    "mrn": "urn:mrn:iho:country:dk",
-    "type": "COUNTRY",
-    "children": [
-      {
-        "children": [
-          {
-            "type": "FIRING_AREA",
-            "descs": [
-              {
-                "lang": "da",
-                "name": "ES D 140 Bornholm W."
-              },
-              {
-                "lang": "en",
-                "name": "ES D 140 Bornholm W."
-              }
-            ],
-            "siblingSortOrder": 10.51975841825608
-          },
-          {
-            "type": "FIRING_AREA",
-            "descs": [
-              {
-                "lang": "da",
-                "name": "ES D 139 Bornholm E."
-              },
-              {
-                "lang": "en",
-                "name": "ES D 139 Bornholm E."
-              }
-            ],
-            "siblingSortOrder": 15.519758418256082
-          },
-          {
-            "type": "FIRING_AREA",
-            "descs": [
-              {
-                "lang": "da",
-                "name": "ES D 138 Bornholm N."
-              },
-              {
-                "lang": "en",
-                "name": "ES D 138 Bornholm N."
-              }
-            ],
-            "siblingSortOrder": 20.51975841825608
-          },
-          {
-            "type": "FIRING_AREA",
-            "descs": [
-              {
-                "lang": "da",
-                "name": "EK D 395 Raghammer Odde"
-              },
-              {
-                "lang": "en",
-                "name": "EK D 395 Raghammer"
-              }
-            ],
-            "siblingSortOrder": 40.51975841825608
-          },
-          {
-            "type": "FIRING_AREA",
-            "descs": [
-              {
-                "lang": "da",
-                "name": "EK D 396 Hullebæk"
-              },
-              {
-                "lang": "en",
-                "name": "EK D 396 Hullebaek"
-              }
-            ],
-            "siblingSortOrder": 50.51975841825608
-          },
-          {
-            "type": "FIRING_AREA",
-            "descs": [
-              {
-                "lang": "da",
-                "name": "EK D 371 Marstal Bugt"
-              },
-              {
-                "lang": "en",
-                "name": "EK D 371 Marstal Bugt"
-              }
-            ],
-            "siblingSortOrder": 60.51975841825608
-          }
-        ],
-        "descs": [
-          {
-            "lang": "da",
-            "name": "Østersøen"
-          },
-          {
-            "lang": "en",
-            "name": "Baltic"
-          }
-        ],
-        "messageSorting": "CW",
-        "originLatitude": 54.5,
-        "originLongitude": 12.0,
-        "originAngle": 180,
-        "siblingSortOrder": -19.038817863745905
-      },
-      {
-        "children": [
-          {
-            "descs": [
-              {
-                "lang": "da",
-                "name": "Køge Havn E, N og S"
-              },
-              {
-                "lang": "en",
-                "name": "Køge Harbour E, N and S"
-              }
-            ],
-            "siblingSortOrder": 0.6493991400445557
-          },
-          {
-            "children": [
-              {
-                "siblingSortOrder": 0.7787486580309054
-              }
-            ],
-            "descs": [
-              {
-                "lang": "da",
-                "name": "Skovshoved Havn"
-              },
-              {
-                "lang": "da",
-                "name": "Skovshoved Havn"
-              }
-            ],
-            "siblingSortOrder": 10.649399140044556
-          },
-          {
-            "children": [
-              {
-                "children": [
-                  {
-                    "descs": [
-                      {
-                        "lang": "da",
-                        "name": "Nyhavn"
-                      },
-                      {
-                        "lang": "en",
-                        "name": "Nyhavn"
-                      }
-                    ],
-                    "siblingSortOrder": 0.06701771125004874
-                  }
-                ],
-                "descs": [
-                  {
-                    "lang": "da",
-                    "name": "Inderhavnen"
-                  },
-                  {
-                    "lang": "en",
-                    "name": "Inderhavnen"
-                  }
-                ],
-                "siblingSortOrder": 0.7197377397860865
-              }
-            ],
-            "descs": [
-              {
-                "lang": "da",
-                "name": "Københavns Havn"
-              },
-              {
-                "lang": "en",
-                "name": "Copenhagen Harbour"
-              }
-            ],
-            "siblingSortOrder": 20.649399140044558
-          },
-          {
-            "children": [
-              {
-                "descs": [
-                  {
-                    "lang": "da",
-                    "name": "Ishøj Lystbådehavn"
-                  },
-                  {
-                    "lang": "en",
-                    "name": "Ishøj Lystbådehavn"
-                  }
-                ],
-                "siblingSortOrder": 0.9727209650069745
-              }
-            ],
-            "descs": [
-              {
-                "lang": "da",
-                "name": "Køge Bugt"
-              },
-              {
-                "lang": "en",
-                "name": "Køge Bugt"
-              }
-            ],
-            "siblingSortOrder": 30.649399140044558
-          }
-        ],
-        "descs": [
-          {
-            "lang": "da",
-            "name": "Sundet"
-          },
-          {
-            "lang": "en",
-            "name": "The Sound"
-          }
-        ],
-        "messageSorting": "NS",
-        "siblingSortOrder": -9.038817863745905
-      },
-      {
-        "children": [
-          {
-            "children": [
-              {
-                "descs": [
-                  {
-                    "lang": "da",
-                    "name": "Indsejlingen til Hårbølle Havn"
-                  },
-                  {
-                    "lang": "en",
-                    "name": "Indsejlingen til Hårbølle Havn"
-                  }
-                ],
-                "siblingSortOrder": 0.9947287906941011
-              }
-            ],
-            "descs": [
-              {
-                "lang": "da",
-                "name": "Grønsund"
-              },
-              {
-                "lang": "en",
-                "name": "Grønsund"
-              }
-            ],
-            "siblingSortOrder": 0.8023480330976194
-          },
-          {
-            "children": [
-              {
-                "descs": [
-                  {
-                    "lang": "da",
-                    "name": "Nykøbing Falster Havn"
-                  },
-                  {
-                    "lang": "en",
-                    "name": "Nykøbing Falster    Harbour"
-                  }
-                ],
-                "siblingSortOrder": 0.23871272797333265
-              }
-            ],
-            "descs": [
-              {
-                "lang": "da",
-                "name": "Guldborg Sund"
-              },
-              {
-                "lang": "en",
-                "name": "Guldborg Sund"
-              }
-            ],
-            "siblingSortOrder": 10.80234803309762
-          },
-          {
-            "children": [
-              {
-                "descs": [
-                  {
-                    "lang": "da",
-                    "name": "Fejø -Femø"
-                  },
-                  {
-                    "lang": "en",
-                    "name": "Fejø -Femø"
-                  }
-                ],
-                "siblingSortOrder": 0.13855234647718506
-              }
-            ],
-            "descs": [
-              {
-                "lang": "da",
-                "name": "Lolland N -Fejø"
-              },
-              {
-                "lang": "en",
-                "name": "Lolland N -Fejø"
-              }
-            ],
-            "siblingSortOrder": 20.80234803309762
-          }
-        ],
-        "descs": [
-          {
-            "lang": "da",
-            "name": "Smålandsfarvandet"
-          },
-          {
-            "lang": "en",
-            "name": "Waters south of Sealand"
-          }
-        ],
-        "messageSorting": "EW",
-        "siblingSortOrder": -6.538817863745905
-      },
-      {
-        "children": [
-          {
-            "children": [
-              {
-                "descs": [
-                  {
-                    "lang": "da",
-                    "name": "Vestbroen"
-                  },
-                  {
-                    "lang": "en",
-                    "name": "West-bridge"
-                  }
-                ],
-                "siblingSortOrder": 0.6524063852528699
-              },
-              {
-                "children": [
-                  {
-                    "descs": [
-                      {
-                        "lang": "da",
-                        "name": "Sprogø N"
-                      },
-                      {
-                        "lang": "en",
-                        "name": "Sprogø N"
-                      }
-                    ],
-                    "siblingSortOrder": 0.46167858869017675
-                  }
-                ],
-                "descs": [
-                  {
-                    "lang": "da",
-                    "name": "Østbroen"
-                  },
-                  {
-                    "lang": "en",
-                    "name": "East bridge"
-                  }
-                ],
-                "siblingSortOrder": 10.65240638525287
-              }
-            ],
-            "descs": [
-              {
-                "lang": "da",
-                "name": "Storebæltsbroen"
-              },
-              {
-                "lang": "en",
-                "name": "Storebæltsbroen"
-              }
-            ],
-            "siblingSortOrder": 0.7740054192657834
-          },
-          {
-            "descs": [
-              {
-                "lang": "da",
-                "name": "Korsør Lystbådehavn"
-              },
-              {
-                "lang": "en",
-                "name": "Korsør Lystbådehavn"
-              }
-            ],
-            "siblingSortOrder": 10.774005419265784
-          },
-          {
-            "children": [
-              {
-                "descs": [
-                  {
-                    "lang": "da",
-                    "name": "Den gravede rende til Tårs Færgehavn"
-                  },
-                  {
-                    "lang": "en",
-                    "name": "Den gravede rende til Tårs Færgehavn"
-                  }
-                ],
-                "siblingSortOrder": 0.1548115719366413
-              }
-            ],
-            "descs": [
-              {
-                "lang": "da",
-                "name": "Nakskov Fjord"
-              },
-              {
-                "lang": "en",
-                "name": "Nakskov Fjord"
-              }
-            ],
-            "siblingSortOrder": 20.774005419265784
-          }
-        ],
-        "descs": [
-          {
-            "lang": "da",
-            "name": "Storebælt"
-          },
-          {
-            "lang": "en",
-            "name": "Great Belt"
-          }
-        ],
-        "messageSorting": "NS",
-        "siblingSortOrder": -4.038817863745905
-      },
-      {
-        "descs": [
-          {
-            "lang": "da",
-            "name": "Farvandet syd for Fyn"
-          },
-          {
-            "lang": "en",
-            "name": "Waters south of Funen"
-          }
-        ],
-        "messageSorting": "EW",
-        "siblingSortOrder": 9.711182136254095
-      },
-      {
-        "children": [
-          {
-            "children": [
-              {
-                "descs": [
-                  {
-                    "lang": "da",
-                    "name": "Kongebro Havn"
-                  },
-                  {
-                    "lang": "en",
-                    "name": "Kongebro Havn"
-                  }
-                ],
-                "siblingSortOrder": 0.30445034460430753
-              }
-            ],
-            "descs": [
-              {
-                "lang": "da",
-                "name": "Middelfart WNW"
-              },
-              {
-                "lang": "en",
-                "name": "Middelfart WNW"
-              }
-            ],
-            "siblingSortOrder": 0.9565653363693887
-          },
-          {
-            "descs": [
-              {
-                "lang": "da",
-                "name": "Bredningen -Assens N og Lyø W -Kegnæs E"
-              },
-              {
-                "lang": "en",
-                "name": "Bredningen -Assens N and Lyø W -Kegnæs E"
-              }
-            ],
-            "siblingSortOrder": 10.956565336369389
-          },
-          {
-            "children": [
-              {
-                "descs": [
-                  {
-                    "lang": "da",
-                    "name": "Pøls Rev E"
-                  },
-                  {
-                    "lang": "en",
-                    "name": "Pøls Rev E"
-                  }
-                ],
-                "siblingSortOrder": 0.05137371402917923
-              }
-            ],
-            "descs": [
-              {
-                "lang": "da",
-                "name": "Als SE"
-              },
-              {
-                "lang": "en",
-                "name": "Als SE"
-              }
-            ],
-            "siblingSortOrder": 20.956565336369387
-          },
-          {
-            "descs": [
-              {
-                "lang": "da",
-                "name": "EK R 44 Halk"
-              },
-              {
-                "lang": "en",
-                "name": "EK R 44 Halk"
-              }
-            ],
-            "siblingSortOrder": 30.956565336369387
-          },
-          {
-            "descs": [
-              {
-                "lang": "da",
-                "name": "14 Hyby Fælled"
-              },
-              {
-                "lang": "en",
-                "name": "14 Hyby Faelled"
-              }
-            ],
-            "siblingSortOrder": 40.95656533636939
-          },
-          {
-            "children": [
-              {
-                "descs": [
-                  {
-                    "lang": "da",
-                    "name": "Fredericia Havn"
-                  },
-                  {
-                    "lang": "en",
-                    "name": "Fredericia Harbour"
-                  }
-                ],
-                "siblingSortOrder": 0.43873057507472835
-              }
-            ],
-            "descs": [
-              {
-                "lang": "da",
-                "name": "Snævringen"
-              },
-              {
-                "lang": "en",
-                "name": "Snævringen"
-              }
-            ],
-            "siblingSortOrder": 50.95656533636939
-          }
-        ],
-        "descs": [
-          {
-            "lang": "da",
-            "name": "Lillebælt"
-          },
-          {
-            "lang": "en",
-            "name": "Little Belt"
-          }
-        ],
-        "messageSorting": "NS",
-        "siblingSortOrder": 23.461182136254095
-      },
-      {
-        "children": [
-          {
-            "children": [
-              {
-                "children": [
-                  {
-                    "descs": [
-                      {
-                        "lang": "da",
-                        "name": "Vibehage"
-                      },
-                      {
-                        "lang": "en",
-                        "name": "Vibehage"
-                      }
-                    ],
-                    "siblingSortOrder": 0.11413522913976348
-                  }
-                ],
-                "descs": [
-                  {
-                    "lang": "da",
-                    "name": "Nykøbing Bugt"
-                  },
-                  {
-                    "lang": "en",
-                    "name": "Nykøbing Bugt"
-                  }
-                ],
-                "siblingSortOrder": 0.11642566074984195
-              }
-            ],
-            "descs": [
-              {
-                "lang": "da",
-                "name": "Isefjord"
-              },
-              {
-                "lang": "en",
-                "name": "Isefjord"
-              }
-            ],
-            "siblingSortOrder": 0.6880121284742566
-          },
-          {
-            "children": [
-              {
-                "descs": [
-                  {
-                    "lang": "da",
-                    "name": "Ballen Havn"
-                  },
-                  {
-                    "lang": "en",
-                    "name": "Ballen Havn"
-                  }
-                ],
-                "siblingSortOrder": 0.18283383908404083
-              }
-            ],
-            "descs": [
-              {
-                "lang": "da",
-                "name": "Samsø E-kyst"
-              },
-              {
-                "lang": "en",
-                "name": "Samsø E-kyst"
-              }
-            ],
-            "siblingSortOrder": 10.688012128474256
-          },
-          {
-            "children": [
-              {
-                "children": [
-                  {
-                    "descs": [
-                      {
-                        "lang": "da",
-                        "name": "Enebærodde E"
-                      },
-                      {
-                        "lang": "en",
-                        "name": "Enebærodde E"
-                      }
-                    ],
-                    "siblingSortOrder": 0.6644550622431217
-                  }
-                ],
-                "descs": [
-                  {
-                    "lang": "da",
-                    "name": "Gabet"
-                  },
-                  {
-                    "lang": "en",
-                    "name": "Gabet"
-                  }
-                ],
-                "siblingSortOrder": 0.7360062729789648
-              },
-              {
-                "descs": [
-                  {
-                    "lang": "da",
-                    "name": "Gabet -Odense Havneterminal"
-                  },
-                  {
-                    "lang": "en",
-                    "name": "Gabet -Odense Havneterminal"
-                  }
-                ],
-                "siblingSortOrder": 10.736006272978965
-              },
-              {
-                "descs": [
-                  {
-                    "lang": "da",
-                    "name": "Feds Middelgrund N"
-                  },
-                  {
-                    "lang": "en",
-                    "name": "Feds Middelgrund N"
-                  }
-                ],
-                "siblingSortOrder": 20.736006272978965
-              }
-            ],
-            "descs": [
-              {
-                "lang": "da",
-                "name": "Odense Fjord"
-              },
-              {
-                "lang": "en",
-                "name": "Odense fjord"
-              }
-            ],
-            "siblingSortOrder": 20.688012128474256
-          },
-          {
-            "descs": [
-              {
-                "lang": "da",
-                "name": "EK D 352 Lysegrund N"
-              },
-              {
-                "lang": "en",
-                "name": "EK D 352 Lysegrund N."
-              }
-            ],
-            "siblingSortOrder": 30.688012128474256
-          },
-          {
-            "descs": [
-              {
-                "lang": "da",
-                "name": "EK D 353 Lysegrund S"
-              },
-              {
-                "lang": "en",
-                "name": "EK D 353 Lysegrund S."
-              }
-            ],
-            "siblingSortOrder": 40.688012128474256
-          },
-          {
-            "descs": [
-              {
-                "lang": "da",
-                "name": "EK R 18 Jægerspris"
-              },
-              {
-                "lang": "en",
-                "name": "EK R 18 Jaegerspris"
-              }
-            ],
-            "siblingSortOrder": 50.688012128474256
-          },
-          {
-            "descs": [
-              {
-                "lang": "da",
-                "name": "11 Bredetved"
-              },
-              {
-                "lang": "en",
-                "name": "11 Bredetved"
-              }
-            ],
-            "siblingSortOrder": 60.688012128474256
-          },
-          {
-            "type": "FIRING_AREA",
-            "descs": [
-              {
-                "lang": "da",
-                "name": "EK R 11 Sjællands Odde W."
-              },
-              {
-                "lang": "en",
-                "name": "EK R 11 Sjaellands Odde W."
-              }
-            ],
-            "siblingSortOrder": 70.68801212847426
-          },
-          {
-            "type": "FIRING_AREA",
-            "descs": [
-              {
-                "lang": "da",
-                "name": "EK R 12 Gniben"
-              },
-              {
-                "lang": "en",
-                "name": "EK R 12 Gniben"
-              }
-            ],
-            "siblingSortOrder": 80.68801212847426
-          },
-          {
-            "type": "FIRING_AREA",
-            "descs": [
-              {
-                "lang": "da",
-                "name": "EK R 13 Sjællands Rev"
-              },
-              {
-                "lang": "en",
-                "name": "EK R 13 Sjaellands Rev"
-              }
-            ],
-            "siblingSortOrder": 90.68801212847426
-          },
-          {
-            "type": "FIRING_AREA",
-            "descs": [
-              {
-                "lang": "da",
-                "name": "EK R 14 Sjællands Odde E."
-              },
-              {
-                "lang": "en",
-                "name": "EK R 14 Sjaellands Odde E."
-              }
-            ],
-            "siblingSortOrder": 100.68801212847426
-          },
-          {
-            "type": "FIRING_AREA",
-            "descs": [
-              {
-                "lang": "da",
-                "name": "EK D 350 Yderflak"
-              },
-              {
-                "lang": "en",
-                "name": "EK D 350 Yderflak"
-              }
-            ],
-            "siblingSortOrder": 110.68801212847426
-          },
-          {
-            "type": "FIRING_AREA",
-            "descs": [
-              {
-                "lang": "da",
-                "name": "EK D 351 Schultz Grund"
-              },
-              {
-                "lang": "en",
-                "name": "EK D 351 Schultz Grund"
-              }
-            ],
-            "siblingSortOrder": 120.68801212847426
-          },
-          {
-            "type": "FIRING_AREA",
-            "descs": [
-              {
-                "lang": "da",
-                "name": "13 Seden"
-              },
-              {
-                "lang": "en",
-                "name": "13 Seden"
-              }
-            ],
-            "siblingSortOrder": 130.68801212847427
-          },
-          {
-            "type": "FIRING_AREA",
-            "descs": [
-              {
-                "lang": "da",
-                "name": "EK R 45 Hevring"
-              },
-              {
-                "lang": "en",
-                "name": "EK R 45 Hevring"
-              }
-            ],
-            "siblingSortOrder": 140.68801212847427
-          },
-          {
-            "type": "FIRING_AREA",
-            "descs": [
-              {
-                "lang": "da",
-                "name": "EK R 15 Sejerø E."
-              },
-              {
-                "lang": "en",
-                "name": "EK R 15 Sejeroe E."
-              }
-            ],
-            "siblingSortOrder": 150.68801212847427
-          },
-          {
-            "type": "FIRING_AREA",
-            "descs": [
-              {
-                "lang": "da",
-                "name": "EK R 16 Sejerø W."
-              },
-              {
-                "lang": "en",
-                "name": "EK R 16 Sejeroe W."
-              }
-            ],
-            "siblingSortOrder": 160.68801212847427
-          },
-          {
-            "type": "FIRING_AREA",
-            "descs": [
-              {
-                "lang": "da",
-                "name": "EK R 17 Isefjord"
-              },
-              {
-                "lang": "en",
-                "name": "EK R 17 Isefjord"
-              }
-            ],
-            "siblingSortOrder": 170.68801212847427
-          },
-          {
-            "descs": [
-              {
-                "lang": "da",
-                "name": "Endelave S"
-              },
-              {
-                "lang": "en",
-                "name": "Endelave S"
-              }
-            ],
-            "siblingSortOrder": 180.68801212847427
-          },
-          {
-            "children": [
-              {
-                "descs": [
-                  {
-                    "lang": "da",
-                    "name": "Horsens Havn"
-                  },
-                  {
-                    "lang": "en",
-                    "name": "Horsens Havn"
-                  }
-                ],
-                "siblingSortOrder": 0.23485087923747983
-              }
-            ],
-            "descs": [
-              {
-                "lang": "da",
-                "name": "Horsens Fjord"
-              },
-              {
-                "lang": "en",
-                "name": "Horsens Fjord"
-              }
-            ],
-            "siblingSortOrder": 190.68801212847427
-          },
-          {
-            "children": [
-              {
-                "descs": [
-                  {
-                    "lang": "da",
-                    "name": "Hirsholm Havn"
-                  },
-                  {
-                    "lang": "en",
-                    "name": "Hirsholm Havn"
-                  }
-                ],
-                "siblingSortOrder": 0.28112040119365034
-              }
-            ],
-            "descs": [
-              {
-                "lang": "da",
-                "name": "Hirsholmene"
-              },
-              {
-                "lang": "en",
-                "name": "Hirsholmene"
-              }
-            ],
-            "siblingSortOrder": 200.68801212847427
-          }
-        ],
-        "descs": [
-          {
-            "lang": "da",
-            "name": "Kattegat"
-          },
-          {
-            "lang": "en",
-            "name": "Kattegat"
-          }
-        ],
-        "messageSorting": "CW",
-        "originLatitude": 56.5,
-        "originLongitude": 11.5,
-        "originAngle": 310,
-        "siblingSortOrder": 37.211182136254095
-      },
-      {
-        "children": [
-          {
-            "descs": [
-              {
-                "lang": "da",
-                "name": "Aalborg NE"
-              },
-              {
-                "lang": "en",
-                "name": "Aalborg NE"
-              }
-            ],
-            "siblingSortOrder": 0.08560989600548863
-          },
-          {
-            "children": [
-              {
-                "descs": [
-                  {
-                    "lang": "da",
-                    "name": "Aggersundbroen E"
-                  },
-                  {
-                    "lang": "en",
-                    "name": "Aggersundbroen E"
-                  }
-                ],
-                "siblingSortOrder": 0.8859846411747923
-              }
-            ],
-            "descs": [
-              {
-                "lang": "da",
-                "name": "Aggersund"
-              },
-              {
-                "lang": "en",
-                "name": "Aggersund"
-              }
-            ],
-            "siblingSortOrder": 10.085609896005488
-          },
-          {
-            "descs": [
-              {
-                "lang": "da",
-                "name": "Aggersundbroen"
-              },
-              {
-                "lang": "en",
-                "name": "Aggersundbroen"
-              }
-            ],
-            "siblingSortOrder": 20.085609896005487
-          },
-          {
-            "children": [
-              {
-                "descs": [
-                  {
-                    "lang": "da",
-                    "name": "Fur -Branden"
-                  },
-                  {
-                    "lang": "en",
-                    "name": "Fur -Branden"
-                  }
-                ],
-                "siblingSortOrder": 0.7773020988878028
-              }
-            ],
-            "descs": [
-              {
-                "lang": "da",
-                "name": "Fur Sund"
-              },
-              {
-                "lang": "en",
-                "name": "Fur Sund"
-              }
-            ],
-            "siblingSortOrder": 30.085609896005487
-          },
-          {
-            "children": [
-              {
-                "descs": [
-                  {
-                    "lang": "da",
-                    "name": "Oddesund Nord Lystbåde-og Fiskerihavn"
-                  },
-                  {
-                    "lang": "en",
-                    "name": "Oddesund Nord Lystbåde-og    Fiskerihavn"
-                  }
-                ],
-                "siblingSortOrder": 0.47396807675114705
-              }
-            ],
-            "descs": [
-              {
-                "lang": "da",
-                "name": "Oddesund"
-              },
-              {
-                "lang": "en",
-                "name": "Oddesund"
-              }
-            ],
-            "siblingSortOrder": 40.08560989600549
-          },
-          {
-            "children": [
-              {
-                "descs": [
-                  {
-                    "lang": "da",
-                    "name": "Helligsø S"
-                  },
-                  {
-                    "lang": "en",
-                    "name": "Helligsø S"
-                  }
-                ],
-                "siblingSortOrder": 0.780784310764524
-              }
-            ],
-            "descs": [
-              {
-                "lang": "da",
-                "name": "Nissum Bredning N"
-              },
-              {
-                "lang": "en",
-                "name": "Nissum Bredning N"
-              }
-            ],
-            "siblingSortOrder": 50.08560989600549
-          }
-        ],
-        "descs": [
-          {
-            "lang": "da",
-            "name": "Limfjorden"
-          },
-          {
-            "lang": "en",
-            "name": "Liimfiord"
-          }
-        ],
-        "messageSorting": "EW",
-        "siblingSortOrder": 70.9611821362541
-      },
-      {
-        "children": [
-          {
-            "type": "FIRING_AREA",
-            "descs": [
-              {
-                "lang": "da",
-                "name": "EK D 389 Skagen N"
-              },
-              {
-                "lang": "en",
-                "name": "EK D 389 Skagen N."
-              }
-            ],
-            "siblingSortOrder": 0.8307862909453261
-          },
-          {
-            "type": "FIRING_AREA",
-            "descs": [
-              {
-                "lang": "da",
-                "name": "EK R 48 Tranum S."
-              },
-              {
-                "lang": "en",
-                "name": "EK R 48 Tranum S."
-              }
-            ],
-            "siblingSortOrder": 10.830786290945326
-          },
-          {
-            "type": "FIRING_AREA",
-            "descs": [
-              {
-                "lang": "da",
-                "name": "EK D 370 Blokhus"
-              },
-              {
-                "lang": "en",
-                "name": "EK D 370 Blokhus"
-              }
-            ],
-            "siblingSortOrder": 20.830786290945326
-          }
-        ],
-        "descs": [
-          {
-            "lang": "da",
-            "name": "Skagerak"
-          },
-          {
-            "lang": "en",
-            "name": "Skagerak"
-          }
-        ],
-        "messageSorting": "NS",
-        "siblingSortOrder": 110.9611821362541
-      },
-      {
-        "children": [
-          {
-            "descs": [
-              {
-                "lang": "da",
-                "name": "15 Nymindegab"
-              },
-              {
-                "lang": "en",
-                "name": "15 Nymindegab"
-              }
-            ],
-            "siblingSortOrder": 0.7204080135253732
-          },
-          {
-            "descs": [
-              {
-                "lang": "da",
-                "name": "Nymindegab S"
-              },
-              {
-                "lang": "en",
-                "name": "Nymindegab S"
-              }
-            ],
-            "siblingSortOrder": 10.720408013525374
-          },
-          {
-            "descs": [
-              {
-                "lang": "da",
-                "name": "Horns Rev N"
-              },
-              {
-                "lang": "en",
-                "name": "Horns Rev N"
-              }
-            ],
-            "siblingSortOrder": 20.720408013525372
-          },
-          {
-            "descs": [
-              {
-                "lang": "da",
-                "name": "Lister Dyb"
-              },
-              {
-                "lang": "en",
-                "name": "Lister Dyb"
-              }
-            ],
-            "siblingSortOrder": 40.72040801352537
-          },
-          {
-            "type": "FIRING_AREA",
-            "descs": [
-              {
-                "lang": "da",
-                "name": "EK R 38 Rømø E."
-              },
-              {
-                "lang": "en",
-                "name": "EK R 38 Roemoe E."
-              }
-            ],
-            "siblingSortOrder": 50.72040801352537
-          },
-          {
-            "type": "FIRING_AREA",
-            "descs": [
-              {
-                "lang": "da",
-                "name": "EK D 373 Rømø W"
-              },
-              {
-                "lang": "en",
-                "name": "EK D 373 Roemoe W."
-              }
-            ],
-            "siblingSortOrder": 60.72040801352537
-          },
-          {
-            "descs": [
-              {
-                "lang": "da",
-                "name": "Lille Fisker Banke W"
-              },
-              {
-                "lang": "en",
-                "name": "Lille Fisker Banke W"
-              }
-            ],
-            "siblingSortOrder": 70.72040801352537
-          },
-          {
-            "descs": [
-              {
-                "lang": "da",
-                "name": "Stine Felt SE"
-              },
-              {
-                "lang": "en",
-                "name": "Stine Field SE"
-              }
-            ],
-            "siblingSortOrder": 80.72040801352537
-          },
-          {
-            "descs": [
-              {
-                "lang": "da",
-                "name": "Hanstholm Fyr"
-              },
-              {
-                "lang": "en",
-                "name": "Hanstholm Light"
-              }
-            ],
-            "siblingSortOrder": 90.72040801352537
-          },
-          {
-            "children": [
-              {
-                "descs": [
-                  {
-                    "lang": "da",
-                    "name": "Husby Klit"
-                  },
-                  {
-                    "lang": "en",
-                    "name": "Husby Klit"
-                  }
-                ],
-                "siblingSortOrder": 0.9859579530086335
-              }
-            ],
-            "descs": [
-              {
-                "lang": "da",
-                "name": "Thorsminde S"
-              },
-              {
-                "lang": "en",
-                "name": "Thorsminde S"
-              }
-            ],
-            "siblingSortOrder": 100.72040801352537
-          },
-          {
-            "children": [
-              {
-                "descs": [
-                  {
-                    "lang": "da",
-                    "name": "Trafikhavn"
-                  },
-                  {
-                    "lang": "en",
-                    "name": "Trafikhavn"
-                  }
-                ],
-                "siblingSortOrder": 0.7919560609152497
-              }
-            ],
-            "descs": [
-              {
-                "lang": "da",
-                "name": "Esbjerg Havn"
-              },
-              {
-                "lang": "en",
-                "name": "Port of Esbjerg"
-              }
-            ],
-            "siblingSortOrder": 110.72040801352537
-          }
-        ],
-        "descs": [
-          {
-            "lang": "da",
-            "name": "Nordsøen"
-          },
-          {
-            "lang": "en",
-            "name": "North Sea"
-          }
-        ],
-        "messageSorting": "NS",
-        "siblingSortOrder": 120.9611821362541
-      }
-    ],
-    "descs": [
-      {
-        "lang": "da",
-        "name": "Danmark"
-      },
-      {
-        "lang": "en",
-        "name": "Denmark"
-      }
-    ],
-    "siblingSortOrder": 0.0
-  },
-  {
     "mrn": "urn:mrn:iho:country:de",
     "type": "COUNTRY",
     "descs": [
@@ -1499,20 +251,5 @@
       }
     ],
     "siblingSortOrder": 30.0
-  },
-  {
-    "mrn": "urn:mrn:iho:country:nl",
-    "type": "COUNTRY",
-    "descs": [
-      {
-        "lang": "da",
-        "name": "Holland"
-      },
-      {
-        "lang": "en",
-        "name": "Netherlands"
-      }
-    ],
-    "siblingSortOrder": 40.0
   }
 ]
