@@ -99,7 +99,7 @@ public class TitleLineHtmlExtractor implements IHtmlExtractor {
             subject += ".";
             i++;
         }
-        message.checkCreateDesc(lang).setSubject(subject);
+        message.getParts().get(0).checkCreateDesc(lang).setSubject(subject);
     }
 
 

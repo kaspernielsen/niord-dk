@@ -28,6 +28,8 @@ import org.niord.core.geojson.FeatureCollection;
 import org.niord.core.geojson.JtsConverter;
 import org.niord.core.message.Message;
 import org.niord.core.message.MessageDesc;
+import org.niord.core.message.MessagePart;
+import org.niord.core.message.MessagePartDesc;
 import org.niord.core.message.MessageSeries;
 import org.niord.core.message.MessageSeriesService;
 import org.niord.core.settings.annotation.Setting;
@@ -336,14 +338,27 @@ public class LegacyFiringAreaImportService {
             message.setGeometry(featureCollection);
         }
 
-        // Fill out the description fields
-        MessageDesc daDesc = message.createDesc("da");
-        MessageDesc enDesc = message.createDesc("en");
+        // Read description fields
         Map<Integer, String> daInfo = new HashMap<>();
         Map<Integer, String> enInfo = new HashMap<>();
         getLegacyInformationForArea(id, daInfo, enInfo);
+
+        // Fill out the description fields
+        MessageDesc daDesc = message.createDesc("da");
+        MessageDesc enDesc = message.createDesc("en");
         composeMessageDescFromLegacyInfo(daDesc, daInfo);
         composeMessageDescFromLegacyInfo(enDesc, enInfo);
+        message.getDescs().removeIf(desc -> !desc.descDefined());
+
+        // Fill out the message part description fields
+        MessagePart part = new MessagePart();
+        message.addPart(part);
+        MessagePartDesc daPartDesc = part.createDesc("da");
+        MessagePartDesc enPartDesc = part.createDesc("en");
+        composeMessagePartDescFromLegacyInfo(daPartDesc, daInfo);
+        composeMessagePartDescFromLegacyInfo(enPartDesc, enInfo);
+        part.getDescs().removeIf(desc -> !desc.descDefined());
+
 
         // Update the title line
         message.updateMessageTitle();
@@ -427,15 +442,20 @@ public class LegacyFiringAreaImportService {
         if (StringUtils.isNotBlank(info.get(2))) {
             desc.setNote(info.get(2));
         }
-        // 1: Details, 5: Prohibition, 6: Signals merged into description
-        if (StringUtils.isNotBlank(info.get(1))) {
-            desc.setDescription("<p>" + info.get(1).replace("\n", "<br>") + "</p>");
-        }
         if (StringUtils.isNotBlank(info.get(5))) {
             desc.setProhibition(info.get(5));
         }
         if (StringUtils.isNotBlank(info.get(6))) {
             desc.setSignals(info.get(6));
+        }
+    }
+
+
+    /** Composes the message part descriptor from the legacy firing area information **/
+    private void composeMessagePartDescFromLegacyInfo(MessagePartDesc desc, Map<Integer, String> info) {
+        // 1: Details, 5: Prohibition, 6: Signals merged into description
+        if (StringUtils.isNotBlank(info.get(1))) {
+            desc.setDetails("<p>" + info.get(1).replace("\n", "<br>") + "</p>");
         }
     }
 

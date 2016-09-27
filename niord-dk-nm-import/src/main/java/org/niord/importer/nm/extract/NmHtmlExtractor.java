@@ -22,6 +22,7 @@ import org.jsoup.nodes.Element;
 import org.niord.core.area.Area;
 import org.niord.core.geojson.Feature;
 import org.niord.core.message.Message;
+import org.niord.core.message.MessagePart;
 import org.niord.core.util.TimeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -182,19 +183,17 @@ public class NmHtmlExtractor implements IHtmlExtractor {
 
     /** Merges Danish and English messages */
     private void mergeNms(Message daMsg, Message enMsg) {
-        // Sanity checks...
-        if (daMsg == null || enMsg == null ||
-                daMsg.getDescs().size() != 1 ||
-                enMsg.getDescs().size() != 1 ||
-                daMsg.getAreas().size() != enMsg.getAreas().size() ||
-                daMsg.getCharts().size() != enMsg.getCharts().size()) {
-            return;
-        }
 
         // Start copying
-        daMsg.getDescs().add(enMsg.getDescs().get(0));
+        if (daMsg.getDescs().size() == 1 && enMsg.getDescs().size() == 1) {
+            daMsg.getDescs().add(enMsg.getDescs().get(0));
+        }
+        if (daMsg.getParts().size() == 1 && enMsg.getParts().size() == 1 &&
+                daMsg.getParts().get(0).getDescs().size() == 1 && enMsg.getParts().get(0).getDescs().size() == 1) {
+            daMsg.getParts().get(0).getDescs().add(enMsg.getParts().get(0).getDescs().get(0));
+        }
 
-        if (daMsg.getAreas().size() == 1) {
+        if (daMsg.getAreas().size() == 1 && enMsg.getAreas().size() == 1) {
             Area daArea = daMsg.getAreas().get(0);
             Area enArea = enMsg.getAreas().get(0);
             daArea.getDescs().add(enArea.getDescs().get(0));
@@ -231,6 +230,7 @@ public class NmHtmlExtractor implements IHtmlExtractor {
             switch (e.attr("class")) {
                 case "1nr":
                     message = new Message();
+                    message.addPart(new MessagePart());
                     messages.add(message);
 
                     message.setOriginalInformation(extractOriginalInformation(e));
@@ -287,7 +287,7 @@ public class NmHtmlExtractor implements IHtmlExtractor {
                         log.warn("Details field outside message");
                         break;
                     }
-                    message.checkCreateDesc(lang).setDescription(extractDescription(e));
+                    message.getParts().get(0).checkCreateDesc(lang).setDetails(extractDescription(e));
                     break;
 
                 case "Note":

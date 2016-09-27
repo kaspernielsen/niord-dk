@@ -28,6 +28,8 @@ import org.niord.core.geojson.JtsConverter;
 import org.niord.core.message.DateInterval;
 import org.niord.core.message.Message;
 import org.niord.core.message.MessageDesc;
+import org.niord.core.message.MessagePart;
+import org.niord.core.message.MessagePartDesc;
 import org.niord.core.message.MessageSearchParams;
 import org.niord.core.message.MessageSeries;
 import org.niord.core.message.MessageSeriesService;
@@ -115,9 +117,15 @@ public class LegacyNwImportService {
     MessageSeriesService messageSeriesService;
 
 
-    /** Returns or creates new parameters */
+    /** Returns the import parameters */
     public ImportLegacyNwParams getImportLegacyNwParams() {
-        ImportLegacyNwParams params = settingsService.getFromJson(LEGACY_NW_IMPORT_PARAMS, ImportLegacyNwParams.class);
+        return settingsService.getFromJson(LEGACY_NW_IMPORT_PARAMS, ImportLegacyNwParams.class);
+    }
+
+
+    /** Returns or creates new parameters */
+    public ImportLegacyNwParams getOrCreateImportLegacyNwParams() {
+        ImportLegacyNwParams params = getImportLegacyNwParams();
         if (params == null) {
             params = new ImportLegacyNwParams();
             params.setStartImportDate(TimeUtils.getDate(null, 0, 1));
@@ -350,19 +358,29 @@ public class LegacyNwImportService {
                 titleDa = title.substring(0, title.indexOf('/')).trim();
                 titleEn = title.substring(title.indexOf('/') + 1).trim();
             }
-            if (StringUtils.isNotBlank(titleEn) || StringUtils.isNotBlank(descriptionEn) || StringUtils.isNotBlank(area3En)) {
+            if (StringUtils.isNotBlank(area3En)) {
                 MessageDesc descEn = message.checkCreateDesc("en");
-                descEn.setSubject(titleEn);
-                descEn.setDescription(TextUtils.txt2html(descriptionEn));
                 descEn.setVicinity(area3En);
             }
-            if (StringUtils.isNotBlank(titleDa) || StringUtils.isNotBlank(descriptionDa) || StringUtils.isNotBlank(area3Da)) {
+            if (StringUtils.isNotBlank(area3Da)) {
                 MessageDesc descDa = message.checkCreateDesc("da");
-                descDa.setSubject(titleDa);
-                descDa.setDescription(TextUtils.txt2html(descriptionDa));
                 descDa.setVicinity(area3Da);
             }
             message.setAutoTitle(true);
+
+            // Message Part Desc
+            MessagePart part = new MessagePart();
+            message.addPart(part);
+            if (StringUtils.isNotBlank(titleEn) || StringUtils.isNotBlank(descriptionEn)) {
+                MessagePartDesc descEn = part.checkCreateDesc("en");
+                descEn.setSubject(titleEn);
+                descEn.setDetails(TextUtils.txt2html(descriptionEn));
+            }
+            if (StringUtils.isNotBlank(titleDa) || StringUtils.isNotBlank(descriptionDa)) {
+                MessagePartDesc descDa = part.checkCreateDesc("da");
+                descDa.setSubject(titleDa);
+                descDa.setDetails(TextUtils.txt2html(descriptionDa));
+            }
 
             // Areas
             Area area = createAreaTemplate(area1Id, area1En, area1Da, null);

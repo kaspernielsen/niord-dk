@@ -79,7 +79,7 @@ public class LegacyNwImportRestService {
     @Consumes("application/json;charset=UTF-8")
     @NoCache
     public ImportLegacyNwParams getImportLegacyNwParams() {
-        return nwImportService.getImportLegacyNwParams();
+        return nwImportService.getOrCreateImportLegacyNwParams();
     }
 
 
@@ -133,9 +133,11 @@ public class LegacyNwImportRestService {
             long now = System.currentTimeMillis();
 
             // Check if auto-import is turned on
-            ImportLegacyNwParams params = nwImportService
-                    .getImportLegacyNwParams()
-                    .validate();
+            ImportLegacyNwParams params = nwImportService.getImportLegacyNwParams();
+            if (params == null) {
+                return;
+            }
+            params.validate();
 
             if (params.getAutoImport() == null || !params.getAutoImport()) {
                 // Auto-import NOT turned on
