@@ -15,12 +15,14 @@
  */
 package org.niord.importer.nm.batch;
 
+import org.niord.core.geojson.GeometryFormatService;
 import org.niord.core.message.Message;
 import org.niord.core.message.batch.BatchMessageImportReader;
 import org.niord.importer.nm.extract.NmHtmlExtractor;
 import org.niord.model.DataFilter;
 import org.niord.model.message.MessageVo;
 
+import javax.inject.Inject;
 import javax.inject.Named;
 import java.nio.file.Path;
 import java.util.List;
@@ -37,6 +39,9 @@ import java.util.stream.Collectors;
 @Named
 public class BatchDkNmImportReader extends BatchMessageImportReader {
 
+    @Inject
+    GeometryFormatService geometryFormatService;
+
     /** Reads in the batch import messages */
     @Override
     protected List<MessageVo> readMessages() throws Exception {
@@ -49,6 +54,7 @@ public class BatchDkNmImportReader extends BatchMessageImportReader {
 
         return messages.stream()
                 .map(m -> m.toVo(DataFilter.get().fields(DataFilter.DETAILS, DataFilter.GEOMETRY, "Area.parent")))
+                .map(m -> geometryFormatService.appendGeometryToDetails(m))
                 .collect(Collectors.toList());
     }
 }
