@@ -463,7 +463,7 @@ public class LegacyNwImportService {
             Feature feature = new Feature();
             featureCollection.addFeature(feature);
             feature.setGeometry(geometry);
-            message.setGeometry(featureCollection);
+            message.getParts().get(0).setGeometry(featureCollection);
         }
     }
 

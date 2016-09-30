@@ -324,19 +324,6 @@ public class LegacyFiringAreaImportService {
         message.setMrn(extractMrn(area, "fe:"));
         message.setAutoTitle(true);
         message.getAreas().add(area);
-        if (area.getGeometry() != null) {
-            FeatureCollection featureCollection = new FeatureCollection();
-            Feature feature = new Feature();
-            featureCollection.addFeature(feature);
-            feature.setGeometry(area.getGeometry());
-            if (area.getDesc("da") != null && StringUtils.isNotBlank(area.getDesc("da").getName())) {
-                feature.getProperties().put("name:da", area.getDesc("da").getName());
-            }
-            if (area.getDesc("en") != null && StringUtils.isNotBlank(area.getDesc("en").getName())) {
-                feature.getProperties().put("name:en", area.getDesc("en").getName());
-            }
-            message.setGeometry(featureCollection);
-        }
 
         // Read description fields
         Map<Integer, String> daInfo = new HashMap<>();
@@ -359,6 +346,19 @@ public class LegacyFiringAreaImportService {
         composeMessagePartDescFromLegacyInfo(enPartDesc, enInfo);
         part.getDescs().removeIf(desc -> !desc.descDefined());
 
+        if (area.getGeometry() != null) {
+            FeatureCollection featureCollection = new FeatureCollection();
+            Feature feature = new Feature();
+            featureCollection.addFeature(feature);
+            feature.setGeometry(area.getGeometry());
+            if (area.getDesc("da") != null && StringUtils.isNotBlank(area.getDesc("da").getName())) {
+                feature.getProperties().put("name:da", area.getDesc("da").getName());
+            }
+            if (area.getDesc("en") != null && StringUtils.isNotBlank(area.getDesc("en").getName())) {
+                feature.getProperties().put("name:en", area.getDesc("en").getName());
+            }
+            part.setGeometry(featureCollection);
+        }
 
         // Update the title line
         message.updateMessageTitle();

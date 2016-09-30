@@ -204,10 +204,12 @@ public class NmHtmlExtractor implements IHtmlExtractor {
             }
         }
 
-        if (daMsg.getGeometry() != null && daMsg.getGeometry().getFeatures().size() == 1 &&
-                enMsg.getGeometry() != null && enMsg.getGeometry().getFeatures().size() == 1) {
-            Feature daFeature = daMsg.getGeometry().getFeatures().get(0);
-            Feature enFeature = enMsg.getGeometry().getFeatures().get(0);
+        MessagePart daPart = daMsg.getParts().get(0);
+        MessagePart enPart = enMsg.getParts().get(0);
+        if (daPart.getGeometry() != null && daPart.getGeometry().getFeatures().size() == 1 &&
+                enPart.getGeometry() != null && enPart.getGeometry().getFeatures().size() == 1) {
+            Feature daFeature = daPart.getGeometry().getFeatures().get(0);
+            Feature enFeature = enPart.getGeometry().getFeatures().get(0);
             daFeature.getProperties().putAll(enFeature.getProperties());
         }
 

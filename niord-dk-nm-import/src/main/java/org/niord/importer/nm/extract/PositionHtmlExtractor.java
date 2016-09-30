@@ -110,7 +110,7 @@ public class PositionHtmlExtractor implements IHtmlExtractor {
 
         if (!positions.isEmpty()) {
             FeatureCollection geometry = new FeatureCollection();
-            message.setGeometry(geometry);
+            message.getParts().get(0).setGeometry(geometry);
             Feature feature = new Feature();
             geometry.getFeatures().add(feature);
             if (positions.size() == 1) {
