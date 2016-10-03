@@ -131,7 +131,7 @@ public class TestDataLoaderService extends BaseService {
                 MainType.NM,
                 NumberSequenceType.YEARLY,
                 "urn:mrn:iho:nm:dk:dma:${year}:${number}",
-                "NM-${number-3-digits}-${year-2-digits}"
+                "NM-${number-3-digits}-${year-2-digits} ${t-or-p}"
         ));
         d.setTimeZone("Europe/Copenhagen");
         em.persist(d);
