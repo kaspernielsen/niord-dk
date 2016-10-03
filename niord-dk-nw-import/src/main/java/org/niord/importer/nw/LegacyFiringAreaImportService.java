@@ -27,9 +27,7 @@ import org.niord.core.geojson.Feature;
 import org.niord.core.geojson.FeatureCollection;
 import org.niord.core.geojson.JtsConverter;
 import org.niord.core.message.Message;
-import org.niord.core.message.MessageDesc;
 import org.niord.core.message.MessagePart;
-import org.niord.core.message.MessagePartDesc;
 import org.niord.core.message.MessageSeries;
 import org.niord.core.message.MessageSeriesService;
 import org.niord.core.settings.annotation.Setting;
@@ -37,6 +35,7 @@ import org.niord.model.geojson.PointVo;
 import org.niord.model.geojson.PolygonVo;
 import org.niord.model.message.AreaType;
 import org.niord.model.message.MainType;
+import org.niord.model.message.MessagePartType;
 import org.niord.model.message.Status;
 import org.niord.model.message.Type;
 import org.slf4j.Logger;
@@ -331,20 +330,35 @@ public class LegacyFiringAreaImportService {
         getLegacyInformationForArea(id, daInfo, enInfo);
 
         // Fill out the description fields
-        MessageDesc daDesc = message.createDesc("da");
-        MessageDesc enDesc = message.createDesc("en");
-        composeMessageDescFromLegacyInfo(daDesc, daInfo);
-        composeMessageDescFromLegacyInfo(enDesc, enInfo);
-        message.getDescs().removeIf(desc -> !desc.descDefined());
-
-        // Fill out the message part description fields
-        MessagePart part = new MessagePart();
-        message.addPart(part);
-        MessagePartDesc daPartDesc = part.createDesc("da");
-        MessagePartDesc enPartDesc = part.createDesc("en");
-        composeMessagePartDescFromLegacyInfo(daPartDesc, daInfo);
-        composeMessagePartDescFromLegacyInfo(enPartDesc, enInfo);
-        part.getDescs().removeIf(desc -> !desc.descDefined());
+        // 1: Details
+        MessagePart detailPart = null;
+        if (StringUtils.isNotBlank(daInfo.get(1)) || StringUtils.isNotBlank(enInfo.get(1))) {
+            detailPart = new MessagePart(MessagePartType.DETAILS);
+            message.addPart(detailPart);
+            composeMessagePartDesc(detailPart, "da", daInfo.get(1));
+            composeMessagePartDesc(detailPart, "en", enInfo.get(1));
+        }
+        // 2: Note
+        if (StringUtils.isNotBlank(daInfo.get(2)) || StringUtils.isNotBlank(enInfo.get(2))) {
+            MessagePart part = new MessagePart(MessagePartType.NOTE);
+            message.addPart(part);
+            composeMessagePartDesc(part, "da", daInfo.get(2));
+            composeMessagePartDesc(part, "en", enInfo.get(2));
+        }
+        // 5: Prohibition
+        if (StringUtils.isNotBlank(daInfo.get(5)) || StringUtils.isNotBlank(enInfo.get(5))) {
+            MessagePart part = new MessagePart(MessagePartType.PROHIBITION);
+            message.addPart(part);
+            composeMessagePartDesc(part, "da", daInfo.get(5));
+            composeMessagePartDesc(part, "en", enInfo.get(5));
+        }
+        // 6: Signals
+        if (StringUtils.isNotBlank(daInfo.get(6)) || StringUtils.isNotBlank(enInfo.get(6))) {
+            MessagePart part = new MessagePart(MessagePartType.SIGNALS);
+            message.addPart(part);
+            composeMessagePartDesc(part, "da", daInfo.get(6));
+            composeMessagePartDesc(part, "en", enInfo.get(6));
+        }
 
         if (area.getGeometry() != null) {
             FeatureCollection featureCollection = new FeatureCollection();
@@ -357,7 +371,11 @@ public class LegacyFiringAreaImportService {
             if (area.getDesc("en") != null && StringUtils.isNotBlank(area.getDesc("en").getName())) {
                 feature.getProperties().put("name:en", area.getDesc("en").getName());
             }
-            part.setGeometry(featureCollection);
+            if (detailPart == null) {
+                detailPart = new MessagePart(MessagePartType.DETAILS);
+                message.addPart(detailPart);
+            }
+            detailPart.setGeometry(featureCollection);
         }
 
         // Update the title line
@@ -436,26 +454,10 @@ public class LegacyFiringAreaImportService {
     }
 
 
-    /** Composes the message descriptor from the legacy firing area information **/
-    private void composeMessageDescFromLegacyInfo(MessageDesc desc, Map<Integer, String> info) {
-        // 2: Note
-        if (StringUtils.isNotBlank(info.get(2))) {
-            desc.setNote(info.get(2));
-        }
-        if (StringUtils.isNotBlank(info.get(5))) {
-            desc.setProhibition(info.get(5));
-        }
-        if (StringUtils.isNotBlank(info.get(6))) {
-            desc.setSignals(info.get(6));
-        }
-    }
-
-
     /** Composes the message part descriptor from the legacy firing area information **/
-    private void composeMessagePartDescFromLegacyInfo(MessagePartDesc desc, Map<Integer, String> info) {
-        // 1: Details, 5: Prohibition, 6: Signals merged into description
-        if (StringUtils.isNotBlank(info.get(1))) {
-            desc.setDetails("<p>" + info.get(1).replace("\n", "<br>") + "</p>");
+    private void composeMessagePartDesc(MessagePart part, String lang, String details) {
+        if (StringUtils.isNotBlank(details)) {
+            part.createDesc(lang).setDetails("<p>" + details.replace("\n", "<br>") + "</p>");
         }
     }
 

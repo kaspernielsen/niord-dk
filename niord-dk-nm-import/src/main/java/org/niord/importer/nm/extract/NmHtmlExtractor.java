@@ -24,6 +24,7 @@ import org.niord.core.geojson.Feature;
 import org.niord.core.message.Message;
 import org.niord.core.message.MessagePart;
 import org.niord.core.util.TimeUtils;
+import org.niord.model.message.MessagePartType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,6 +36,9 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+
+import static org.niord.model.message.MessagePartType.DETAILS;
+import static org.niord.model.message.MessagePartType.NOTE;
 
 /**
  * Class for extracting NM messages from HTML files.
@@ -181,16 +185,28 @@ public class NmHtmlExtractor implements IHtmlExtractor {
     }
 
 
-    /** Merges Danish and English messages */
+    /** Merges Danish and English messages into the Danish one */
     private void mergeNms(Message daMsg, Message enMsg) {
 
         // Start copying
         if (daMsg.getDescs().size() == 1 && enMsg.getDescs().size() == 1) {
             daMsg.getDescs().add(enMsg.getDescs().get(0));
         }
-        if (daMsg.getParts().size() == 1 && enMsg.getParts().size() == 1 &&
-                daMsg.getParts().get(0).getDescs().size() == 1 && enMsg.getParts().get(0).getDescs().size() == 1) {
-            daMsg.getParts().get(0).getDescs().add(enMsg.getParts().get(0).getDescs().get(0));
+
+        List<MessagePart> daParts = daMsg.partsByType(DETAILS);
+        List<MessagePart> enParts = enMsg.partsByType(DETAILS);
+        if (daParts.size() == enParts.size()) {
+            for (int x = 0; x < daParts.size(); x++) {
+                daParts.get(x).getDescs().add(enParts.get(x).getDescs().get(0));
+            }
+        }
+
+        daParts = daMsg.partsByType(NOTE);
+        enParts = enMsg.partsByType(NOTE);
+        if (daParts.size() == enParts.size()) {
+            for (int x = 0; x < daParts.size(); x++) {
+                daParts.get(x).getDescs().add(enParts.get(x).getDescs().get(0));
+            }
         }
 
         if (daMsg.getAreas().size() == 1 && enMsg.getAreas().size() == 1) {
@@ -213,6 +229,8 @@ public class NmHtmlExtractor implements IHtmlExtractor {
             daFeature.getProperties().putAll(enFeature.getProperties());
         }
 
+        // Lastly, remove empty parts
+        daMsg.getParts().removeIf(p -> !p.partDefined());
     }
 
 
@@ -232,7 +250,7 @@ public class NmHtmlExtractor implements IHtmlExtractor {
             switch (e.attr("class")) {
                 case "1nr":
                     message = new Message();
-                    message.addPart(new MessagePart());
+                    message.addPart(new MessagePart(MessagePartType.DETAILS));
                     messages.add(message);
 
                     message.setOriginalInformation(extractOriginalInformation(e));
@@ -298,7 +316,10 @@ public class NmHtmlExtractor implements IHtmlExtractor {
                         log.warn("Note field outside message");
                         break;
                     }
-                    message.checkCreateDesc(lang).setNote(extractNote(e));
+                    MessagePart part = message.partsByType(NOTE).isEmpty()
+                            ? message.addPart(new MessagePart(NOTE))
+                            : message.partsByType(NOTE).get(0);
+                    part.checkCreateDesc(lang).setDetails(extractNote(e));
                     break;
 
                 case "kort":
