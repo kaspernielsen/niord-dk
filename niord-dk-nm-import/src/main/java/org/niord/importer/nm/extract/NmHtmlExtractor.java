@@ -16,6 +16,7 @@
 
 package org.niord.importer.nm.extract;
 
+import org.apache.commons.lang.StringUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -39,6 +40,7 @@ import java.util.List;
 
 import static org.niord.model.message.MessagePartType.DETAILS;
 import static org.niord.model.message.MessagePartType.NOTE;
+import static org.niord.model.message.MessagePartType.TIME;
 
 /**
  * Class for extracting NM messages from HTML files.
@@ -157,7 +159,7 @@ public class NmHtmlExtractor implements IHtmlExtractor {
         TimeUtils.resetTime(publishDate).set(Calendar.HOUR_OF_DAY, 12);
         messages.forEach(m -> {
             m.setCreated(publishDate.getTime());
-            m.setPublishDate(publishDate.getTime());
+            m.setPublishDateFrom(publishDate.getTime());
         });
 
         return messages;
@@ -193,19 +195,14 @@ public class NmHtmlExtractor implements IHtmlExtractor {
             daMsg.getDescs().add(enMsg.getDescs().get(0));
         }
 
-        List<MessagePart> daParts = daMsg.partsByType(DETAILS);
-        List<MessagePart> enParts = enMsg.partsByType(DETAILS);
-        if (daParts.size() == enParts.size()) {
-            for (int x = 0; x < daParts.size(); x++) {
-                daParts.get(x).getDescs().add(enParts.get(x).getDescs().get(0));
-            }
-        }
-
-        daParts = daMsg.partsByType(NOTE);
-        enParts = enMsg.partsByType(NOTE);
-        if (daParts.size() == enParts.size()) {
-            for (int x = 0; x < daParts.size(); x++) {
-                daParts.get(x).getDescs().add(enParts.get(x).getDescs().get(0));
+        MessagePartType[] types = { DETAILS, NOTE, TIME };
+        for (MessagePartType type : types) {
+            List<MessagePart> daParts = daMsg.partsByType(type);
+            List<MessagePart> enParts = enMsg.partsByType(type);
+            if (daParts.size() == enParts.size()) {
+                for (int x = 0; x < daParts.size(); x++) {
+                    daParts.get(x).getDescs().add(enParts.get(x).getDescs().get(0));
+                }
             }
         }
 
@@ -277,7 +274,10 @@ public class NmHtmlExtractor implements IHtmlExtractor {
                         log.warn("Time field outside message");
                         break;
                     }
-                    message.checkCreateDesc(lang).setTime(extractTime(e));
+                    String time = extractTime(e);
+                    if (StringUtils.isNotBlank(time)) {
+                        message.addPart(new MessagePart(MessagePartType.TIME)).checkCreateDesc(lang).setDetails(time);
+                    }
                     break;
 
                 case "position":

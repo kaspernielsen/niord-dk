@@ -304,6 +304,9 @@ public class LegacyNwImportService {
             rs.close();
 
             Message message = new Message();
+            MessagePart part = new MessagePart();
+            message.addPart(part);
+
             message.setLegacyId(String.valueOf(id));
             message.setMainType(MainType.NW);
             message.setCreated(created);
@@ -312,8 +315,8 @@ public class LegacyNwImportService {
             DateInterval dateInterval = new DateInterval();
             dateInterval.setFromDate(validFrom);
             dateInterval.setToDate((validTo != null) ? validTo : deleted);
-            message.addDateInterval(dateInterval);
-            message.setPublishDate(validFrom);
+            part.addEventDates(dateInterval);
+            message.setPublishDateFrom(validFrom);
 
             if (StringUtils.isNotBlank(navtexNo) && navtexNo.split("-").length == 3) {
                 // Extract the series identifier from the navtex number
@@ -337,15 +340,15 @@ public class LegacyNwImportService {
                 status = Status.DELETED;
             } else if (deleted != null && validTo != null && deleted.after(validTo)) {
                 status = Status.EXPIRED;
-                message.setUnpublishDate(validTo);
+                message.setPublishDateTo(validTo);
             } else if (deleted != null) {
                 status = Status.CANCELLED;
-                message.setUnpublishDate(deleted);
+                message.setPublishDateTo(deleted);
             } else if (statusDraft) {
                 status = Status.DRAFT;
             } else if (validTo != null && now.after(validTo)) {
                 status = Status.EXPIRED;
-                message.setUnpublishDate(validTo);
+                message.setPublishDateTo(validTo);
             }
             message.setStatus(status);
 
@@ -369,8 +372,6 @@ public class LegacyNwImportService {
             message.setAutoTitle(true);
 
             // Message Part Desc
-            MessagePart part = new MessagePart();
-            message.addPart(part);
             if (StringUtils.isNotBlank(titleEn) || StringUtils.isNotBlank(descriptionEn)) {
                 MessagePartDesc descEn = part.checkCreateDesc("en");
                 descEn.setSubject(titleEn);
