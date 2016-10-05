@@ -80,16 +80,9 @@
     "editable"    : true
   },
   {
-    "key"         : "nwMrnPrefix",
-    "description" : "The MRN prefix to use for NW messages",
-    "value"       : "urn:mrn:iho:nw:dk:",
-    "web"         : true,
-    "editable"    : true
-  },
-  {
-    "key"         : "nmMrnPrefix",
-    "description" : "The MRN prefix to use for NM messages",
-    "value"       : "urn:mrn:iho:nm:dk:",
+    "key"         : "faMrnPrefix",
+    "description" : "The MRN prefix to use for firing areas",
+    "value"       : "urn:mrn:iho:fa:dk:",
     "web"         : true,
     "editable"    : true
   },
