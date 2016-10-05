@@ -20,6 +20,8 @@ import org.apache.commons.fileupload.FileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.jboss.security.annotation.SecurityDomain;
 import org.niord.core.aton.AtonNode;
+import org.niord.core.aton.vo.AtonNodeVo;
+import org.niord.core.aton.vo.AtonOsmVo;
 import org.niord.core.batch.BatchService;
 import org.niord.core.repo.RepositoryService;
 import org.niord.core.sequence.DefaultSequence;
@@ -27,8 +29,6 @@ import org.niord.core.sequence.Sequence;
 import org.niord.core.sequence.SequenceService;
 import org.niord.core.user.UserService;
 import org.niord.importer.aton.batch.AbstractDkAtonImportProcessor;
-import org.niord.model.aton.AtonNodeVo;
-import org.niord.model.aton.AtonOsmVo;
 import org.slf4j.Logger;
 
 import javax.annotation.security.PermitAll;

@@ -16,7 +16,7 @@
 package org.niord.importer.aton.batch;
 
 import org.niord.core.aton.AtonNode;
-import org.niord.model.aton.AtonNodeVo;
+import org.niord.core.aton.vo.AtonNodeVo;
 import org.slf4j.Logger;
 
 import javax.batch.api.chunk.AbstractItemWriter;
