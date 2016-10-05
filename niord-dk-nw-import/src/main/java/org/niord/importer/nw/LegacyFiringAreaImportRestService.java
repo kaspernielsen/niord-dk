@@ -125,7 +125,7 @@ public class LegacyFiringAreaImportRestService {
 
             List<MessageVo> messages = faImportService.generateFiringAreaMessageTemplates(params.getSeriesId())
                     .stream()
-                    .map(m -> m.toVo(filter))
+                    .map(m -> m.toVo(MessageVo.class, filter))
                     .collect(Collectors.toList());
 
             Map<String, Object> batchProperties = new HashMap<>();

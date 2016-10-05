@@ -39,8 +39,11 @@ public class NmHtmlExtractorTest {
 
             System.out.println("Year " + extractor.getYear() +  ", week " + extractor.getWeek());
 
+            DataFilter dataFilter = DataFilter.get()
+                    .fields(DataFilter.GEOMETRY, DataFilter.DETAILS, "Area.parent");
+
             List<MessageVo> messages = extractor.extractNms().stream()
-                    .map(m -> m.toVo(DataFilter.get().fields(DataFilter.GEOMETRY, DataFilter.DETAILS, "Area.parent")))
+                    .map(m -> m.toVo(MessageVo.class, dataFilter))
                     .collect(Collectors.toList());
 
             System.out.println("Extracted NMs:\n\n" +

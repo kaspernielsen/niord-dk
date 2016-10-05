@@ -52,8 +52,11 @@ public class BatchDkNmImportReader extends BatchMessageImportReader {
         getLog().info("Parsing NMs for year " + extractor.getYear() +  ", week " + extractor.getWeek());
         List<Message> messages = extractor.extractNms();
 
+        DataFilter dataFilter = DataFilter.get()
+                .fields(DataFilter.DETAILS, DataFilter.GEOMETRY, "Area.parent");
+
         return messages.stream()
-                .map(m -> m.toVo(DataFilter.get().fields(DataFilter.DETAILS, DataFilter.GEOMETRY, "Area.parent")))
+                .map(m -> m.toVo(MessageVo.class, dataFilter))
                 .map(m -> geometryFormatService.appendGeometryToDetails(m))
                 .collect(Collectors.toList());
     }
