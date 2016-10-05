@@ -320,7 +320,6 @@ public class LegacyFiringAreaImportService {
         message.setType(Type.MISCELLANEOUS_NOTICE);
         message.setStatus(Status.DRAFT);
         message.setShortId(extractShortId(area, "FA-"));
-        message.setMrn(extractMrn(area, "fe:"));
         message.setAutoTitle(true);
         message.getAreas().add(area);
 

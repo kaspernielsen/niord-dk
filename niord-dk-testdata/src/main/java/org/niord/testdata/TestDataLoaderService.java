@@ -110,14 +110,12 @@ public class TestDataLoaderService extends BaseService {
                 "dma-nw",
                 MainType.NW,
                 NumberSequenceType.YEARLY,
-                "urn:mrn:iho:nw:dk:dma:${year}:${number}",
                 "NW-${number-3-digits}-${year-2-digits}"
                 ));
         d.getMessageSeries().add(createMessageSeries(
                 "dma-nw-local",
                 MainType.NW,
                 NumberSequenceType.NONE,
-                null,
                 null
         ));
         d.setTimeZone("Europe/Copenhagen");
@@ -130,7 +128,6 @@ public class TestDataLoaderService extends BaseService {
                 "dma-nm",
                 MainType.NM,
                 NumberSequenceType.YEARLY,
-                "urn:mrn:iho:nm:dk:dma:${year}:${number}",
                 "NM-${number-3-digits}-${year-2-digits} ${t-or-p}"
         ));
         d.setTimeZone("Europe/Copenhagen");
@@ -144,7 +141,6 @@ public class TestDataLoaderService extends BaseService {
                 "dma-fa",
                 MainType.NM,
                 NumberSequenceType.MANUAL,
-                null,
                 null
         ));
         d.setTimeZone("Europe/Copenhagen");
@@ -158,7 +154,6 @@ public class TestDataLoaderService extends BaseService {
                 "dma-nm-annex",
                 MainType.NM,
                 NumberSequenceType.YEARLY,
-                "urn:mrn:iho:nm:dk:dma:annex:${year}:${number}",
                 "A/${number} ${year}"
         ));
         d.setTimeZone("Europe/Copenhagen");
@@ -171,12 +166,11 @@ public class TestDataLoaderService extends BaseService {
 
 
     /** Creates the given message series */
-    private MessageSeries createMessageSeries(String seriesId, MainType type, NumberSequenceType numberSequenceType, String mrnFormat, String shortFormat) {
+    private MessageSeries createMessageSeries(String seriesId, MainType type, NumberSequenceType numberSequenceType, String shortFormat) {
         MessageSeries s = new MessageSeries();
         s.setSeriesId(seriesId);
         s.setMainType(type);
         s.setNumberSequenceType(numberSequenceType);
-        s.setMrnFormat(mrnFormat);
         s.setShortFormat(shortFormat);
         em.persist(s);
         return s;
