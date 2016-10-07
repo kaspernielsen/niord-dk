@@ -198,6 +198,7 @@ public class TestDataLoaderService extends BaseService {
                     report.setName("NM T&P report");
                     report.setTemplatePath("/templates/messages/nm-tp-report-pdf.ftl");
                     report.getDomains().add(nmDomain);
+                    report.getProperties().put("mapThumbnails", Boolean.FALSE);
                     em.persist(report);
                 }
 
@@ -219,7 +220,6 @@ public class TestDataLoaderService extends BaseService {
                     report.setTemplatePath("/templates/messages/nm-annex-report-pdf.ftl");
                     report.getDomains().add(annexDomain);
                     report.getProperties().put("mapThumbnails", Boolean.FALSE);
-                    report.getProperties().put("positions", Boolean.FALSE);
                     em.persist(report);
                 }
 
