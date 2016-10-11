@@ -329,7 +329,6 @@ public class LegacyNwImportService {
                 message.setType(Type.LOCAL_WARNING);
                 message.setMessageSeries(messageSeriesService.findBySeriesId(params.getLocalSeriesId()));
             }
-            messageSeriesService.updateMessageSeriesIdentifiers(message, false);
 
             // Status
             Date now = new Date();
@@ -351,6 +350,9 @@ public class LegacyNwImportService {
                 message.setPublishDateTo(validTo);
             }
             message.setStatus(status);
+
+            // Update the message according to the associated message series
+            messageSeriesService.updateMessageIdsFromMessageSeries(message, false);
 
             // Message Desc
             String titleDa = title;

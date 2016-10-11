@@ -37,6 +37,7 @@ import javax.ejb.Timeout;
 import javax.ejb.TimerConfig;
 import javax.ejb.TimerService;
 import javax.inject.Inject;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -128,7 +129,8 @@ public class TestDataLoaderService extends BaseService {
                 "dma-nm",
                 MainType.NM,
                 NumberSequenceType.YEARLY,
-                "NM-${number-3-digits}-${year-2-digits} ${t-or-p}"
+                "NM-${number-3-digits}-${year-2-digits} ${t-or-p}",
+                "nm-w${week-2-digits}-${year}"
         ));
         d.setTimeZone("Europe/Copenhagen");
         em.persist(d);
@@ -166,12 +168,17 @@ public class TestDataLoaderService extends BaseService {
 
 
     /** Creates the given message series */
-    private MessageSeries createMessageSeries(String seriesId, MainType type, NumberSequenceType numberSequenceType, String shortFormat) {
+    private MessageSeries createMessageSeries(
+            String seriesId, MainType type, NumberSequenceType numberSequenceType,
+            String shortFormat, String... publishTagFormats) {
         MessageSeries s = new MessageSeries();
         s.setSeriesId(seriesId);
         s.setMainType(type);
         s.setNumberSequenceType(numberSequenceType);
         s.setShortFormat(shortFormat);
+        if (publishTagFormats != null && publishTagFormats.length > 0) {
+            s.getPublishTagFormats().addAll(Arrays.asList(publishTagFormats));
+        }
         em.persist(s);
         return s;
     }
