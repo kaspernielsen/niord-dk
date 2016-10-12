@@ -18,9 +18,9 @@ package org.niord.importer.nm.batch;
 import org.niord.core.geojson.GeometryFormatService;
 import org.niord.core.message.Message;
 import org.niord.core.message.batch.BatchMessageImportReader;
+import org.niord.core.message.vo.SystemMessageVo;
 import org.niord.importer.nm.extract.NmHtmlExtractor;
 import org.niord.model.DataFilter;
-import org.niord.model.message.MessageVo;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -44,7 +44,7 @@ public class BatchDkNmImportReader extends BatchMessageImportReader {
 
     /** Reads in the batch import messages */
     @Override
-    protected List<MessageVo> readMessages() throws Exception {
+    protected List<SystemMessageVo> readMessages() throws Exception {
         // Extract messages from the HTML
         Path path = batchService.getBatchJobDataFile(jobContext.getInstanceId());
         NmHtmlExtractor extractor = new NmHtmlExtractor(path.toFile());
@@ -56,7 +56,7 @@ public class BatchDkNmImportReader extends BatchMessageImportReader {
                 .fields(DataFilter.DETAILS, DataFilter.GEOMETRY, "Area.parent");
 
         return messages.stream()
-                .map(m -> m.toVo(MessageVo.class, dataFilter))
+                .map(m -> m.toVo(SystemMessageVo.class, dataFilter))
                 .map(m -> geometryFormatService.appendGeometryToDetails(m))
                 .collect(Collectors.toList());
     }

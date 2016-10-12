@@ -20,9 +20,9 @@ import org.jboss.resteasy.annotations.cache.NoCache;
 import org.jboss.security.annotation.SecurityDomain;
 import org.niord.core.area.Area;
 import org.niord.core.batch.BatchService;
+import org.niord.core.message.vo.SystemMessageVo;
 import org.niord.model.DataFilter;
 import org.niord.model.IJsonSerializable;
-import org.niord.model.message.MessageVo;
 import org.slf4j.Logger;
 
 import javax.annotation.security.RolesAllowed;
@@ -123,9 +123,9 @@ public class LegacyFiringAreaImportRestService {
             DataFilter filter = DataFilter.get()
                     .fields("Message.details", "Message.geometry", "Area.parent", "Category.parent");
 
-            List<MessageVo> messages = faImportService.generateFiringAreaMessageTemplates(params.getSeriesId())
+            List<SystemMessageVo> messages = faImportService.generateFiringAreaMessageTemplates(params.getSeriesId())
                     .stream()
-                    .map(m -> m.toVo(MessageVo.class, filter))
+                    .map(m -> m.toVo(SystemMessageVo.class, filter))
                     .collect(Collectors.toList());
 
             Map<String, Object> batchProperties = new HashMap<>();

@@ -18,9 +18,9 @@ package org.niord.importer.nm;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
+import org.niord.core.message.vo.SystemMessageVo;
 import org.niord.importer.nm.extract.NmHtmlExtractor;
 import org.niord.model.DataFilter;
-import org.niord.model.message.MessageVo;
 
 import java.net.URL;
 import java.util.List;
@@ -42,8 +42,8 @@ public class NmHtmlExtractorTest {
             DataFilter dataFilter = DataFilter.get()
                     .fields(DataFilter.GEOMETRY, DataFilter.DETAILS, "Area.parent");
 
-            List<MessageVo> messages = extractor.extractNms().stream()
-                    .map(m -> m.toVo(MessageVo.class, dataFilter))
+            List<SystemMessageVo> messages = extractor.extractNms().stream()
+                    .map(m -> m.toVo(SystemMessageVo.class, dataFilter))
                     .collect(Collectors.toList());
 
             System.out.println("Extracted NMs:\n\n" +
