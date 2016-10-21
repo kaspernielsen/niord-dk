@@ -120,6 +120,7 @@ public class TestDataLoaderService extends BaseService {
                 null
         ));
         d.setTimeZone("Europe/Copenhagen");
+        d.setPublish(true);
         em.persist(d);
 
         d = new Domain();
@@ -133,6 +134,7 @@ public class TestDataLoaderService extends BaseService {
                 "nm-w${week-2-digits}-${year}"
         ));
         d.setTimeZone("Europe/Copenhagen");
+        d.setPublish(true);
         em.persist(d);
 
 
