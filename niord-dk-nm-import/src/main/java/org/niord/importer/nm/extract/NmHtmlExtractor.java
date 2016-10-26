@@ -38,9 +38,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-import static org.niord.model.message.MessagePartType.DETAILS;
-import static org.niord.model.message.MessagePartType.NOTE;
-import static org.niord.model.message.MessagePartType.TIME;
+import static org.niord.model.message.MessagePartType.*;
 
 /**
  * Class for extracting NM messages from HTML files.
