@@ -1,6 +1,9 @@
 
-<div class="first-page-footer">
-</div>
+<#if frontPage!true>
+    <div class="first-page-footer">
+    </div>
+</#if>
+
 <div class="footer">
     <div><img src="/img/company-logo.png" style="height: 1cm"></div>
     <div style="font-size: 8px; margin-top: 2mm">
