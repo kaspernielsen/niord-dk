@@ -1,0 +1,104 @@
+[
+  {
+    "id": 105282,
+    "active": true,
+    "internal": false,
+    "descs": [
+      {
+        "name": "Den danske Havnelods",
+        "format": "<a href=\"www.danskehavnelods.dk\" target=\"_blank\">www.danskehavnelods.dk</a>",
+        "lang": "da"
+      },
+      {
+        "name": "The Danish Habour Pilot",
+        "format": "<a href=\"www.danskehavnelods.dk\" target=\"_blank\">www.danskehavnelods.dk</a>",
+        "lang": "en"
+      }
+    ]
+  },
+  {
+    "id": 105285,
+    "active": true,
+    "internal": true,
+    "descs": [
+      {
+        "name": "Journalnummer",
+        "format": "J.nr. $parameters",
+        "lang": "da"
+      },
+      {
+        "name": "Journal number",
+        "format": "J.no $parameters",
+        "lang": "en"
+      }
+    ]
+  },
+  {
+    "id": 105288,
+    "active": true,
+    "internal": true,
+    "descs": [
+      {
+        "name": "Vragliste",
+        "format": "VragID $parameters",
+        "lang": "da"
+      },
+      {
+        "name": "List of Wrecks",
+        "format": "WreckID $parameters",
+        "lang": "en"
+      }
+    ]
+  },
+  {
+    "id": 105291,
+    "active": true,
+    "internal": false,
+    "descs": [
+      {
+        "name": "Dansk Fyrliste 2015",
+        "format": "<a href=\"http://www.soefartsstyrelsen.dk/Documents/Publikationer/DANSKFYRLISTE2015.pdf\" target=\"_blank\">Dansk Fyrliste</a>, nr. $parameters",
+        "lang": "da"
+      },
+      {
+        "name": "Danish List of Lights 2015",
+        "format": "<a href=\"http://www.soefartsstyrelsen.dk/Documents/Publikationer/DANSKFYRLISTE2015.pdf\" target=\"_blank\">Danish List of Lights (Dansk Fyrliste)</a> no $parameters",
+        "lang": "en"
+      }
+    ]
+  },
+  {
+    "id": 105294,
+    "active": true,
+    "internal": true,
+    "descs": [
+      {
+        "name": "Afmærkninger",
+        "format": "AFM, nr. $parameters",
+        "lang": "da"
+      },
+      {
+        "name": "AtoNs",
+        "format": "AtoN no $parameters",
+        "lang": "en"
+      }
+    ]
+  },
+  {
+    "id": 105308,
+    "active": true,
+    "internal": false,
+    "descs": [
+      {
+        "name": "Skydepladser 2016",
+        "format": "<a href=\"http://www.soefartsstyrelsen.dk/SikkerhedTilSoes/Sejladsinformation/EfS/ThisYear2/Skydebilag%202016%20DK.pdf\" target=\"_blank\">Oversigt over forsvarets skydepladser 2016</a>, punkt $parameters",
+        "lang": "da"
+      },
+      {
+        "name": "Firing Practice Areas",
+        "format": "<a href=\"http://www.soefartsstyrelsen.dk/SikkerhedTilSoes/Sejladsinformation/EfS/ThisYear2/Skydebilag%202016%20UK.pdf\" target=\"_blank\">Danish List of Firing Practice Areas</a>, section $parameters",
+        "lang": "en"
+      }
+    ]
+  }
+]

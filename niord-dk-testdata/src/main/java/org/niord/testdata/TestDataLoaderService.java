@@ -25,6 +25,7 @@ import org.niord.core.domain.DomainService;
 import org.niord.core.fm.FmReport;
 import org.niord.core.message.MessageSeries;
 import org.niord.core.message.vo.SystemMessageSeriesVo.NumberSequenceType;
+import org.niord.core.publication.Publication;
 import org.niord.core.service.BaseService;
 import org.niord.model.message.MainType;
 import org.slf4j.Logger;
@@ -94,6 +95,11 @@ public class TestDataLoaderService extends BaseService {
         // Check if we need to load domains
         if (count(Domain.class) == 0) {
             importDomains();
+        }
+
+        // Check if we need to load charts
+        if (count(Publication.class) == 0) {
+            startBatchJob("publication-import", "publications.json");
         }
 
         // Check if we need to create reports
