@@ -1,102 +1,108 @@
 [
   {
-    "id": 105282,
     "active": true,
     "internal": false,
+    "messagePublicationLink": false,
     "descs": [
       {
         "name": "Den danske Havnelods",
-        "format": "<a href=\"www.danskehavnelods.dk\" target=\"_blank\">www.danskehavnelods.dk</a>",
+        "format": "www.danskehavnelods.dk",
+        "link": "http://www.danskehavnelods.dk",
         "lang": "da"
       },
       {
         "name": "The Danish Habour Pilot",
-        "format": "<a href=\"www.danskehavnelods.dk\" target=\"_blank\">www.danskehavnelods.dk</a>",
+        "format": "www.danskehavnelods.dk",
+        "link": "http://www.danskehavnelods.dk",
         "lang": "en"
       }
     ]
   },
   {
-    "id": 105285,
     "active": true,
     "internal": true,
+    "messagePublicationLink": true,
     "descs": [
       {
         "name": "Journalnummer",
-        "format": "J.nr. $parameters",
+        "format": "J.nr. ${parameters}",
         "lang": "da"
       },
       {
         "name": "Journal number",
-        "format": "J.no $parameters",
+        "format": "J.no ${parameters}",
         "lang": "en"
       }
     ]
   },
   {
-    "id": 105288,
     "active": true,
     "internal": true,
+    "messagePublicationLink": false,
     "descs": [
       {
         "name": "Vragliste",
-        "format": "VragID $parameters",
+        "format": "VragID ${parameters}",
         "lang": "da"
       },
       {
         "name": "List of Wrecks",
-        "format": "WreckID $parameters",
+        "format": "WreckID ${parameters}",
         "lang": "en"
       }
     ]
   },
   {
-    "id": 105291,
     "active": true,
     "internal": false,
+    "messagePublicationLink": false,
     "descs": [
       {
         "name": "Dansk Fyrliste 2015",
-        "format": "<a href=\"http://www.soefartsstyrelsen.dk/Documents/Publikationer/DANSKFYRLISTE2015.pdf\" target=\"_blank\">Dansk Fyrliste</a>, nr. $parameters",
+        "format": "Dansk Fyrliste, nr. ${parameters}",
+        "link": "http://www.soefartsstyrelsen.dk/Documents/Publikationer/DANSKFYRLISTE2015.pdf",
         "lang": "da"
       },
       {
         "name": "Danish List of Lights 2015",
-        "format": "<a href=\"http://www.soefartsstyrelsen.dk/Documents/Publikationer/DANSKFYRLISTE2015.pdf\" target=\"_blank\">Danish List of Lights (Dansk Fyrliste)</a> no $parameters",
+        "format": "Danish List of Lights (Dansk Fyrliste) no ${parameters}",
+        "link": "http://www.soefartsstyrelsen.dk/Documents/Publikationer/DANSKFYRLISTE2015.pdf",
         "lang": "en"
       }
     ]
   },
   {
-    "id": 105294,
     "active": true,
     "internal": true,
+    "messagePublicationLink": false,
     "descs": [
       {
         "name": "Afmærkninger",
-        "format": "AFM, nr. $parameters",
+        "format": "AFM, nr. ${parameters}",
         "lang": "da"
       },
       {
         "name": "AtoNs",
-        "format": "AtoN no $parameters",
+        "format": "AtoN no ${parameters}",
         "lang": "en"
       }
     ]
   },
   {
-    "id": 105308,
     "active": true,
     "internal": false,
+    "messagePublicationLink": false,
     "descs": [
       {
         "name": "Skydepladser 2016",
-        "format": "<a href=\"http://www.soefartsstyrelsen.dk/SikkerhedTilSoes/Sejladsinformation/EfS/ThisYear2/Skydebilag%202016%20DK.pdf\" target=\"_blank\">Oversigt over forsvarets skydepladser 2016</a>, punkt $parameters",
+        "format": "Oversigt over forsvarets skydepladser 2016, punkt ${parameters}",
+        "link": "http://www.soefartsstyrelsen.dk/SikkerhedTilSoes/Sejladsinformation/EfS/ThisYear2/Skydebilag%202016%20DK.pdf",
         "lang": "da"
       },
       {
         "name": "Firing Practice Areas",
-        "format": "<a href=\"http://www.soefartsstyrelsen.dk/SikkerhedTilSoes/Sejladsinformation/EfS/ThisYear2/Skydebilag%202016%20UK.pdf\" target=\"_blank\">Danish List of Firing Practice Areas</a>, section $parameters",
+        "format": "Danish List of Firing Practice Areas, section ${parameters}",
+        "link": "http://www.soefartsstyrelsen.dk/SikkerhedTilSoes/Sejladsinformation/EfS/ThisYear2/Skydebilag%202016%20UK.pdf",
         "lang": "en"
       }
     ]
