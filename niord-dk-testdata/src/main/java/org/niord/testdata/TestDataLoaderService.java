@@ -27,6 +27,7 @@ import org.niord.core.message.MessageSeries;
 import org.niord.core.message.vo.SystemMessageSeriesVo.NumberSequenceType;
 import org.niord.core.publication.Publication;
 import org.niord.core.service.BaseService;
+import org.niord.core.source.Source;
 import org.niord.model.message.MainType;
 import org.slf4j.Logger;
 
@@ -97,9 +98,14 @@ public class TestDataLoaderService extends BaseService {
             importDomains();
         }
 
-        // Check if we need to load charts
+        // Check if we need to load publications
         if (count(Publication.class) == 0) {
             startBatchJob("publication-import", "publications.json");
+        }
+
+        // Check if we need to load sources
+        if (count(Source.class) == 0) {
+            startBatchJob("source-import", "sources.json");
         }
 
         // Check if we need to create reports
