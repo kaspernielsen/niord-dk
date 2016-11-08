@@ -93,11 +93,6 @@ public class TestDataLoaderService extends BaseService {
             startBatchJob("category-import", "categories.json");
         }
 
-        // Check if we need to load domains
-        if (count(Domain.class) == 0) {
-            importDomains();
-        }
-
         // Check if we need to load publications
         if (count(Publication.class) == 0) {
             startBatchJob("publication-import", "publications.json");
@@ -106,6 +101,11 @@ public class TestDataLoaderService extends BaseService {
         // Check if we need to load sources
         if (count(Source.class) == 0) {
             startBatchJob("source-import", "sources.json");
+        }
+
+        // Check if we need to load domains
+        if (count(Domain.class) == 0) {
+            importDomains();
         }
 
         // Check if we need to create reports
@@ -176,7 +176,7 @@ public class TestDataLoaderService extends BaseService {
         d.setMessageSortOrder("ID ASC");
         em.persist(d);
 
-
+        em.flush();
         log.info("Created test domains");
     }
 
