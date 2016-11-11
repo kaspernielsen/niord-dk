@@ -1,0 +1,37 @@
+[
+  {
+    "jobName": "chart-import",
+    "fileName": "charts.json",
+    "delay": 5000
+  },
+  {
+    "jobName": "area-import",
+    "fileName": "areas.json",
+    "delay": 5100
+  },
+  {
+    "jobName": "category-import",
+    "fileName": "categories.json",
+    "delay": 5200
+  },
+  {
+    "jobName": "publication-import",
+    "fileName": "publications.json",
+    "delay": 5300
+  },
+  {
+    "jobName": "source-import",
+    "fileName": "sources.json",
+    "delay": 5400
+  },
+  {
+    "jobName": "domain-import",
+    "fileName": "domains.json",
+    "delay": 10000
+  },
+  {
+    "jobName": "report-import",
+    "fileName": "reports.json",
+    "delay": 15000
+  }
+]
