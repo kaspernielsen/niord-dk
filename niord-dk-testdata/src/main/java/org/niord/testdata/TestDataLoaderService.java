@@ -21,7 +21,6 @@ import org.niord.core.batch.BatchService;
 import org.niord.core.category.Category;
 import org.niord.core.chart.Chart;
 import org.niord.core.domain.Domain;
-import org.niord.core.domain.DomainService;
 import org.niord.core.fm.FmReport;
 import org.niord.core.publication.Publication;
 import org.niord.core.service.BaseService;
@@ -33,11 +32,12 @@ import javax.annotation.Resource;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
 import javax.ejb.Timeout;
+import javax.ejb.Timer;
 import javax.ejb.TimerConfig;
 import javax.ejb.TimerService;
 import javax.inject.Inject;
 import java.util.HashMap;
-import java.util.List;
+import java.util.Objects;
 
 /**
  * Loads test base data into an empty system
@@ -47,14 +47,15 @@ import java.util.List;
 @SuppressWarnings("unused")
 public class TestDataLoaderService extends BaseService {
 
+    public static final String BATCH_STEP_BASE_DATA = "base.data";
+    public static final String BATCH_STEP_DOMAINS = "domains";
+    public static final String BATCH_STEP_REPORTS = "reports";
+
     @Inject
     Logger log;
 
     @Inject
     BatchService batchService;
-
-    @Inject
-    DomainService domainService;
 
     @Resource
     TimerService timerService;
@@ -65,102 +66,66 @@ public class TestDataLoaderService extends BaseService {
     @PostConstruct
     public void init() {
         // In order not to stall webapp deployment, wait 5 seconds before checking for base data
-        timerService.createSingleActionTimer(5000, new TimerConfig());
+        timerService.createSingleActionTimer(5000, new TimerConfig(BATCH_STEP_BASE_DATA, false));
+
+        // Schedule domain import 5 seconds later (may depend on areas and categories)
+        timerService.createSingleActionTimer(2 * 5000, new TimerConfig(BATCH_STEP_DOMAINS, false));
+
+        // Schedule report import 5 seconds later (may depend on domains)
+        timerService.createSingleActionTimer(3 * 5000, new TimerConfig(BATCH_STEP_REPORTS, false));
     }
 
     /**
      * Check if we need to load base data
      */
     @Timeout
-    private void checkLoadBaseData() {
+    private void checkLoadBaseData(Timer timer) {
 
-        // Check if we need to load charts
-        if (count(Chart.class) == 0) {
-            startBatchJob("chart-import", "charts.json");
-        }
+        if (Objects.equals(timer.getInfo(), BATCH_STEP_BASE_DATA)) {
 
-        // Check if we need to load areas
-        if (count(Area.class) == 0) {
-            startBatchJob("area-import", "areas.json");
-        }
+            // Check if we need to load charts
+            if (count(Chart.class) == 0) {
+                startBatchJob("chart-import", "charts.json");
+            }
 
-        // Check if we need to load categories
-        if (count(Category.class) == 0) {
-            startBatchJob("category-import", "categories.json");
-        }
+            // Check if we need to load areas
+            if (count(Area.class) == 0) {
+                startBatchJob("area-import", "areas.json");
+            }
 
-        // Check if we need to load publications
-        if (count(Publication.class) == 0) {
-            startBatchJob("publication-import", "publications.json");
-        }
+            // Check if we need to load categories
+            if (count(Category.class) == 0) {
+                startBatchJob("category-import", "categories.json");
+            }
 
-        // Check if we need to load sources
-        if (count(Source.class) == 0) {
-            startBatchJob("source-import", "sources.json");
-        }
+            // Check if we need to load publications
+            if (count(Publication.class) == 0) {
+                startBatchJob("publication-import", "publications.json");
+            }
 
-        // Check if we need to load domains
-        if (count(Domain.class) == 0) {
-            startBatchJob("domain-import", "domains.json");
-        }
+            // Check if we need to load sources
+            if (count(Source.class) == 0) {
+                startBatchJob("source-import", "sources.json");
+            }
 
-        // Check if we need to create reports
-        checkCreateReports();
-    }
+        } else if (Objects.equals(timer.getInfo(), BATCH_STEP_DOMAINS)) {
+
+            // Check if we need to load domains
+            if (count(Domain.class) == 0) {
+                startBatchJob("domain-import", "domains.json");
+            }
 
 
-    /** Creates a standard NM report */
-    private void checkCreateReports() {
-        try {
-            List<FmReport> reports = em.createNamedQuery("FmReport.findByReportId", FmReport.class)
-                    .setParameter("reportId", "nm-report")
-                    .getResultList();
-            if (reports.isEmpty()) {
-                Domain nmDomain = domainService.findByDomainId("niord-client-nm");
-                if (nmDomain != null) {
-                    FmReport report = new FmReport();
-                    report.setReportId("nm-report");
-                    report.setName("NM report");
-                    report.setTemplatePath("/templates/messages/nm-report-pdf.ftl");
-                    report.getDomains().add(nmDomain);
-                    em.persist(report);
+        } else if (Objects.equals(timer.getInfo(), BATCH_STEP_REPORTS)) {
 
-                    report = new FmReport();
-                    report.setReportId("nm-tp-report");
-                    report.setName("NM T&P report");
-                    report.setTemplatePath("/templates/messages/nm-tp-report-pdf.ftl");
-                    report.getDomains().add(nmDomain);
-                    report.getProperties().put("mapThumbnails", Boolean.FALSE);
-                    em.persist(report);
-                }
+            // Check if we need to load domains
+            // NB: There are 2 standard reports in the system
+            if (count(FmReport.class) <= 2) {
+                startBatchJob("report-import", "reports.json");
+            }
 
-                Domain faDomain = domainService.findByDomainId("niord-client-fa");
-                if (faDomain != null) {
-                    FmReport report = new FmReport();
-                    report.setReportId("fa-list");
-                    report.setName("Firing Areas");
-                    report.setTemplatePath("/templates/messages/fa-list-pdf.ftl");
-                    report.getDomains().add(faDomain);
-                    em.persist(report);
-                }
-
-                Domain annexDomain = domainService.findByDomainId("niord-client-annex");
-                if (annexDomain != null) {
-                    FmReport report = new FmReport();
-                    report.setReportId("nm-annex");
-                    report.setName("NM Annex");
-                    report.setTemplatePath("/templates/messages/nm-annex-report-pdf.ftl");
-                    report.getDomains().add(annexDomain);
-                    report.getProperties().put("mapThumbnails", Boolean.FALSE);
-                    em.persist(report);
-                }
-
-                log.info("Created NM reports");}
-        } catch (Exception e) {
-            log.error("Error creating NM reports", e);
         }
     }
-
 
     /**
      * Starts the batch job with the given name and load the associated batch file data

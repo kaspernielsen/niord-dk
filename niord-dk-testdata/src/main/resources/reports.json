@@ -1,0 +1,43 @@
+[
+  {
+    "reportId": "nm-report",
+    "name": "NM report",
+    "templatePath": "/templates/messages/nm-report-pdf.ftl",
+    "domains": [
+      { "domainId": "niord-client-nm" }
+    ],
+    "properties": {}
+  },
+  {
+    "reportId": "nm-tp-report",
+    "name": "NM T&P report",
+    "templatePath": "/templates/messages/nm-tp-report-pdf.ftl",
+    "domains": [
+      { "domainId": "niord-client-nm" }
+    ],
+    "properties": {
+      "mapThumbnails": false
+    }
+  },
+  {
+    "reportId": "fa-list",
+    "name": "Firing Areas",
+    "templatePath": "/templates/messages/fa-list-pdf.ftl",
+    "domains": [
+      { "domainId": "niord-client-fa" }
+    ],
+    "properties": {}
+  },
+  {
+    "reportId": "nm-annex",
+    "name": "NM Annex",
+    "templatePath": "/templates/messages/nm-annex-report-pdf.ftl",
+    "domains": [
+      { "domainId": "niord-client-annex" }
+    ],
+    "properties": {
+      "mapThumbnails": false
+    }
+  }
+]
+
