@@ -23,12 +23,9 @@ import org.niord.core.chart.Chart;
 import org.niord.core.domain.Domain;
 import org.niord.core.domain.DomainService;
 import org.niord.core.fm.FmReport;
-import org.niord.core.message.MessageSeries;
-import org.niord.core.message.vo.SystemMessageSeriesVo.NumberSequenceType;
 import org.niord.core.publication.Publication;
 import org.niord.core.service.BaseService;
 import org.niord.core.source.Source;
-import org.niord.model.message.MainType;
 import org.slf4j.Logger;
 
 import javax.annotation.PostConstruct;
@@ -39,7 +36,6 @@ import javax.ejb.Timeout;
 import javax.ejb.TimerConfig;
 import javax.ejb.TimerService;
 import javax.inject.Inject;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -105,96 +101,11 @@ public class TestDataLoaderService extends BaseService {
 
         // Check if we need to load domains
         if (count(Domain.class) == 0) {
-            importDomains();
+            startBatchJob("domain-import", "domains.json");
         }
 
         // Check if we need to create reports
         checkCreateReports();
-    }
-
-
-    /** Creates a couple of message series and domains */
-    private void importDomains() {
-
-        Domain d = new Domain();
-        d.setDomainId("niord-client-nw");
-        d.setName("NW");
-        d.getMessageSeries().add(createMessageSeries(
-                "dma-nw",
-                MainType.NW,
-                NumberSequenceType.YEARLY,
-                "NW-${number-3-digits}-${year-2-digits}"
-                ));
-        d.getMessageSeries().add(createMessageSeries(
-                "dma-nw-local",
-                MainType.NW,
-                NumberSequenceType.NONE,
-                null
-        ));
-        d.setTimeZone("Europe/Copenhagen");
-        d.setPublish(true);
-        em.persist(d);
-
-        d = new Domain();
-        d.setDomainId("niord-client-nm");
-        d.setName("NM");
-        d.getMessageSeries().add(createMessageSeries(
-                "dma-nm",
-                MainType.NM,
-                NumberSequenceType.YEARLY,
-                "NM-${number-3-digits}-${year-2-digits} ${t-or-p}",
-                "nm-w${week-2-digits}-${year}"
-        ));
-        d.setTimeZone("Europe/Copenhagen");
-        d.setPublish(true);
-        em.persist(d);
-
-
-        d = new Domain();
-        d.setDomainId("niord-client-fa");
-        d.setName("Firing Areas");
-        d.getMessageSeries().add(createMessageSeries(
-                "dma-fa",
-                MainType.NM,
-                NumberSequenceType.MANUAL,
-                null
-        ));
-        d.setTimeZone("Europe/Copenhagen");
-        d.setSchedule(true);
-        em.persist(d);
-
-        d = new Domain();
-        d.setDomainId("niord-client-annex");
-        d.setName("NM Annex");
-        d.getMessageSeries().add(createMessageSeries(
-                "dma-nm-annex",
-                MainType.NM,
-                NumberSequenceType.YEARLY,
-                "A/${number} ${year}"
-        ));
-        d.setTimeZone("Europe/Copenhagen");
-        d.setMessageSortOrder("ID ASC");
-        em.persist(d);
-
-        em.flush();
-        log.info("Created test domains");
-    }
-
-
-    /** Creates the given message series */
-    private MessageSeries createMessageSeries(
-            String seriesId, MainType type, NumberSequenceType numberSequenceType,
-            String shortFormat, String... publishTagFormats) {
-        MessageSeries s = new MessageSeries();
-        s.setSeriesId(seriesId);
-        s.setMainType(type);
-        s.setNumberSequenceType(numberSequenceType);
-        s.setShortFormat(shortFormat);
-        if (publishTagFormats != null && publishTagFormats.length > 0) {
-            s.getPublishTagFormats().addAll(Arrays.asList(publishTagFormats));
-        }
-        em.persist(s);
-        return s;
     }
 
 
