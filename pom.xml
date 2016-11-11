@@ -21,7 +21,6 @@
         <module>niord-dk-aton-import</module>
         <module>niord-dk-nw-import</module>
         <module>niord-dk-nm-import</module>
-        <module>niord-dk-testdata</module>
     </modules>
 
 </project>
