@@ -16,12 +16,15 @@
 package org.niord.importer.nm.batch;
 
 import org.niord.core.NiordApp;
+import org.niord.core.area.Area;
+import org.niord.core.area.AreaService;
 import org.niord.core.geojson.GeometryFormatService;
 import org.niord.core.message.Message;
 import org.niord.core.message.MessagePart;
 import org.niord.core.message.MessagePartDesc;
 import org.niord.core.message.batch.BatchMessageImportReader;
 import org.niord.core.message.vo.SystemMessageVo;
+import org.niord.core.model.DescEntity;
 import org.niord.importer.nm.extract.NmHtmlExtractor;
 import org.niord.model.DataFilter;
 import org.niord.model.geojson.FeatureCollectionVo;
@@ -51,6 +54,9 @@ public class BatchDkNmImportReader extends BatchMessageImportReader {
     GeometryFormatService geometryFormatService;
 
     @Inject
+    AreaService areaService;
+
+    @Inject
     NiordApp app;
 
     /** Reads in the batch import messages */
@@ -67,9 +73,72 @@ public class BatchDkNmImportReader extends BatchMessageImportReader {
                 .fields(DataFilter.DETAILS, DataFilter.GEOMETRY, "Area.parent");
 
         return messages.stream()
+                .map(this::extractAreas)
                 .map(this::updateMessageParts)
                 .map(m -> m.toVo(SystemMessageVo.class, dataFilter))
                 .collect(Collectors.toList());
+    }
+
+
+    /**
+     * Extracts areas from the message title
+     * @param message the message
+     * @return the update message
+     */
+    private Message extractAreas(Message message) {
+        Area area  = null;
+
+        // The title line/subject of the message will have a format along the lines of:
+        // "Danmark. Sundet. Københavns Havn N. Stubben. Betonanlæg etableres."
+        // From left to right, split the subject into potential area names and search for them in the area tree.
+        String name;
+        while ((name = extractPotentialAreaName(message, false, false, "da")) != null) {
+            Integer parentAreaId = (area != null) ? area.getId() : null;
+            Area childArea = areaService.findByName(name, "da", parentAreaId);
+            if (childArea != null) {
+                area = childArea;
+                extractPotentialAreaName(message, true, true, "da");
+            } else {
+                break;
+            }
+        }
+
+        if (area != null) {
+            message.getAreas().add(area);
+        }
+        return message;
+    }
+
+    /**
+     * Extracts the next potential area name from the subject of the message.
+     * If the trim attribute has been set, trim the area name from the message subject
+     * @param message the message
+     * @param trim whether to trim the part from the message
+     * @param trimOthers whether to trim the part from the message in all other languages
+     * @param lang the language
+     * @return the next potential area name extracted from the message subject
+     */
+    private String extractPotentialAreaName(Message message, boolean trim, boolean trimOthers, String lang) {
+        List<MessagePart> parts = message.partsByType(MessagePartType.DETAILS);
+        if (!parts.isEmpty() && parts.get(0).getDesc(lang) != null) {
+            MessagePart part = parts.get(0);
+            String subject = part.getDesc(lang).getSubject();
+            if (subject != null && subject.indexOf('.') != -1) {
+                int index = subject.indexOf('.');
+                if (trim) {
+                    part.getDesc(lang).setSubject(subject.substring(index + 1).trim());
+                    // Trim all other language variants
+                    if (trimOthers) {
+                        part.getDescs().stream()
+                                .map(DescEntity::getLang)
+                                .filter(l -> !l.equals(lang))
+                                .forEach(l -> extractPotentialAreaName(message, true, false, l));
+                    }
+                }
+                return subject.substring(0, index).trim();
+            }
+        }
+        return null;
     }
 
 

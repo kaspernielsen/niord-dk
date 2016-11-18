@@ -20,7 +20,6 @@ import org.apache.commons.lang.StringUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
-import org.niord.core.area.Area;
 import org.niord.core.geojson.Feature;
 import org.niord.core.message.Message;
 import org.niord.core.message.MessagePart;
@@ -201,17 +200,6 @@ public class NmHtmlExtractor implements IHtmlExtractor {
                 for (int x = 0; x < daParts.size(); x++) {
                     daParts.get(x).getDescs().add(enParts.get(x).getDescs().get(0));
                 }
-            }
-        }
-
-        if (daMsg.getAreas().size() == 1 && enMsg.getAreas().size() == 1) {
-            Area daArea = daMsg.getAreas().get(0);
-            Area enArea = enMsg.getAreas().get(0);
-            daArea.getDescs().add(enArea.getDescs().get(0));
-            daArea = daArea.getParent();
-            enArea = enArea.getParent();
-            if (daArea != null && enArea != null) {
-                daArea.getDescs().add(enArea.getDescs().get(0));
             }
         }
 
