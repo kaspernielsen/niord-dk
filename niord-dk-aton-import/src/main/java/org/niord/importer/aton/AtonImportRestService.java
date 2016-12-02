@@ -16,8 +16,6 @@
 package org.niord.importer.aton;
 
 import org.apache.commons.fileupload.FileItem;
-import org.apache.commons.fileupload.FileItemFactory;
-import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.jboss.security.annotation.SecurityDomain;
 import org.niord.core.aton.AtonNode;
 import org.niord.core.aton.vo.AtonNodeVo;
@@ -35,7 +33,6 @@ import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
@@ -66,9 +63,6 @@ public class AtonImportRestService {
     @Inject
     Logger log;
 
-    @Context
-    ServletContext servletContext;
-
     @Inject
     BatchService batchService;
 
@@ -77,6 +71,9 @@ public class AtonImportRestService {
 
     @Inject
     SequenceService sequenceService;
+
+    @Inject
+    RepositoryService repositoryService;
 
     /**
      * Imports an uploaded AtoN Excel file
@@ -91,9 +88,7 @@ public class AtonImportRestService {
     @RolesAllowed("admin")
     public String importXls(@Context HttpServletRequest request) throws Exception {
 
-        FileItemFactory factory = RepositoryService.newDiskFileItemFactory(servletContext);
-        ServletFileUpload upload = new ServletFileUpload(factory);
-        List<FileItem> items = upload.parseRequest(request);
+        List<FileItem> items = repositoryService.parseFileUploadRequest(request);
 
         StringBuilder txt = new StringBuilder();
 
