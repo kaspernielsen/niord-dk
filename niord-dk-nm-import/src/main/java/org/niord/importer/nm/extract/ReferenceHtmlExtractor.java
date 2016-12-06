@@ -73,9 +73,12 @@ public class ReferenceHtmlExtractor implements IHtmlExtractor {
                 switch (removeBrackets(type)) {
                     case "gentagelse":
                     case "repetition":
+                        refType = ReferenceType.REPETITION;
+                        break;
+
                     case "gentagelse med ny tid":
                     case "repetition with new time":
-                        refType = ReferenceType.REPETITION;
+                        refType = ReferenceType.REPETITION_NEW_TIME;
                         break;
 
                     case "ajourført":
