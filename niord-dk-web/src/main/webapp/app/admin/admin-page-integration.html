@@ -112,49 +112,67 @@
 
 
         <!-- Legacy Firing Areas -->
-        <uib-tab ng-if="supportsMainType('NM')">
+        <uib-tab ng-if="domain.schedule">
             <tab-heading>
-                Legacy Firing Area Templates
+                Legacy Firing Areas
             </tab-heading>
             <div ng-controller="FaIntegrationCtrl">
 
-                <form id="importFaForm" name="importFaForm" class="form-horizontal" style="margin-top: 20px">
+                <div class="panel panel-default">
+                    <div class="panel-heading">1 &nbsp; Firing Areas</div>
+                    <div class="panel-body">
+                        <button class="btn btn-sm btn-default" ng-click="testConnection()">Test Connection</button>
+                        <button class="btn btn-sm btn-default" ng-click="importLegacyFa()">Import Areas</button>
+                    </div>
+                </div>
 
-                    <div class="form-group">
-                        <div class="col-sm-12">
-                            First, import firing areas and then create a batch of firing area message templates.
+                <div class="panel panel-default">
+                    <div class="panel-heading">2 &nbsp; Firing Exercise Schedule</div>
+                    <div class="panel-body">
+                        <div style="margin-bottom: 10px">
+                            <input type="checkbox" ng-model="autoImportFaSchedule"> Auto-import firing area schedule
+                        </div>
+                        <div>
+                            <button class="btn btn-sm btn-default" ng-click="updateAutoImportFaSchedule()">Save</button>
+                            <button class="btn btn-sm btn-default" ng-click="importLegacyFaSchedule()">Import Now</button>
                         </div>
                     </div>
+                </div>
 
-                    <div class="form-group">
-                        <label for="importFaMessageSeries" class="col-sm-4 col-md-3 col-lg-2 control-label">Msg. Series</label>
-                        <div class="col-sm-4 col-md-4 col-lg-3">
-                            <select id="importFaMessageSeries" class="form-control input-sm" required
-                                    ng-model="data.seriesId" ng-options="seriesId for seriesId in messageSeriesIds" >
-                            </select>
-                        </div>
-                    </div>
 
-                    <div class="form-group">
-                        <label for="importFaTag" class="col-sm-4 col-md-3 col-lg-2 control-label">Message Tag</label>
-                        <div class="col-sm-4 col-md-4 col-lg-3">
-                            <message-tags-field id="importFaTag" tag-data="tagData" multiple="false"></message-tags-field>
-                        </div>
-                    </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading">3 &nbsp; Generate Firing Area Template Messages</div>
+                    <div class="panel-body">
+                        <form id="importFaForm" name="importFaForm" class="form-horizontal" style="margin-top: 20px">
 
-                    <div class="form-group">
-                        <div class="col-sm-offset-4 col-md-offset-3 col-lg-offset-2 col-sm-6">
-                            <button class="btn btn-sm btn-default" ng-click="importLegacyFa()">Import Areas</button>
-                            <button class="btn btn-sm btn-default" ng-click="importLegacyFaSchedule()">Import Schedule</button>
-                            <button class="btn btn-sm btn-default" ng-click="generateFaTemplates()"
-                                    ng-disabled="importFaForm.$invalid">Generate Firing Area Templates</button>
-                            <button class="btn btn-sm btn-default" ng-click="testConnection()">Test Connection</button>
-                        </div>
+                            <div class="form-group">
+                                <label for="importFaMessageSeries" class="col-sm-4 col-md-3 col-lg-2 control-label">Msg. Series</label>
+                                <div class="col-sm-4 col-md-4 col-lg-3">
+                                    <select id="importFaMessageSeries" class="form-control input-sm" required
+                                            ng-model="data.seriesId" ng-options="seriesId for seriesId in messageSeriesIds" >
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="importFaTag" class="col-sm-4 col-md-3 col-lg-2 control-label">Message Tag</label>
+                                <div class="col-sm-4 col-md-4 col-lg-3">
+                                    <message-tags-field id="importFaTag" tag-data="tagData" multiple="false"></message-tags-field>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="col-sm-offset-4 col-md-offset-3 col-lg-offset-2 col-sm-6">
+                                    <button class="btn btn-sm btn-default" ng-click="generateFaTemplates()"
+                                            ng-disabled="importFaForm.$invalid">Generate Firing Area Templates</button>
+                                </div>
+                            </div>
+                        </form>
                     </div>
-                </form>
+                </div>
 
                 <div class="row">
-                    <div class="col-sm-12 col-md-10 col-lg-8" style="margin-top: 20px">
+                    <div class="col-sm-12" style="margin-top: 20px">
                         <label class="control-label" for="legacyNwResult">Result</label>
                         <textarea ng-model="legacyFaResult" id="legacyFaResult" class="form-control input-sm" style="font-size: 10px;" rows="3" readonly></textarea>
                     </div>

@@ -27,12 +27,16 @@ import org.niord.model.IJsonSerializable;
 import org.slf4j.Logger;
 
 import javax.annotation.security.RolesAllowed;
+import javax.ejb.Schedule;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DefaultValue;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -60,6 +64,12 @@ public class LegacyFiringAreaImportRestService {
 
     @Inject
     BatchService batchService;
+
+
+    /***************************************/
+    /** Firing Area Import                **/
+    /***************************************/
+
 
     /**
      * Imports legacy firing areas
@@ -109,6 +119,32 @@ public class LegacyFiringAreaImportRestService {
     }
 
 
+    /***************************************/
+    /** Firing Exercise Schedule          **/
+    /***************************************/
+
+    /** Returns the auto-import flag */
+    @GET
+    @Path("/auto-import-fa-schedule")
+    @NoCache
+    public Boolean getAutoImportFeSchedule() {
+        return faImportService.getAutoImportFeSchedule();
+    }
+
+
+    /** Updates the auto-import flag */
+    @POST
+    @Path("/auto-import-fa-schedule")
+    @Consumes("application/json;charset=UTF-8")
+    @Produces("text/plain")
+    @NoCache
+    public String updateAutoImportFeSchedule(Boolean autoImport) {
+        log.info("Setting auto-import of firing exercise schedule: " + autoImport);
+        faImportService.updateAutoImportFeSchedule(autoImport);
+        return "OK";
+    }
+
+
     /**
      * Imports legacy firing area schedule
      * @return the status
@@ -118,15 +154,17 @@ public class LegacyFiringAreaImportRestService {
     @Consumes("application/json;charset=UTF-8")
     @Produces("text/plain")
     @NoCache
-    public String startFaScheduleImport() {
+    public String startFaScheduleImport(
+            @QueryParam("importDb") @DefaultValue("false") boolean importDb
+    ) {
 
         long t0 = System.currentTimeMillis();
         StringBuilder result = new StringBuilder();
         try {
-            List<FiringPeriod> fps = faImportService.importFiringAreaSchedule(false, result);
+            List<FiringPeriod> fps = faImportService.importFiringAreaSchedule(importDb, result);
 
-            log.info("Schedule import completed in " + (System.currentTimeMillis() - t0) + " ms");
-            result.append("Schedule import completed in ").append(System.currentTimeMillis() - t0).append(" ms\n");
+            log.info("Firing area schedule import completed in " + (System.currentTimeMillis() - t0) + " ms");
+            result.append("Firing area schedule import completed in ").append(System.currentTimeMillis() - t0).append(" ms\n");
 
         } catch (Exception e) {
             log.error("Error updating firing area schedule", e);
@@ -136,6 +174,30 @@ public class LegacyFiringAreaImportRestService {
         }
         return result.toString();
     }
+
+
+    /**
+     * Called periodically to auto-import the legacy firing exercise schedule (if the auto-import flag is turned on)
+     */
+    @Schedule(persistent = false, second = "10", minute = "*/7", hour = "*")
+    private void periodicAutoImportFaSchedule() {
+        try {
+
+            Boolean autoImport = faImportService.getAutoImportFeSchedule();
+            if (autoImport != null && autoImport) {
+                startFaScheduleImport(true);
+            }
+
+
+        } catch (Exception e) {
+            log.error("Error performing periodic firing schedule auto-import", e);
+        }
+    }
+
+
+    /***************************************/
+    /** Firing Area Message Templates     **/
+    /***************************************/
 
 
     /**
@@ -176,6 +238,11 @@ public class LegacyFiringAreaImportRestService {
         }
 
     }
+
+
+    /***************************************/
+    /** Helper classes                    **/
+    /***************************************/
 
 
     /**

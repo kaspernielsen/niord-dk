@@ -32,6 +32,7 @@ import org.niord.core.message.Message;
 import org.niord.core.message.MessagePart;
 import org.niord.core.message.MessageSeries;
 import org.niord.core.message.MessageSeriesService;
+import org.niord.core.settings.SettingsService;
 import org.niord.core.settings.annotation.Setting;
 import org.niord.core.util.TimeUtils;
 import org.niord.model.geojson.PointVo;
@@ -82,6 +83,20 @@ public class LegacyFiringAreaImportService {
             Pattern.CASE_INSENSITIVE
     );
 
+
+    /**
+     * Registers whether or not to auto-import the firing exercise schedule.
+     */
+    private static final org.niord.core.settings.Setting LEGACY_AUTO_IMPORT_FE_SCHEDULE
+            = new org.niord.core.settings.Setting("legacyAutoImportFeSchedule")
+            .type(org.niord.core.settings.Setting.Type.Boolean)
+            .value(false)
+            .description("Auto-import flag for the import of legacy firing exercise schedule")
+            .editable(true)
+            .cached(false);
+
+
+
     @Inject
     Logger log;
 
@@ -119,6 +134,15 @@ public class LegacyFiringAreaImportService {
 
     @Inject
     MessageSeriesService messageSeriesService;
+
+    @Inject
+    SettingsService settingsService;
+
+
+    /***************************************/
+    /** Firing Area Import                **/
+    /***************************************/
+
 
     /**
      * Imports the firing areas
@@ -294,6 +318,23 @@ public class LegacyFiringAreaImportService {
     }
 
 
+    /***************************************/
+    /** Firing Exercise Schedule          **/
+    /***************************************/
+
+
+    /** Returns the auto-import flag */
+    public Boolean getAutoImportFeSchedule() {
+        return settingsService.getBoolean(LEGACY_AUTO_IMPORT_FE_SCHEDULE);
+    }
+
+
+    /** Updates the auto-import flag */
+    public void updateAutoImportFeSchedule(Boolean autoImport) {
+        settingsService.set(LEGACY_AUTO_IMPORT_FE_SCHEDULE.getKey(), autoImport);
+    }
+
+
     /**
      * Imports the firing area schedule
      * @param importDb whether to import the database first
@@ -342,7 +383,7 @@ public class LegacyFiringAreaImportService {
                 firingPeriods.add(fp);
             }
             rs.close();
-            log.info("Loaded " + firingPeriods.size() + " firing periods from legacy system");
+            log.debug("Loaded " + firingPeriods.size() + " firing periods from legacy system");
 
             // Merge the legacy firing periods with the currently imported firing periods
             mergeLegacyFiringPeriods(firingPeriods, result);
@@ -397,6 +438,11 @@ public class LegacyFiringAreaImportService {
                 .append("Removed ").append(deleted).append(" legacy firing periods\n")
                 .append("Ignored ").append(ignored).append(" legacy firing periods\n");
     }
+
+
+    /***************************************/
+    /** Firing Area Message Templates     **/
+    /***************************************/
 
 
     /** Creates message templates for all firing areas **/
@@ -632,6 +678,7 @@ public class LegacyFiringAreaImportService {
     /*************************/
     /** ResultSet accessors **/
     /*************************/
+
 
     String getString(ResultSet rs, String key) throws SQLException {
         String val = rs.getString(key);

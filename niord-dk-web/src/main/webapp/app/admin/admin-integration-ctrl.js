@@ -170,6 +170,24 @@ angular.module('niord.admin')
             };
 
 
+            // Load whether or not to auto import firing exercise schedules
+            $scope.autoImportFaSchedule = false;
+            $http.get('/rest/import/fa/auto-import-fa-schedule')
+                .success(function (result) {
+                    $scope.autoImportFaSchedule = result;
+                });
+
+
+            /** Called to save the schedule auto-import setting **/
+            $scope.updateAutoImportFaSchedule = function () {
+                $http.post('/rest/import/fa/auto-import-fa-schedule', $scope.autoImportFaSchedule)
+                    .success(function (result) {
+                        $scope.legacyFaResult = 'Updated auto-import setting: ' + result;
+                    })
+                    .error($scope.displayError);
+            };
+
+
             /** Generates message templates for all firing areas */
             $scope.generateFaTemplates = function () {
                 $scope.legacyFaResult = 'Start generating firing area template messages';
