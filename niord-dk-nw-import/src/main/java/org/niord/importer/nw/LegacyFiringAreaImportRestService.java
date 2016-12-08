@@ -19,6 +19,7 @@ package org.niord.importer.nw;
 import org.jboss.resteasy.annotations.cache.NoCache;
 import org.jboss.security.annotation.SecurityDomain;
 import org.niord.core.area.Area;
+import org.niord.core.area.FiringPeriod;
 import org.niord.core.batch.BatchService;
 import org.niord.core.message.vo.SystemMessageVo;
 import org.niord.model.DataFilter;
@@ -62,6 +63,7 @@ public class LegacyFiringAreaImportRestService {
 
     /**
      * Imports legacy firing areas
+     *
      * @return the status
      */
     @POST
@@ -104,6 +106,32 @@ public class LegacyFiringAreaImportRestService {
             log.error(msg, e);
             return msg;
         }
+    }
+
+
+    /**
+     * Imports legacy firing area schedule
+     * @return the status
+     */
+    @POST
+    @Path("/import-fa-schedule")
+    @Consumes("application/json;charset=UTF-8")
+    @Produces("text/plain")
+    @NoCache
+    public String startFaScheduleImport() {
+
+        StringBuilder result = new StringBuilder();
+        try {
+            List<FiringPeriod> fps = faImportService.importFiringAreaSchedule(false);
+            result.append("Persisted ")
+                    .append(fps.size())
+                    .append(" firing periods.\n");
+        } catch (Exception e) {
+            result.append("Error updating firing area schedule: ")
+                    .append(e.getMessage())
+                    .append("\n");
+        }
+        return result.toString();
     }
 
 

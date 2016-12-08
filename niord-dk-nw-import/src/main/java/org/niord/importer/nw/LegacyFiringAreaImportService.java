@@ -20,6 +20,8 @@ import org.apache.commons.lang.StringUtils;
 import org.niord.core.area.Area;
 import org.niord.core.area.AreaSearchParams;
 import org.niord.core.area.AreaService;
+import org.niord.core.area.FiringAreaService;
+import org.niord.core.area.FiringPeriod;
 import org.niord.core.category.Category;
 import org.niord.core.chart.Chart;
 import org.niord.core.conf.TextResource;
@@ -31,6 +33,7 @@ import org.niord.core.message.MessagePart;
 import org.niord.core.message.MessageSeries;
 import org.niord.core.message.MessageSeriesService;
 import org.niord.core.settings.annotation.Setting;
+import org.niord.core.util.TimeUtils;
 import org.niord.model.geojson.PointVo;
 import org.niord.model.geojson.PolygonVo;
 import org.niord.model.message.AreaType;
@@ -47,13 +50,16 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -89,6 +95,10 @@ public class LegacyFiringAreaImportService {
     @TextResource("/sql/fa_information_data.sql")
     String infoSql;
 
+    @Inject
+    @TextResource("/sql/fa_periods.sql")
+    String firingAreaPeriodsSql;
+
     String validateAreaIdSql = "select id from firing_area where id = ?";
 
     @Inject
@@ -101,6 +111,9 @@ public class LegacyFiringAreaImportService {
 
     @Inject
     AreaService areaService;
+
+    @Inject
+    FiringAreaService firingAreaService;
 
     @Inject
     MessageSeriesService messageSeriesService;
@@ -277,6 +290,65 @@ public class LegacyFiringAreaImportService {
     }
 
 
+    /**
+     * Imports the firing area schedule
+     * @param importDb whether to import the database first
+     */
+    public List<FiringPeriod> importFiringAreaSchedule(boolean importDb) throws Exception {
+
+        if (importDb) {
+            db.downloadAndImportLegacyNwDump();
+        }
+
+        Map<Integer, Area> areaLookup = new HashMap<>();
+
+        List<FiringPeriod> firingPeriods = new ArrayList<>();
+        try (Connection con = db.openConnection();
+             PreparedStatement stmt = con.prepareStatement(firingAreaPeriodsSql)) {
+
+            // First load all firing area periods
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                Date created    = getDate(rs, "creation_time");
+                Date fromDate   = getDate(rs, "t_from");
+                Date toDate     = getDate(rs, "t_to");
+                Integer areaId  = getInt(rs, "f_area_id");
+
+                // Look up and cache area by ID
+                Area area = areaLookup.get(areaId);
+                if (area == null) {
+                    area = areaService.findByLegacyId(String.valueOf(areaId));
+                    if (area == null) {
+                        continue;
+                    }
+                    areaLookup.put(areaId, area);
+                }
+
+                // Check if a firing period exists for the area and period
+                FiringPeriod fp = firingAreaService.findFiringPeriod(area, fromDate, toDate);
+                if (fp != null) {
+                    continue;
+                }
+
+                // Create a new firing period
+                fp = new FiringPeriod();
+                fp.setCreated(created);
+                fp.setFromDate(TimeUtils.resetSeconds(fromDate));
+                fp.setToDate(TimeUtils.resetSeconds(toDate));
+                fp.setArea(area);
+
+                fp = firingAreaService.addFiringPeriod(fp);
+
+                firingPeriods.add(fp);
+            }
+            rs.close();
+
+            log.info("Fetched " + firingPeriods.size() + " firing periods");
+            return firingPeriods;
+        }
+    }
+
+
     /** Creates message templates for all firing areas **/
     public List<Message> generateFiringAreaMessageTemplates(String seriesId) {
 
@@ -386,7 +458,7 @@ public class LegacyFiringAreaImportService {
             chartInfo = chartInfo.replace(".", ""); // Remove trailing blanks
             Arrays.stream(chartInfo.split(","))
                     .map(Chart::parse)
-                    .filter(c -> c != null)
+                    .filter(Objects::nonNull)
                     .forEach(c -> message.getCharts().add(c));
         }
 
@@ -525,4 +597,10 @@ public class LegacyFiringAreaImportService {
         Double val = rs.getDouble(key);
         return rs.wasNull() ? null : val;
     }
+
+    Date getDate(ResultSet rs, String key) throws SQLException {
+        Timestamp val = rs.getTimestamp(key);
+        return rs.wasNull() ? null : val;
+    }
 }
+
