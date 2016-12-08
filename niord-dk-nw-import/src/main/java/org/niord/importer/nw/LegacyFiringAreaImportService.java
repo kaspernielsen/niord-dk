@@ -433,10 +433,12 @@ public class LegacyFiringAreaImportService {
             deleted++;
         }
 
-        result.append("Added ").append(added).append(" legacy firing periods\n")
-                .append("Updated ").append(updated).append(" legacy firing periods\n")
-                .append("Removed ").append(deleted).append(" legacy firing periods\n")
-                .append("Ignored ").append(ignored).append(" legacy firing periods\n");
+        String txt = String.format("Added %d, updated %d, deleted %d, ignored %d firing periods",
+                added, updated, deleted, ignored);
+        result.append(txt).append("\n");
+        if (added + updated + deleted > 0) {
+            log.info(txt);
+        }
     }
 
 

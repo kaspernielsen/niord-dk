@@ -163,7 +163,7 @@ public class LegacyFiringAreaImportRestService {
         try {
             List<FiringPeriod> fps = faImportService.importFiringAreaSchedule(importDb, result);
 
-            log.info("Firing area schedule import completed in " + (System.currentTimeMillis() - t0) + " ms");
+            log.debug("Firing area schedule import completed in " + (System.currentTimeMillis() - t0) + " ms");
             result.append("Firing area schedule import completed in ").append(System.currentTimeMillis() - t0).append(" ms\n");
 
         } catch (Exception e) {
