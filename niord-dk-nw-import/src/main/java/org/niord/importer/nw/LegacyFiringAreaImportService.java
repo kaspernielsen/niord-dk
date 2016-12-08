@@ -60,8 +60,10 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import static javax.ejb.TransactionAttributeType.REQUIRES_NEW;
 
@@ -295,8 +297,9 @@ public class LegacyFiringAreaImportService {
     /**
      * Imports the firing area schedule
      * @param importDb whether to import the database first
+     * @param result a textual result
      */
-    public List<FiringPeriod> importFiringAreaSchedule(boolean importDb) throws Exception {
+    public List<FiringPeriod> importFiringAreaSchedule(boolean importDb, StringBuilder result) throws Exception {
 
         if (importDb) {
             db.downloadAndImportLegacyNwDump();
@@ -304,6 +307,7 @@ public class LegacyFiringAreaImportService {
 
         Map<Integer, Area> areaLookup = new HashMap<>();
 
+        // Fetch all firing periods
         List<FiringPeriod> firingPeriods = new ArrayList<>();
         try (Connection con = db.openConnection();
              PreparedStatement stmt = con.prepareStatement(firingAreaPeriodsSql)) {
@@ -311,6 +315,7 @@ public class LegacyFiringAreaImportService {
             // First load all firing area periods
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
+                Integer id      = getInt(rs, "id");
                 Date created    = getDate(rs, "creation_time");
                 Date fromDate   = getDate(rs, "t_from");
                 Date toDate     = getDate(rs, "t_to");
@@ -326,28 +331,71 @@ public class LegacyFiringAreaImportService {
                     areaLookup.put(areaId, area);
                 }
 
-                // Check if a firing period exists for the area and period
-                FiringPeriod fp = firingAreaService.findFiringPeriod(area, fromDate, toDate);
-                if (fp != null) {
-                    continue;
-                }
-
-                // Create a new firing period
-                fp = new FiringPeriod();
+                // Create a new firing period template
+                FiringPeriod fp = new FiringPeriod();
+                fp.setLegacyId(String.valueOf(id));
                 fp.setCreated(created);
                 fp.setFromDate(TimeUtils.resetSeconds(fromDate));
                 fp.setToDate(TimeUtils.resetSeconds(toDate));
                 fp.setArea(area);
 
-                fp = firingAreaService.addFiringPeriod(fp);
-
                 firingPeriods.add(fp);
             }
             rs.close();
+            log.info("Loaded " + firingPeriods.size() + " firing periods from legacy system");
 
-            log.info("Fetched " + firingPeriods.size() + " firing periods");
+            // Merge the legacy firing periods with the currently imported firing periods
+            mergeLegacyFiringPeriods(firingPeriods, result);
+
             return firingPeriods;
         }
+    }
+
+
+    /**
+     * Merges the given legacy firing periods with the currently imported firing periods
+     * @param firingPeriods the legacy firing periods
+     * @param result a textual result
+     */
+    private void mergeLegacyFiringPeriods(List<FiringPeriod> firingPeriods, StringBuilder result) {
+
+        // Get the currently persisted firing periods
+        List<FiringPeriod> currentFiringPeriods = firingAreaService.getAllLegacyFiringPeriods();
+
+        // Create look-up maps for faster comparison
+        Map<String, FiringPeriod> lookup = currentFiringPeriods.stream()
+                .collect(Collectors.toMap(FiringPeriod::getLegacyId, Function.identity()));
+
+        int added = 0, updated = 0, deleted = 0, ignored = 0;
+        for (FiringPeriod fp : firingPeriods) {
+            String legacyId = fp.getLegacyId();
+            if (!lookup.containsKey(legacyId)) {
+                firingAreaService.addFiringPeriod(fp);
+                added++;
+            } else {
+                FiringPeriod original = lookup.get(legacyId);
+                if (original.hasChanged(fp)) {
+                    original.updateFiringPeriod(fp);
+                    firingAreaService.saveEntity(original);
+                    updated++;
+                } else {
+                    ignored++;
+                }
+                // NB: We want the look up to eventually contain all deleted firing periods
+                lookup.remove(legacyId);
+            }
+        }
+
+        // The lookup map should now contains all deleted firing periods
+        for (FiringPeriod fp : lookup.values()) {
+            firingAreaService.deleteFiringPeriod(fp.getId());
+            deleted++;
+        }
+
+        result.append("Added ").append(added).append(" legacy firing periods\n")
+                .append("Updated ").append(updated).append(" legacy firing periods\n")
+                .append("Removed ").append(deleted).append(" legacy firing periods\n")
+                .append("Ignored ").append(ignored).append(" legacy firing periods\n");
     }
 
 

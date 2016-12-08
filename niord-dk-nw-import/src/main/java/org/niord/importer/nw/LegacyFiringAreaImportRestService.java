@@ -120,13 +120,16 @@ public class LegacyFiringAreaImportRestService {
     @NoCache
     public String startFaScheduleImport() {
 
+        long t0 = System.currentTimeMillis();
         StringBuilder result = new StringBuilder();
         try {
-            List<FiringPeriod> fps = faImportService.importFiringAreaSchedule(false);
-            result.append("Persisted ")
-                    .append(fps.size())
-                    .append(" firing periods.\n");
+            List<FiringPeriod> fps = faImportService.importFiringAreaSchedule(false, result);
+
+            log.info("Schedule import completed in " + (System.currentTimeMillis() - t0) + " ms");
+            result.append("Schedule import completed in ").append(System.currentTimeMillis() - t0).append(" ms\n");
+
         } catch (Exception e) {
+            log.error("Error updating firing area schedule", e);
             result.append("Error updating firing area schedule: ")
                     .append(e.getMessage())
                     .append("\n");
