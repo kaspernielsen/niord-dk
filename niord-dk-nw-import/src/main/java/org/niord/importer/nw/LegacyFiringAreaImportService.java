@@ -136,6 +136,7 @@ public class LegacyFiringAreaImportService {
             // First load all areas
             Map<Integer, Area> areas = new LinkedHashMap<>();
             ResultSet rs = faStmt.executeQuery();
+            int siblingSortOrder = 0;
             while (rs.next()) {
                 Integer id          = getInt(rs, "id");
                 Integer active      = getInt(rs, "active");
@@ -152,6 +153,7 @@ public class LegacyFiringAreaImportService {
                 area.setActive(active == 1);
                 area.setLegacyId(String.valueOf(id));
                 area.setMrn(generateAreaMrn(area));
+                area.setSiblingSortOrder(siblingSortOrder++);
                 areas.put(id, area);
             }
             rs.close();
