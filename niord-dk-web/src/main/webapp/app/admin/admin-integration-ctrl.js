@@ -158,6 +158,18 @@ angular.module('niord.admin')
             };
 
 
+            /** Imports the legacy firing area schedule */
+            $scope.importLegacyFaSchedule = function () {
+                $scope.legacyFaResult = 'Start import of legacy firing areas';
+
+                $http.post('/rest/import/fa/import-fa-schedule')
+                    .success(function (result) {
+                        $scope.legacyFaResult = result;
+                    })
+                    .error($scope.displayError);
+            };
+
+
             /** Generates message templates for all firing areas */
             $scope.generateFaTemplates = function () {
                 $scope.legacyFaResult = 'Start generating firing area template messages';
