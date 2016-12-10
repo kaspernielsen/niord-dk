@@ -20,8 +20,8 @@ import org.apache.commons.lang.StringUtils;
 import org.niord.core.area.Area;
 import org.niord.core.area.AreaSearchParams;
 import org.niord.core.area.AreaService;
-import org.niord.core.area.FiringAreaService;
-import org.niord.core.area.FiringPeriod;
+import org.niord.core.schedule.FiringScheduleService;
+import org.niord.core.schedule.FiringPeriod;
 import org.niord.core.category.Category;
 import org.niord.core.chart.Chart;
 import org.niord.core.conf.TextResource;
@@ -130,7 +130,7 @@ public class LegacyFiringAreaImportService {
     AreaService areaService;
 
     @Inject
-    FiringAreaService firingAreaService;
+    FiringScheduleService firingScheduleService;
 
     @Inject
     MessageSeriesService messageSeriesService;
@@ -401,7 +401,7 @@ public class LegacyFiringAreaImportService {
     private void mergeLegacyFiringPeriods(List<FiringPeriod> firingPeriods, StringBuilder result) {
 
         // Get the currently persisted firing periods
-        List<FiringPeriod> currentFiringPeriods = firingAreaService.getAllLegacyFiringPeriods();
+        List<FiringPeriod> currentFiringPeriods = firingScheduleService.getAllLegacyFiringPeriods();
 
         // Create look-up maps for faster comparison
         Map<String, FiringPeriod> lookup = currentFiringPeriods.stream()
@@ -411,13 +411,13 @@ public class LegacyFiringAreaImportService {
         for (FiringPeriod fp : firingPeriods) {
             String legacyId = fp.getLegacyId();
             if (!lookup.containsKey(legacyId)) {
-                firingAreaService.addFiringPeriod(fp);
+                firingScheduleService.addFiringPeriod(fp);
                 added++;
             } else {
                 FiringPeriod original = lookup.get(legacyId);
                 if (original.hasChanged(fp)) {
                     original.updateFiringPeriod(fp);
-                    firingAreaService.saveEntity(original);
+                    firingScheduleService.saveEntity(original);
                     updated++;
                 } else {
                     ignored++;
@@ -429,7 +429,7 @@ public class LegacyFiringAreaImportService {
 
         // The lookup map should now contains all deleted firing periods
         for (FiringPeriod fp : lookup.values()) {
-            firingAreaService.deleteFiringPeriod(fp.getId());
+            firingScheduleService.deleteFiringPeriod(fp.getId());
             deleted++;
         }
 
