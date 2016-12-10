@@ -20,6 +20,8 @@ import org.apache.commons.lang.StringUtils;
 import org.niord.core.area.Area;
 import org.niord.core.area.AreaSearchParams;
 import org.niord.core.area.AreaService;
+import org.niord.core.domain.Domain;
+import org.niord.core.domain.DomainService;
 import org.niord.core.schedule.FiringScheduleService;
 import org.niord.core.schedule.FiringPeriod;
 import org.niord.core.category.Category;
@@ -137,6 +139,9 @@ public class LegacyFiringAreaImportService {
 
     @Inject
     SettingsService settingsService;
+
+    @Inject
+    DomainService domainService;
 
 
     /***************************************/
@@ -455,8 +460,11 @@ public class LegacyFiringAreaImportService {
             return Collections.emptyList();
         }
 
-        // Get hold of the list of firing areas
+        // Get hold of the list of firing areas for the current domain
+        Domain domain = domainService.currentDomain();
         AreaSearchParams params = new AreaSearchParams()
+                .inactive(false) // Do not include inactive areas
+                .domain(domain != null ? domain.getDomainId() : null)
                 .type(AreaType.FIRING_AREA);
         List<Area> firingAreas = areaService.searchAreas(params);
 
