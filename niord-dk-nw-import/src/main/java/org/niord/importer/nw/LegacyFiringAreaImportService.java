@@ -56,6 +56,7 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -492,12 +493,14 @@ public class LegacyFiringAreaImportService {
             return null;
         }
 
+        int year = TimeUtils.getCalendarField(new Date(), Calendar.YEAR);
+
         Message message = new Message();
         message.setMessageSeries(messageSeries);
         message.setMainType(MainType.NM);
         message.setType(Type.MISCELLANEOUS_NOTICE);
         message.setStatus(Status.DRAFT);
-        message.setShortId(extractAreaShortId(area, "FA-"));
+        message.setShortId(extractAreaShortId(area, "FA/", " " + year));
         message.setAutoTitle(true);
         message.getAreas().add(area);
 
@@ -604,13 +607,15 @@ public class LegacyFiringAreaImportService {
     /**
      * Extracts the short id from an area name.
      * Examples:
-     *   "ES D 139 Bornholm E." -> "FA-ES-D-139"
-     *   "13 Seden" -> "FA-13"
+     *   "ES D 139 Bornholm E." -> "FA/ES-D-139 2016"
+     *   "13 Seden" -> "FA/13 2016"
      **/
-    private String extractAreaShortId(Area area, String prefix) {
+    private String extractAreaShortId(Area area, String prefix, String postfix) {
         String shortId = extractAreaLegacyId(area);
         if (shortId != null) {
-            return prefix + shortId.replace(" ", "-");
+            return StringUtils.defaultString(prefix)
+                    + shortId.replace(" ", "-")
+                    + StringUtils.defaultString(postfix);
         }
         return null;
     }
