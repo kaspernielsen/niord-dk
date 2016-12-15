@@ -2,12 +2,13 @@
 <p>
     Each firing practice area has a designation, for example <strong>EK D 371</strong>. The designation is given
     in the charts in the delimitation lines of the firing practice area.<br>
-    Firing times are announced in EfS monthly in advance and in Navigational Warnings daily over Danmarks Radio
-    on 1062 kHz (medium wave) immediately after the weather forecast starting at 17.45 hours.
-    Firing times are, furthermore, announced daily on the teletext of Danmarks Radio, page 428 and are to be
-    found here too: http://www.flv.dk/milais/Navwarframe.html.
+    Firing times are announced, by the Defence Command Denmark, on the Danish Maritime Authoritys homepage,
+    together with the other Navigational Warnings and also daily over Danmarks Radio on 243 kHz (long wave)
+    immediately after the weather forecast starting at 17.45 hours. Firing times are, furthermore, announced daily
+    on the teletext of Danmarks Radio, page 428 and are to be found here too:
+    <a href="http://www.flv.dk/milais/Navwarframe.html">http://www.flv.dk/milais/Navwarframe.html</a>.
     Under <i>Note</i>, the relevant contact details of each individual firing practice area are given.<br>
-    As regards the abbreviations used, see EfS A 2016.
+    As regards the abbreviations used, see EfS A/1 2017.
 </p>
 
 <div style="width: 100%; text-align: center; margin-top: 2cm">

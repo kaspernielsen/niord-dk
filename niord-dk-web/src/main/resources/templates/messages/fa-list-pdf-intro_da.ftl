@@ -2,12 +2,12 @@
 <p>
     Hver skydeplads har en benævnelse, f.eks. <strong>EK D 371</strong>. Benævnelsen er anført i søkortene i
     skydepladsens afgrænsningslinjer.<br>
-    Skydetider bekendtgøres i EfS månedsvist forud og i Farvandsefterretninger dagligt over Danmarks Radio
-    på 1062 kHz (mellembølge) umiddelbart efter vejrudsigten, som begynder kl. 17:45.
+    Skydetider bekendtgøres af forsvaret på Søfartsstyrelsens hjemmeside sammen med de øvrige  farvandsefterretninger
+    og desuden dagligt over Danmarks Radio på 243 kHz (langbølge) umiddelbart efter vejrudsigten, som begynder kl. 17:45.
     Skydetider bekendtgøres desuden dagligt på Danmarks Radios tekst-tv, side 428 og kan også ses på:
-    http://www.flv.dk/milais/Navwarframe.html. Under <i>Note</i> er anført relevante kontaktoplysninger
-    for den enkelte skydeplads.<br>
-    Anvendte forkortelser, se EfS A 2016.
+    <a href="http://www.flv.dk/milais/Navwarframe.html">http://www.flv.dk/milais/Navwarframe.html</a>.
+    Under <i>Note</i> er anført relevante kontaktoplysninger for den enkelte skydeplads.<br>
+    Anvendte forkortelser, se EfS A/1 2017.
 </p>
 
 <div style="width: 100%; text-align: center; margin-top: 2cm">
