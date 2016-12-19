@@ -18,7 +18,7 @@
     <table style="width: 6cm">
         <tr>
             <td colspan="2">
-                <div style="margin-top: 2mm"><img src="/img/company-logo.png" style="height: 1cm"></div>
+                <div style="margin-top: 2mm"><img src="/img/company-logo-da.png" style="height: 1cm"></div>
                 <div style="margin-top: 2mm">
                     Carl Jacobsens Vej 31<br>
                     2500 Valby<br>

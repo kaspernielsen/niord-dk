@@ -29,7 +29,7 @@
         <tr>
             <td colspan="2">
                 <div><strong>${text("pdf.nm")}</strong></div>
-                <div style="margin-top: 2mm"><img src="/img/company-logo.png" style="height: 1cm"></div>
+                <div style="margin-top: 2mm"><img src="/img/company-logo-da.png" style="height: 1cm"></div>
                 <div style="margin-top: 2mm">
                     Carl Jacobsens Vej 31<br>
                     2500 Valby<br>

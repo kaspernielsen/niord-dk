@@ -5,7 +5,13 @@
 </#if>
 
 <div class="footer">
-    <div><img src="/img/company-logo.png" style="height: 1cm"></div>
+    <div>
+        <#if language == 'da'>
+            <img src="/img/company-logo-da.png" style="height: 1cm">
+        <#else>
+            <img src="/img/company-logo.png" style="height: 1cm">
+        </#if>
+    </div>
     <div style="font-size: 8px; margin-top: 2mm">
         Carl Jacobsens Vej 31 &nbsp; &bull; &nbsp;
         2500 Valby &nbsp; &bull; &nbsp;
