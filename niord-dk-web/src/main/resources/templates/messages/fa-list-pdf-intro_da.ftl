@@ -10,35 +10,31 @@
     Anvendte forkortelser, se EfS A/1 2017.
 </p>
 
-<div style="width: 100%; text-align: center; margin-top: 2cm">
-    <img src="/img/firing_areas.png" style="width: 12cm">
-</div>
-
 <div style="text-align: center; margin-top: 2cm;">
-    <table style="width: 6cm">
+    <table style="width: 5.5cm">
         <tr>
             <td colspan="2">
-                <div style="margin-top: 2mm"><img src="/img/company-logo-da.png" style="height: 1cm"></div>
-                <div style="margin-top: 2mm">
+                <div style="margin-top: 4mm;  text-align: center"><img src="/img/company-logo-da.png" style="width: 5cm"></div>
+                <div style="margin-top: 8mm">
                     Carl Jacobsens Vej 31<br>
                     2500 Valby<br>
                 </div>
             </td>
         </tr>
         <tr>
-            <th>Tlf.:</th>
+            <th style="width: 1.2cm;">Tlf.:</th>
             <td>9137 6000</td>
         </tr>
         <tr>
-            <th>Fax:</th>
+            <th style="width: 1.2cm;">Fax:</th>
             <td>9137 6001</td>
         </tr>
         <tr>
-            <th>E-mail:</th>
+            <th style="width: 1.2cm;">E-mail:</th>
             <td>efs@dma.dk</td>
         </tr>
         <tr>
-            <th>Web:</th>
+            <th style="width: 1.2cm;">Web:</th>
             <td>www.soefartsstyrelsen.dk</td>
         </tr>
     </table>
