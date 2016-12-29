@@ -14,39 +14,32 @@
     Any questions can be directed to tel. +45 9137 6174.
 </p>
 
-<p>
-    Users of EfS without internet access may contact Iver C. Weilbach & Co. A/S and receive a printed version of the
-    publication weekly (please note that payment will be set and charged by Iver C. Weilbach & co. A/S).
-    For further information concerning this service please contact Iver C. Weilbach & Co. A/S, tel. +45 3334 3560
-    or by email: nautical@weilbach.dk.
-</p>
-
 <div style="text-align: center; margin-top: 1cm;">
-    <table style="width: 6cm">
+    <table style="width: 5.5cm">
         <tr>
             <td colspan="2">
-                <div><strong>${text("pdf.nm")}</strong></div>
-                <div style="margin-top: 2mm"><img src="/img/company-logo.png" style="height: 1cm"></div>
-                <div style="margin-top: 2mm">
+                <div style="text-align: center"><strong>${text("pdf.nm")}</strong></div>
+                <div style="margin-top: 4mm; text-align: center"><img src="/img/company-logo.png" style="width: 5cm"></div>
+                <div style="margin-top: 8mm">
                     Carl Jacobsens Vej 31<br>
                     2500 Valby<br>
                 </div>
             </td>
         </tr>
         <tr>
-            <th>Tel.:</th>
+            <th style="width: 1.2cm;">Tel.:</th>
             <td>+45 9137 6000</td>
         </tr>
         <tr>
-            <th>Fax:</th>
+            <th style="width: 1.2cm;">Fax:</th>
             <td>+45 9137 6001</td>
         </tr>
         <tr>
-            <th>E-mail:</th>
+            <th style="width: 1.2cm;">E-mail:</th>
             <td>efs@dma.dk</td>
         </tr>
         <tr>
-            <th>Web:</th>
+            <th style="width: 1.2cm;">Web:</th>
             <td>www.soefartsstyrelsen.dk</td>
         </tr>
     </table>

@@ -15,41 +15,32 @@
     Eventuelle spørgsmål kan rettes til tlf. 9137 6174.
 </p>
 
-<p>
-    Brugere af Efterretninger for Søfarende uden adgang til internettet vil fremover kunne henvende sig til
-    Iver C. Weilbach & Co. A/S og ugentligt få fremsendt en udskrevet version af publikationen pr. post.
-    Opmærksomheden henledes på, at der for sidst- nævnte service vil blive opkrævet en betaling, der fastsættes af
-    Iver C. Weilbach & Co. A/S.<br>
-    For nærmere information om denne service kan Iver C. Weilbach & Co. A/S kontaktes på tlf. 3334 3560 eller
-    via e-mail, nautical@weilbach.dk.
-</p>
-
 <div style="text-align: center; margin-top: 1cm;">
-    <table style="width: 6cm">
+    <table style="width: 5.5cm">
         <tr>
             <td colspan="2">
-                <div><strong>${text("pdf.nm")}</strong></div>
-                <div style="margin-top: 2mm"><img src="/img/company-logo-da.png" style="height: 1cm"></div>
-                <div style="margin-top: 2mm">
+                <div style="text-align: center"><strong>${text("pdf.nm")}</strong></div>
+                <div style="margin-top: 4mm;  text-align: center"><img src="/img/company-logo-da.png" style="width: 5cm"></div>
+                <div style="margin-top: 8mm">
                     Carl Jacobsens Vej 31<br>
                     2500 Valby<br>
                 </div>
             </td>
         </tr>
         <tr>
-            <th>Tlf.:</th>
+            <th style="width: 1.2cm;">Tlf.:</th>
             <td>9137 6000</td>
         </tr>
         <tr>
-            <th>Fax:</th>
+            <th style="width: 1.2cm;">Fax:</th>
             <td>9137 6001</td>
         </tr>
         <tr>
-            <th>E-mail:</th>
+            <th style="width: 1.2cm;">E-mail:</th>
             <td>efs@dma.dk</td>
         </tr>
         <tr>
-            <th>Web:</th>
+            <th style="width: 1.2cm;">Web:</th>
             <td>www.soefartsstyrelsen.dk</td>
         </tr>
     </table>
