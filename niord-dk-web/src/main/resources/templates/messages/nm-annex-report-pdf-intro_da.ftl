@@ -1,10 +1,8 @@
 
-<table class="contact-info">
+<h2>Kontaktinformation</h2>
+<table class="contact-info" cellpadding="0" cellspacing="0">
     <tr>
-        <td colspan="2" align="center"><b>Kontaktinformation</b></td>
-    </tr>
-    <tr>
-        <td>
+        <td valign="top">
             <b>Kontor:</b><br>
             Søfartsstyrelsen<br>
             Carl Jacobsens Vej 31 2500 Valby<br>
@@ -13,7 +11,7 @@
             www.soefartsstyrelsen.dk<br>
             E-mail: sfs@dma.dk<br>
         </td>
-        <td style="border-left: 1px solid lightgray">
+        <td valign="top" style="border-left: 0.05em solid gray">
             <b>Efterretninger for Søfarende:</b><br>
             Søfartsstyrelsen<br>
             Carl Jacobsens Vej 31<br>
@@ -24,19 +22,19 @@
     </tr>
 
     <tr>
-        <td colspan="2" align="center">
+        <td colspan="2">
             <b>Øvrig kontakt:</b><br>
             Ved observation af fejl på afmærkning, slukkede fyr, drivende objekter eller andet, som kan udgøre en fare for sejladsen, skal følgende kontaktes:
         </td>
     </tr>
     <tr>
-        <td>
+        <td valign="top">
             Vagthavende styrmand i Søfartsstyrelsen<br>
             (mandag - torsdag kl. 0900 - 1600 og fredag kl. 0900 - 1500)<br>
             Tlf. 7219 6040<br>
             E-mail: vagts@dma.dk<br>
         </td>
-        <td style="border-left: 1px solid lightgray">
+        <td valign="top" style="border-left: 0.05em solid gray">
             Maritime Assistance Service (MAS) vagten (MST) <br>
             (udenfor åbningstid)<br>
             Tlf. 7285 0370<br>
