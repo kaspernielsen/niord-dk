@@ -11,12 +11,16 @@
     As regards the abbreviations used, see EfS A/1 2017.
 </p>
 
-<div style="text-align: center; margin-top: 2cm;">
+<div style="width: 100%; text-align: center; margin-top: 5mm">
+    <img src="/img/firing_areas.png" style="width: 14cm">
+</div>
+
+<div style="text-align: center; margin-top: 5mm;">
     <table style="width: 5.5cm">
         <tr>
             <td colspan="2">
                 <div style="margin-top: 4mm; text-align: center"><img src="/img/company-logo.png" style="width: 5cm"></div>
-                <div style="margin-top: 8mm">
+                <div style="margin-top: 4mm">
                     Carl Jacobsens Vej 31<br>
                     2500 Valby<br>
                 </div>
