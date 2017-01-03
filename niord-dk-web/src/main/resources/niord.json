@@ -151,6 +151,13 @@
     "editable"    : true
   },
   {
+    "key"         : "wmsLayers",
+    "description" : "The WMS layers",
+    "value"       : "",
+    "web"         : false,
+    "editable"    : true
+  },
+  {
     "key"         : "openSeaMapLayerEnabled",
     "description" : "Whether or not to display the OpenSeaMap layer in maps",
     "value"       : false,
