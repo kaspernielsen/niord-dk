@@ -481,6 +481,19 @@ public class LegacyNwImportService {
 
 
     /**
+     * Handle known spelling-mistakes in the MSI-editor
+     * @param name the area name
+     * @return the corrected name
+     */
+    private static String fixAreaSpellingMistakes(String name) {
+        if (name.equalsIgnoreCase("Skagerak")) {
+            return "Skagerrak";
+        }
+        return name;
+    }
+
+
+    /**
      * Creates an Area template based on the given Danish and English name
      * and optionally a parent Area
      * @param id the id of the area
@@ -495,10 +508,10 @@ public class LegacyNwImportService {
             area = new Area();
             area.setId(id);
             if (StringUtils.isNotBlank(nameEn)) {
-                area.createDesc("en").setName(nameEn);
+                area.createDesc("en").setName(fixAreaSpellingMistakes(nameEn));
             }
             if (StringUtils.isNotBlank(nameDa)) {
-                area.createDesc("da").setName(nameDa);
+                area.createDesc("da").setName(fixAreaSpellingMistakes(nameDa));
             }
             area.setParent(parent);
         }
