@@ -20,6 +20,7 @@ import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.lang.StringUtils;
 import org.jboss.security.annotation.SecurityDomain;
 import org.niord.core.batch.AbstractBatchableRestService;
+import org.niord.core.user.Roles;
 import org.niord.model.IJsonSerializable;
 import org.slf4j.Logger;
 
@@ -42,7 +43,7 @@ import java.util.Map;
 @Path("/import/nm")
 @Stateless
 @SecurityDomain("keycloak")
-@RolesAllowed("admin")
+@RolesAllowed(Roles.ADMIN)
 @SuppressWarnings("unused")
 public class LegacyNmImportRestService extends AbstractBatchableRestService {
 

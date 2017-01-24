@@ -25,6 +25,7 @@ import org.niord.core.repo.RepositoryService;
 import org.niord.core.sequence.DefaultSequence;
 import org.niord.core.sequence.Sequence;
 import org.niord.core.sequence.SequenceService;
+import org.niord.core.user.Roles;
 import org.niord.core.user.UserService;
 import org.niord.importer.aton.batch.AbstractDkAtonImportProcessor;
 import org.slf4j.Logger;
@@ -85,7 +86,7 @@ public class AtonImportRestService {
     @Path("/upload-xls")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces("text/plain")
-    @RolesAllowed("admin")
+    @RolesAllowed(Roles.ADMIN)
     public String importXls(@Context HttpServletRequest request) throws Exception {
 
         List<FileItem> items = repositoryService.parseFileUploadRequest(request);

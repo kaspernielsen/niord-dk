@@ -22,6 +22,7 @@ import org.niord.core.area.Area;
 import org.niord.core.schedule.FiringPeriod;
 import org.niord.core.batch.BatchService;
 import org.niord.core.message.vo.SystemMessageVo;
+import org.niord.core.user.Roles;
 import org.niord.model.DataFilter;
 import org.niord.model.IJsonSerializable;
 import org.slf4j.Logger;
@@ -49,7 +50,7 @@ import java.util.stream.Collectors;
 @Path("/import/fa")
 @Stateless
 @SecurityDomain("keycloak")
-@RolesAllowed("admin")
+@RolesAllowed(Roles.ADMIN)
 @SuppressWarnings("unused")
 public class LegacyFiringAreaImportRestService {
 
