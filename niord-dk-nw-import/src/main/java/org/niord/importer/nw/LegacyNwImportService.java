@@ -306,6 +306,7 @@ public class LegacyNwImportService {
             Message message = new Message();
             MessagePart part = new MessagePart();
             message.addPart(part);
+            part.setHideSubject(true);
 
             message.setLegacyId(String.valueOf(id));
             message.setMainType(MainType.NW);
