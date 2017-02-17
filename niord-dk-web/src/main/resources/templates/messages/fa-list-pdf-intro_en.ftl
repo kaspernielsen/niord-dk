@@ -28,11 +28,11 @@
         </tr>
         <tr>
             <th style="width: 1.2cm;">Tel.:</th>
-            <td>+45 9137 6000</td>
+            <td>+45 7219 6000</td>
         </tr>
         <tr>
             <th style="width: 1.2cm;">Fax:</th>
-            <td>+45 9137 6001</td>
+            <td>+45 7219 6001</td>
         </tr>
         <tr>
             <th style="width: 1.2cm;">E-mail:</th>
