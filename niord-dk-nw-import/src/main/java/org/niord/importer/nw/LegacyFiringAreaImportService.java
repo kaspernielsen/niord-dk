@@ -259,7 +259,7 @@ public class LegacyFiringAreaImportService {
     public void mergeArea(Area areaTemplate) throws Exception {
 
         try {
-            Area area = areaService.findOrCreateArea(areaTemplate, true);
+            Area area = areaService.importArea(areaTemplate, true, false);
             if (area != null) {
                 // If an existing area was found, check if we need to updated various fields
                 boolean updated = false;
