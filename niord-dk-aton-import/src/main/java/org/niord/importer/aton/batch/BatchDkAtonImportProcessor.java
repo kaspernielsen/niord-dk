@@ -914,7 +914,7 @@ public class BatchDkAtonImportProcessor extends AbstractDkAtonImportProcessor {
                 // topmark: -, colour: 5
                 if (masterType.isLight()) {
                     updateAtonTags(aton,
-                            "seamark:type",             "minor_light"
+                            "seamark:type",             "light_minor"
                             ///"seamark:light:colour",     "black"
                     );
                 } else if (masterType.isBeacon()) {
