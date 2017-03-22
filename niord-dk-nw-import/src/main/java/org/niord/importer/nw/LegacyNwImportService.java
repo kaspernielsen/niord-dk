@@ -324,7 +324,7 @@ public class LegacyNwImportService {
                 String[] parts = navtexNo.split("-");
                 int number = Integer.valueOf(parts[1]);
                 message.setNumber(number);
-                message.setType(Type.SUBAREA_WARNING);
+                message.setType(Type.COASTAL_WARNING);
                 message.setMessageSeries(messageSeriesService.findBySeriesId(params.getSeriesId()));
             } else {
                 message.setType(Type.LOCAL_WARNING);
