@@ -70,7 +70,7 @@ angular.module('niord.admin')
             $scope.messageSeriesIds = [];
             if ($rootScope.domain && $rootScope.domain.messageSeries) {
                 angular.forEach($rootScope.domain.messageSeries, function (series) {
-                    if (series.mainType == 'NW') {
+                    if (series.mainType === 'NW') {
                         $scope.messageSeriesIds.push(series.seriesId);
                     }
                 });
@@ -111,13 +111,13 @@ angular.module('niord.admin')
             $scope.messageSeriesIds = [];
             if ($rootScope.domain && $rootScope.domain.messageSeries) {
                 angular.forEach($rootScope.domain.messageSeries, function (series) {
-                    if (series.mainType == 'NM') {
+                    if (series.mainType === 'NM') {
                         $scope.messageSeriesIds.push(series.seriesId);
                     }
                 });
             }
             $scope.data = {
-                seriesId: $scope.messageSeriesIds.length == 1 ? $scope.messageSeriesIds[0] : undefined,
+                seriesId: $scope.messageSeriesIds.length === 1 ? $scope.messageSeriesIds[0] : undefined,
                 tagId: ''
             };
 
@@ -224,7 +224,7 @@ angular.module('niord.admin')
             $scope.messageSeriesIds = [];
             if ($rootScope.domain && $rootScope.domain.messageSeries) {
                 angular.forEach($rootScope.domain.messageSeries, function (series) {
-                    if (series.mainType == 'NM') {
+                    if (series.mainType === 'NM') {
                         $scope.messageSeriesIds.push(series.seriesId);
                     }
                 });
@@ -232,7 +232,7 @@ angular.module('niord.admin')
 
             $scope.tagData = { tag: undefined };
             $scope.data = {
-                seriesId: $scope.messageSeriesIds.length == 1 ? $scope.messageSeriesIds[0] : undefined,
+                seriesId: $scope.messageSeriesIds.length === 1 ? $scope.messageSeriesIds[0] : undefined,
                 tagId: ''
             };
 
