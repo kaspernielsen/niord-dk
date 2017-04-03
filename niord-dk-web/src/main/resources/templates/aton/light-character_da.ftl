@@ -1,62 +1,90 @@
 
-<#macro formatLightCharacterPhase phase>
+<#macro formatLightCharacterPhase phase multiple=false>
     <#switch phase>
         <#case "F">fast lys<#break>
         <#case "Fl">blink<#break>
         <#case "FFl">fast lys med blink<#break>
-        <#case "LFl">lange blink<#break>
-        <#case "Q">hurtigblink<#break>
-        <#case "VQ">meget hurtige blink<#break>
-        <#case "IQ">afbrudte hurtigblink<#break>
-        <#case "IVQ">afbrudte meget hurtige blink<#break>
-        <#case "UQ">ultra-hurtige blink<#break>
-        <#case "IUQ">afbrudte ultra-hurtige blink<#break>
-        <#case "Iso">isofase blink<#break>
+        <#case "LFl">${multiple?then('lange', 'langt')} blink<#break>
+        <#case "Q">hurtig-blink<#break>
+        <#case "VQ">meget ${multiple?then('hurtige blink', 'hurtig-blink')}<#break>
+        <#case "IQ">${multiple?then('afbrudte', 'afbrudt')} hurtig-blink<#break>
+        <#case "IVQ">${multiple?then('afbrudte meget hurtige blink', 'afbrudt meget hurtigt blink')}<#break>
+        <#case "UQ">${multiple?then('ultra-hurtige blink', 'ultra-hurtigt blink')}<#break>
+        <#case "IUQ">${multiple?then('afbrudte ultra-hurtige blink', 'afbrudt ultra-hurtigt blink')}<#break>
+        <#case "Iso">isofase lys<#break>
         <#case "Oc">formørkelser<#break>
-        <#case "Alt">alternerende lys<#break>
-        <#case "Mo">blink i morsekode<#break>
+        <#case "Al">vekslende<#break>
+        <#case "Mo">morsekode<#break>
     </#switch>
 </#macro>
 
-<#macro formatLightCharacterColor col>
+<#macro formatLightCharacterColor col multiple=false>
     <#switch col>
-        <#case "W">hvid<#break>
-        <#case "G">grøn<#break>
-        <#case "R">rød<#break>
-        <#case "Y">gul<#break>
-        <#case "B">blå<#break>
-        <#case "Am">ravgul<#break>
+        <#case "W">${multiple?then('hvide', 'hvidt')}<#break>
+        <#case "G">${multiple?then('grønne', 'grønt')}<#break>
+        <#case "R">${multiple?then('røde', 'rødt')}<#break>
+        <#case "Y">${multiple?then('gule', 'gult')}<#break>
+        <#case "B">${multiple?then('blå', 'blåt')}<#break>
+        <#case "Am">${multiple?then('ravgule', 'ravgult')}<#break>
     </#switch>
 </#macro>
 
 
 <#macro formatlightGroup lightGroup>
-    <#if lightGroup.composite!false>
-        sammensatte grupper af
-    <#elseif lightGroup.grouped!false>
-        grupper af
+    <#assign multiple=lightGroup.grouped />
+
+    <#if lightGroup.phase == 'Mo'>
+        morsekode ${lightGroup.morseCode}
+
+    <#elseif lightGroup.phase == 'Al'>
+        Vekslende
+        <#if lightGroup.groupSpec?has_content>
+            <#list lightGroup.groupSpec as blinks>
+                ${blinks} <#if blinks_has_next> + </#if>
+            </#list>
+        </#if>
+
+        <#if lightGroup.colors?has_content>
+            <#list lightGroup.colors as col>
+                <#if !col?is_first && col?is_last> og <#elseif !col?is_first>, </#if>
+                <@formatLightCharacterColor col=col multiple=multiple/>
+            </#list>
+        </#if>
+
+    <#elseif lightGroup.phase == 'Oc'>
+
+        <#if lightGroup.colors?has_content>
+            <#list lightGroup.colors as col>
+                <#if !col?is_first && col?is_last> og <#elseif !col?is_first>, </#if>
+                <@formatLightCharacterColor col=col multiple=false/>
+            </#list> lys med
+        </#if>
+
+        <#if lightGroup.groupSpec?has_content>
+            <#list lightGroup.groupSpec as blinks>
+                ${blinks} <#if blinks_has_next> + </#if>
+            </#list>
+        </#if>
+        formørkelser
+
+    <#else>
+        <#if lightGroup.groupSpec?has_content>
+            <#list lightGroup.groupSpec as blinks>
+                ${blinks} <#if blinks_has_next> + </#if>
+            </#list>
+        </#if>
+
+        <#if lightGroup.colors?has_content>
+            <#list lightGroup.colors as col>
+                <#if !col?is_first && col?is_last> og <#elseif !col?is_first>, </#if>
+                <@formatLightCharacterColor col=col multiple=multiple/>
+            </#list>
+        </#if>
+
+        <@formatLightCharacterPhase phase=lightGroup.phase multiple=multiple />
     </#if>
-
-    <#if lightGroup.groupSpec?has_content>
-        <#list lightGroup.groupSpec as blinks>
-            ${blinks} <#if blinks_has_next> + </#if>
-        </#list>
-    </#if>
-
-    <@formatLightCharacterPhase phase=lightGroup.phase />
-
-    <#if lightGroup.colors?has_content>
-        i
-        <#list lightGroup.colors as col>
-            <@formatLightCharacterColor col=col /><#if col_has_next>, </#if>
-        </#list>
-    </#if>
-
-    <#if lightGroup.phase == "Mo">
-        ${lightGroup.morseCode}
-    </#if>
-
 </#macro>
+
 
 <#macro formatlightCharacter lightModel>
 
@@ -66,15 +94,15 @@
         </#list>
 
         <#if lightModel.period??>
-            , som gentages hver ${lightModel.period}. sekund
+            hvert ${lightModel.period}. sekund
         </#if>
 
         <#if lightModel.elevation??>
-            , lyset er ${lightModel.elevation} meter over kort-datum
+            , ${lightModel.elevation} meter
         </#if>
 
         <#if lightModel.range??>
-            og er synlig over ${lightModel.range} nautiske mil
+            , ${lightModel.range} sømil
         </#if>
 
     </#if>
