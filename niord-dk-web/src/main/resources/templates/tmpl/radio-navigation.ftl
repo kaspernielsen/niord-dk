@@ -56,24 +56,28 @@
     </#list>
 </field-template>
 
-<field-template field="message.promulgation('audio').text" update="append">
-    <#list params.positions![] as pos>
-        <@line>
-            ${computeRadioType(pos)} på
-            <@renderAtonType atonParams=pos defaultName="afmærkning" format="long" lang="da"/>
-            <@renderPositionList geomParam=pos format="audio" lang="da"/>
-            <@renderStatus statusParam=pos format="long" lang="da"/>.
-        </@line>
-    </#list>
-</field-template>
+<#if promulgate('audio')>
+    <field-template field="message.promulgation('audio').text" update="append">
+        <#list params.positions![] as pos>
+            <@line>
+                ${computeRadioType(pos)} på
+                <@renderAtonType atonParams=pos defaultName="afmærkning" format="long" lang="da"/>
+                <@renderPositionList geomParam=pos format="audio" lang="da"/>
+                <@renderStatus statusParam=pos format="long" lang="da"/>.
+            </@line>
+        </#list>
+    </field-template>
+</#if>
 
-<field-template field="message.promulgation('navtex').text" update="append">
-    <#list params.positions![] as pos>
-        <@line format="navtex">
-            ${computeRadioType(pos)} on
-            <@renderAtonType atonParams=pos defaultName="AtoN" format="short" lang="en"/>
-            <@renderPositionList geomParam=pos format="navtex" lang="en"/>
-            <@renderStatus statusParam=pos format="normal" lang="en"/>.
-        </@line>
-    </#list>
-</field-template>
+<#if promulgate('navtex')>
+    <field-template field="message.promulgation('navtex').text" update="append">
+        <#list params.positions![] as pos>
+            <@line format="navtex">
+                ${computeRadioType(pos)} on
+                <@renderAtonType atonParams=pos defaultName="AtoN" format="short" lang="en"/>
+                <@renderPositionList geomParam=pos format="navtex" lang="en"/>
+                <@renderStatus statusParam=pos format="normal" lang="en"/>.
+            </@line>
+        </#list>
+    </field-template>
+</#if>

@@ -16,20 +16,24 @@
     </#list>
 </field-template>
 
-<field-template field="message.promulgation('audio').text" update="append">
-    <#list params.positions as pos>
-        <@line>
-            <@renderAtonType atonParams=pos defaultName="En lystønde" format="long" lang="da"/>
-            er blevet etableret <@renderPositionList geomParam=pos format="audio" lang="da"/>.
-        </@line>
-    </#list>
-</field-template>
+<#if promulgate('audio')>
+    <field-template field="message.promulgation('audio').text" update="append">
+        <#list params.positions as pos>
+            <@line>
+                <@renderAtonType atonParams=pos defaultName="En lystønde" format="long" lang="da"/>
+                er blevet etableret <@renderPositionList geomParam=pos format="audio" lang="da"/>.
+            </@line>
+        </#list>
+    </field-template>
+</#if>
 
-<field-template field="message.promulgation('navtex').text" update="append">
-    <#list params.positions as pos>
-        <@line format="navtex">
-            <@renderAtonType atonParams=pos defaultName="A light buoy" format="short" lang="en"/>
-            ESTABLISHED <@renderPositionList geomParam=pos format="navtex" lang="en"/>.
-        </@line>
-    </#list>
-</field-template>
+<#if promulgate('navtex')>
+    <field-template field="message.promulgation('navtex').text" update="append">
+        <#list params.positions as pos>
+            <@line format="navtex">
+                <@renderAtonType atonParams=pos defaultName="A light buoy" format="short" lang="en"/>
+                ESTABLISHED <@renderPositionList geomParam=pos format="navtex" lang="en"/>.
+            </@line>
+        </#list>
+    </field-template>
+</#if>

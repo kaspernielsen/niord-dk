@@ -34,26 +34,30 @@
     Mariners are advised to keep well clear.
 </field-template>
 
-<field-template field="message.promulgation('audio').text" update="append">
-    <@line>
-        <@renderVesselType defaultName="et skib" format="long" lang="da"/>
-        er sunket <@renderPositionList geomParam=part format="audio" lang="da"/>.
-        Dybden over vraget er <#if params.wreck_depth??>${params.wreck_depth} m.<#else>ukendt.</#if>
-        Vraget er <@renderMarkings markings=params.markings! lang="da" format="audio"  unmarkedText="ikke afmærket"/>
-    </@line>
-    <@line>
-        Det tilrådes skibsfarten at holde godt klar af positionen.
-    </@line>
-</field-template>
+<#if promulgate('audio')>
+    <field-template field="message.promulgation('audio').text" update="append">
+        <@line>
+            <@renderVesselType defaultName="et skib" format="long" lang="da"/>
+            er sunket <@renderPositionList geomParam=part format="audio" lang="da"/>.
+            Dybden over vraget er <#if params.wreck_depth??>${params.wreck_depth} m.<#else>ukendt.</#if>
+            Vraget er <@renderMarkings markings=params.markings! lang="da" format="audio"  unmarkedText="ikke afmærket"/>
+        </@line>
+        <@line>
+            Det tilrådes skibsfarten at holde godt klar af positionen.
+        </@line>
+    </field-template>
+</#if>
 
-<field-template field="message.promulgation('navtex').text" update="append">
-    <@line format="navtex">
-        <@renderVesselType defaultName="A VESSEL" format="short" lang="en"/>
-        SUNK <@renderPositionList geomParam=part format="navtex" lang="en"/>.
-        DEPTH ABOVE WRECK <#if params.wreck_depth??>${params.wreck_depth}M.<#else>UNKNOWN.</#if>
-        WRECK <@renderMarkings markings=params.markings! lang="en" format="navtex"  unmarkedText="UNMARKED"/>
-    </@line>
-    <@line format="navtex">
-        MARINERS ADVISED TO KEEP CLEAR.
-    </@line>
-</field-template>
+<#if promulgate('navtex')>
+    <field-template field="message.promulgation('navtex').text" update="append">
+        <@line format="navtex">
+            <@renderVesselType defaultName="A VESSEL" format="short" lang="en"/>
+            SUNK <@renderPositionList geomParam=part format="navtex" lang="en"/>.
+            DEPTH ABOVE WRECK <#if params.wreck_depth??>${params.wreck_depth}M.<#else>UNKNOWN.</#if>
+            WRECK <@renderMarkings markings=params.markings! lang="en" format="navtex"  unmarkedText="UNMARKED"/>
+        </@line>
+        <@line format="navtex">
+            MARINERS ADVISED TO KEEP CLEAR.
+        </@line>
+    </field-template>
+</#if>

@@ -19,27 +19,31 @@
     Mariners are advised to keep well clear.
 </field-template>
 
-<field-template field="message.promulgation('audio').text" update="append">
-    <#setting locale="da">
-    <@line>
-        Der er observeret vanddybder ned til ${params.water_depth!0?c} m
-        <@renderPositionList geomParam=part format="audio" lang="da"/>
-        <#if params.locality?has_content>i indsejlingen til ${params.locality}</#if>.
-    </@line>
-    <@line>
-        Det tilrådes skibsfarten at holde godt klar af positionen.
-    </@line>
-</field-template>
+<#if promulgate('audio')>
+    <field-template field="message.promulgation('audio').text" update="append">
+        <#setting locale="da">
+        <@line>
+            Der er observeret vanddybder ned til ${params.water_depth!0?c} m
+            <@renderPositionList geomParam=part format="audio" lang="da"/>
+            <#if params.locality?has_content>i indsejlingen til ${params.locality}</#if>.
+        </@line>
+        <@line>
+            Det tilrådes skibsfarten at holde godt klar af positionen.
+        </@line>
+    </field-template>
+</#if>
 
-<field-template field="message.promulgation('navtex').text" update="append">
-    <#setting locale="en">
-    <@line format="navtex">
-        Water depths down to ${params.water_depth!0?c} M
-        have been observed
-        <@renderPositionList geomParam=part format="navtex" lang="en"/>
-        <#if params.locality?has_content>IN ENTRANCE TO ${params.locality}</#if>.
-    </@line>
-    <@line format="navtex">
-        MARINERS ADVISED TO KEEP CLEAR
-    </@line>
-</field-template>
+<#if promulgate('navtex')>
+    <field-template field="message.promulgation('navtex').text" update="append">
+        <#setting locale="en">
+        <@line format="navtex">
+            Water depths down to ${params.water_depth!0?c} M
+            have been observed
+            <@renderPositionList geomParam=part format="navtex" lang="en"/>
+            <#if params.locality?has_content>IN ENTRANCE TO ${params.locality}</#if>.
+        </@line>
+        <@line format="navtex">
+            MARINERS ADVISED TO KEEP CLEAR
+        </@line>
+    </field-template>
+</#if>

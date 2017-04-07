@@ -19,22 +19,26 @@
         <@renderWorkVessel vessel=params.vessel! lang="en" format="details"/>
     </field-template>
 
-    <field-template field="message.promulgation('audio').text" update="append">
-        <@line>
-            <@renderDateInterval dateInterval=part.eventDates[0] lang="da"/>
-            ${daAudio}
-            <@renderPositionList geomParam=part lang="da" format="audio"/>.
-            <@renderWorkVessel vessel=params.vessel! lang="da" format="audio"/>
-        </@line>
-    </field-template>
+    <#if promulgate('audio')>
+        <field-template field="message.promulgation('audio').text" update="append">
+            <@line>
+                <@renderDateInterval dateInterval=part.eventDates[0] lang="da"/>
+                ${daAudio}
+                <@renderPositionList geomParam=part lang="da" format="audio"/>.
+                <@renderWorkVessel vessel=params.vessel! lang="da" format="audio"/>
+            </@line>
+        </field-template>
+    </#if>
 
-    <field-template field="message.promulgation('navtex').text" update="append">
-        <@line format="navtex">
-            <@renderDateInterval dateInterval=part.eventDates[0] lang="en" format="navtex"/>
-            ${enNavtex}
-            <@renderPositionList geomParam=part lang="en" format="navtex"/>.
-            <@renderWorkVessel vessel=params.vessel! lang="en" format="navtex"/>
-        </@line>
-    </field-template>
+    <#if promulgate('navtex')>
+        <field-template field="message.promulgation('navtex').text" update="append">
+            <@line format="navtex">
+                <@renderDateInterval dateInterval=part.eventDates[0] lang="en" format="navtex"/>
+                ${enNavtex}
+                <@renderPositionList geomParam=part lang="en" format="navtex"/>.
+                <@renderWorkVessel vessel=params.vessel! lang="en" format="navtex"/>
+            </@line>
+        </field-template>
+    </#if>
 
 </#macro>

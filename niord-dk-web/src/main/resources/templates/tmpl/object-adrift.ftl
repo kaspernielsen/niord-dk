@@ -29,16 +29,20 @@
     has been reported adrift <@renderPositionList geomParam=part lang="en"/>.
 </field-template>
 
-<field-template field="message.promulgation('audio').text" update="append">
-    <@line>
-        <@renderObject defaultName="en genstand" format="long" lang="da"/>
-        er rapporteret drivende <@renderPositionList geomParam=part format="audio" lang="da"/>.
-    </@line>
-</field-template>
+<#if promulgate('audio')>
+    <field-template field="message.promulgation('audio').text" update="append">
+        <@line>
+            <@renderObject defaultName="en genstand" format="long" lang="da"/>
+            er rapporteret drivende <@renderPositionList geomParam=part format="audio" lang="da"/>.
+        </@line>
+    </field-template>
+</#if>
 
-<field-template field="message.promulgation('navtex').text" update="append">
-    <@line format="navtex">
-        <@renderObject defaultName="an object" format="short" lang="en"/>
-        ADRIFT <@renderPositionList geomParam=part format="navtex" lang="en"/>.
-    </@line>
-</field-template>
+<#if promulgate('navtex')>
+    <field-template field="message.promulgation('navtex').text" update="append">
+        <@line format="navtex">
+            <@renderObject defaultName="an object" format="short" lang="en"/>
+            ADRIFT <@renderPositionList geomParam=part format="navtex" lang="en"/>.
+        </@line>
+    </field-template>
+</#if>

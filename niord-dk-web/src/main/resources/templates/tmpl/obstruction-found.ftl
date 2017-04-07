@@ -23,26 +23,30 @@
         Mariners are advised to keep well clear.
     </field-template>
 
-    <field-template field="message.promulgation('audio').text" update="append">
-        <@line>
-            ${daObj[0+offset]?cap_first} er fundet
-            <@renderPositionList geomParam=part lang="da" format="audio" plural=true/>.
-            ${daObj[1+offset]?cap_first} kan være farlig.
-        </@line>
-        <@line>
-            Skibsfarten tilrådes at holde godt klar.
-        </@line>
-    </field-template>
+    <#if promulgate('audio')>
+        <field-template field="message.promulgation('audio').text" update="append">
+            <@line>
+                ${daObj[0+offset]?cap_first} er fundet
+                <@renderPositionList geomParam=part lang="da" format="audio" plural=true/>.
+                ${daObj[1+offset]?cap_first} kan være farlig.
+            </@line>
+            <@line>
+                Skibsfarten tilrådes at holde godt klar.
+            </@line>
+        </field-template>
+    </#if>
 
-    <field-template field="message.promulgation('navtex').text" update="append">
-        <@line format="navtex">
-            ${navtexObj[0+offset]} REPORTED FOUND
-            <@renderPositionList geomParam=part lang="en" format="navtex" plural=true/>.
-            ${navtexObj[1+offset]} MAY BE DANGEROUS.
-        </@line>
-        <@line format="navtex">
-            MARINERS ADVISED TO KEEP CLEAR.
-        </@line>
-    </field-template>
+    <#if promulgate('navtex')>
+        <field-template field="message.promulgation('navtex').text" update="append">
+            <@line format="navtex">
+                ${navtexObj[0+offset]} REPORTED FOUND
+                <@renderPositionList geomParam=part lang="en" format="navtex" plural=true/>.
+                ${navtexObj[1+offset]} MAY BE DANGEROUS.
+            </@line>
+            <@line format="navtex">
+                MARINERS ADVISED TO KEEP CLEAR.
+            </@line>
+        </field-template>
+    </#if>
 
 </#macro>
