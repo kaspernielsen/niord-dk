@@ -18,6 +18,7 @@
 
     <modules>
         <module>niord-dk-web</module>
+        <module>niord-dk-promulgation</module>
         <module>niord-dk-aton-import</module>
         <module>niord-dk-nw-import</module>
         <module>niord-dk-nm-import</module>

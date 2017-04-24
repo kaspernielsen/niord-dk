@@ -17,6 +17,8 @@
         <tika.version>1.11</tika.version>
         <timestamp>${maven.build.timestamp}</timestamp>
         <maven.build.timestamp.format>yyyyMMddHHmm</maven.build.timestamp.format>
+        <niord-core.jar>niord-core-${project.version}.jar</niord-core.jar>
+        <niord-dk-promulgation.jar>niord-dk-promulgation-${project.version}.jar</niord-dk-promulgation.jar>
     </properties>
 
     <dependencies>
@@ -33,6 +35,11 @@
         </dependency>
 
         <!-- DK dependencies -->
+        <dependency>
+            <groupId>org.niord</groupId>
+            <artifactId>niord-dk-promulgation</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
         <dependency>
             <groupId>org.niord</groupId>
             <artifactId>niord-dk-aton-import</artifactId>
@@ -52,6 +59,24 @@
     </dependencies>
 
     <build>
+
+        <!-- Update the jar-file versions in persistence.xml -->
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+                <includes>
+                    <include>**/persistence.xml</include>
+                </includes>
+            </resource>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>false</filtering>
+                <excludes>
+                    <exclude>**/persistence.xml</exclude>
+                </excludes>
+            </resource>
+        </resources>
 
         <plugins>
             <plugin>
