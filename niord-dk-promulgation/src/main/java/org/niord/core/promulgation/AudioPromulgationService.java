@@ -138,6 +138,21 @@ public class AudioPromulgationService extends BasePromulgationService {
 
     /** {@inheritDoc} */
     @Override
+    public void messagePromulgationGenerated(SystemMessageVo message, PromulgationType type) throws PromulgationException {
+        AudioMessagePromulgationVo audio = message.promulgation(AudioMessagePromulgationVo.class, type.getTypeId());
+        if (audio != null && StringUtils.isNotBlank(audio.getText())) {
+
+            String text = audio.getText()
+                    .replaceAll("(?s)\\n+", "\n")
+                    .trim();
+
+            audio.setText(text);
+        }
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public void resetMessagePromulgation(SystemMessageVo message, PromulgationType type) throws PromulgationException {
         AudioMessagePromulgationVo audio = message.promulgation(AudioMessagePromulgationVo.class, type.getTypeId());
         if (audio != null) {
