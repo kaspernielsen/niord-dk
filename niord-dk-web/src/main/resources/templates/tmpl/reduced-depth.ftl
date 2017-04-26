@@ -7,7 +7,7 @@
     Der er observeret vanddybder ned til ${params.water_depth!0?c} m
     <@renderPositionList geomParam=part lang="da"/>
     <#if params.locality?has_content>i indsejlingen til ${params.locality}</#if>.<br>
-    Det tilrådes skibsfarten at holde godt klar af positionen.
+    Det tilrådes skibsfarten at holde godt klar.
 </field-template>
 
 <field-template field="part.getDesc('en').details" format="html">
@@ -28,7 +28,7 @@
             <#if params.locality?has_content>i indsejlingen til ${params.locality}</#if>.
         </@line>
         <@line>
-            Det tilrådes skibsfarten at holde godt klar af positionen.
+            Det tilrådes skibsfarten at holde godt klar.
         </@line>
     </field-template>
 </#if>

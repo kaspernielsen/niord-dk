@@ -6,7 +6,7 @@
 <field-template field="part.getDesc('da').details" format="html">
     En ikke kortlagt grund er rapporteret beliggende <@renderPositionList geomParam=part lang="da"/>.
     Grunden er <@renderMarkings markings=params.markings! lang="da" format="details" unmarkedText="ikke afmærket"/><br>
-    Det tilrådes skibsfarten at holde godt klar af positionen.
+    Det tilrådes skibsfarten at holde godt klar.
 </field-template>
 
 <field-template field="part.getDesc('en').details" format="html">
@@ -22,7 +22,7 @@
             Grunden er <@renderMarkings markings=params.markings! lang="da" format="audio"  unmarkedText="ikke afmærket"/>
         </@line>
         <@line>
-            Det tilrådes skibsfarten at holde godt klar af positionen.
+            Det tilrådes skibsfarten at holde godt klar.
         </@line>
     </field-template>
 </#if>

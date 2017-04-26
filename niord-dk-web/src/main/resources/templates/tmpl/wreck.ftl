@@ -23,7 +23,7 @@
     er sunket <@renderPositionList geomParam=part lang="da"/>.
     Dybden over vraget er <#if params.wreck_depth??>${params.wreck_depth} m.<#else>ukendt.</#if>
     Vraget er <@renderMarkings markings=params.markings! lang="da" format="details" unmarkedText="ikke afmærket"/><br>
-    Det tilrådes skibsfarten at holde godt klar af positionen.
+    Det tilrådes skibsfarten at holde godt klar.
 </field-template>
 
 <field-template field="part.getDesc('en').details" format="html">
@@ -43,7 +43,7 @@
             Vraget er <@renderMarkings markings=params.markings! lang="da" format="audio"  unmarkedText="ikke afmærket"/>
         </@line>
         <@line>
-            Det tilrådes skibsfarten at holde godt klar af positionen.
+            Det tilrådes skibsfarten at holde godt klar.
         </@line>
     </field-template>
 </#if>

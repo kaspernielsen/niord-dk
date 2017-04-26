@@ -17,7 +17,7 @@
         er væltet og udgør en sejladshindring.
     </#list>
     Fundamentet af fyret er <@renderMarkings markings=params.markings! lang="da" format="details" unmarkedText="ikke afmærket"/><br>
-    Det tilrådes skibsfarten at holde godt klar af positionen.
+    Det tilrådes skibsfarten at holde godt klar.
 </field-template>
 
 <field-template field="part.getDesc('en').details" format="html">
@@ -39,7 +39,7 @@
             Fundamentet af fyret er <@renderMarkings markings=params.markings! lang="da" format="audio"  unmarkedText="ikke afmærket"/>
         </@line>
         <@line>
-            Det tilrådes skibsfarten at holde godt klar af positionen.
+            Det tilrådes skibsfarten at holde godt klar.
         </@line>
     </field-template>
 </#if>
