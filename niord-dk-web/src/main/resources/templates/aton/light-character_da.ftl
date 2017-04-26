@@ -37,7 +37,7 @@
         morsekode ${lightGroup.morseCode}
 
     <#elseif lightGroup.phase == 'Al'>
-        Vekslende
+        vekslende
         <#if lightGroup.groupSpec?has_content>
             <#list lightGroup.groupSpec as blinks>
                 ${blinks} <#if blinks_has_next> + </#if>

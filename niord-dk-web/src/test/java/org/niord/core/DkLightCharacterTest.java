@@ -42,6 +42,7 @@ public class DkLightCharacterTest {
             "Iso G 4s",
             "Gp Oc(3) W 10s 15m 10M",
             "Alt R.W.G",
+            "Al.Fl.Bu.Y 3s",
             "VQ(6)+LFl"
         );
 
