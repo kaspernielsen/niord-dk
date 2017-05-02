@@ -204,61 +204,6 @@ angular.module('niord.admin')
 
 
     /**
-     * Legacy NM import Controller
-     */
-    .controller('NmIntegrationCtrl', ['$scope', '$rootScope', '$http', 'growl',
-        function ($scope, $rootScope, $http, growl) {
-            'use strict';
-
-            $scope.nmImportUrl = '/rest/import/nm/import-nm';
-            $scope.legacyNmResult = '';
-
-            /** Displays the error message */
-            $scope.displayError = function (err) {
-                growl.error("Error");
-                $scope.legacyNmResult = 'Error:\n' + err;
-            };
-
-
-            // Determine the message series for the current domain
-            $scope.messageSeriesIds = [];
-            if ($rootScope.domain && $rootScope.domain.messageSeries) {
-                angular.forEach($rootScope.domain.messageSeries, function (series) {
-                    if (series.mainType === 'NM') {
-                        $scope.messageSeriesIds.push(series.seriesId);
-                    }
-                });
-            }
-
-            $scope.tagData = { tag: undefined };
-            $scope.data = {
-                seriesId: $scope.messageSeriesIds.length === 1 ? $scope.messageSeriesIds[0] : undefined,
-                tagId: ''
-            };
-
-
-            // Sync the selected tag with the data.tagId
-            $scope.$watch("tagData", function () {
-                $scope.data.tagId = $scope.tagData.tag !== undefined ? $scope.tagData.tag.tagId : undefined;
-            }, true);
-
-
-            /** Called when the NM html file has been imported */
-            $scope.nmFileUploaded = function(result) {
-                $scope.legacyNmResult = result;
-                $scope.$$phase || $scope.$apply();
-            };
-
-            /** Called when the NM html import has failed */
-            $scope.nmFileUploadError = function(status) {
-                $scope.legacyNmResult = "Error importing NMs (error " + status + ")";
-                $scope.$$phase || $scope.$apply();
-            };
-
-        }])
-
-
-    /**
      * Aton Import Controller
      */
     .controller('AtonIntegrationCtrl', ['$scope',

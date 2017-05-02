@@ -69,48 +69,6 @@
         </uib-tab>
 
 
-        <!-- Legacy NM Import -->
-        <uib-tab  ng-if="supportsMainType('NM')">
-            <tab-heading>
-                Legacy NM import
-            </tab-heading>
-            <div ng-controller="NmIntegrationCtrl">
-
-                <file-upload url="nmImportUrl"
-                             drop-text="or drop .html file here" multiple="false"
-                             file-types="'html'" auto-upload="false" remove-after-upload="true"
-                             data="data"
-                             success="nmFileUploaded(result)"
-                             error="nmFileUploadError(status, statusText)">
-
-                    <div class="form-group row" style="margin-top: 20px">
-                        <label for="importNmMessageSeries" class="col-sm-4 col-md-3 col-lg-2 control-label" style="text-align: right">Msg. Series</label>
-                        <div class="col-sm-4 col-md-4 col-lg-3">
-                            <select id="importNmMessageSeries" class="form-control input-sm" required
-                                    ng-model="data.seriesId" ng-options="seriesId for seriesId in messageSeriesIds" >
-                            </select>
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label for="importNmTag" class="col-sm-4 col-md-3 col-lg-2 control-label" style="text-align: right">Tag</label>
-                        <div class="col-sm-4 col-md-4 col-lg-3">
-                            <message-tags-field id="importNmTag" tag-data="tagData" multiple="false"></message-tags-field>
-                        </div>
-                    </div>
-
-                </file-upload>
-
-                <div class="row">
-                    <div class="col-sm-12 col-md-10 col-lg-8" style="margin-top: 20px">
-                        <label class="control-label" for="legacyNmResult">Result</label>
-                        <textarea ng-model="legacyNmResult" id="legacyNmResult" class="form-control input-sm" style="font-size: 10px;" rows="3" readonly></textarea>
-                    </div>
-                </div>
-
-            </div>
-        </uib-tab>
-
-
         <!-- Legacy Firing Areas -->
         <uib-tab ng-if="domain.firingSchedule">
             <tab-heading>
