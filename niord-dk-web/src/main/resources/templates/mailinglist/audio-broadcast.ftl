@@ -1,15 +1,17 @@
 
 <#include "../messages/message-support.ftl"/>
 
+<#setting time_zone="Europe/Copenhagen">
+
 <html>
-    <head>
-        <link rel="stylesheet" type="text/css" href="/css/templates/mail.css">
-    </head>
+<head>
+    <link rel="stylesheet" type="text/css" href="/css/templates/mail.css">
+</head>
 <body>
 
 <h1>
     Farvandsefterretningerne
-    ${.now?string["EEEEEEE 'den' d. MMMMMMMMM yyyy"]}
+${.now?string["EEEEEEE 'den' d. MMMMMMMMM yyyy"]}
 </h1>
 
 <h2>
@@ -34,6 +36,29 @@
     </p>
     </#if>
 </#list>
+
+<#if params['firingExercises']?? && params['firingExercisesDate']??>
+<h2>
+    Der afholdes i morgen
+${params['firingExercisesDate']?string["EEEEEEE 'den' d. MMMMMMMMM yyyy"]}
+    følgende skydeøvelser:
+</h2>
+
+    <#list params['firingExercises'] as fe>
+    <p>
+        Ved <@areaLineage area=fe.area />
+        <#list fe.times as t>
+            <#if !t?is_first>og igen</#if>
+            fra kl ${t.fromDate?string["HHmm"]}
+            til kl ${t.toDate?string["HHmm"]}<#if t?is_last>.</#if>
+        </#list>
+    </p>
+    </#list>
+</#if>
+
+<p>
+    Det var farvandsefterretningerne.
+</p>
 
 </body>
 </html>
