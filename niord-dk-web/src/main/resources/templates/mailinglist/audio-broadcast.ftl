@@ -10,8 +10,7 @@
 <body>
 
 <h1>
-    Farvandsefterretningerne
-${.now?string["EEEEEEE 'den' d. MMMMMMMMM yyyy"]}
+    Farvandsefterretningerne ${.now?string["EEEEEEE 'den' d. MMMMMMMMM yyyy"]}
 </h1>
 
 <h2>
@@ -40,7 +39,7 @@ ${.now?string["EEEEEEE 'den' d. MMMMMMMMM yyyy"]}
 <#if params['firingExercises']?? && params['firingExercisesDate']??>
 <h2>
     Der afholdes i morgen
-${params['firingExercisesDate']?string["EEEEEEE 'den' d. MMMMMMMMM yyyy"]}
+    ${params['firingExercisesDate']?string["EEEEEEE 'den' d. MMMMMMMMM yyyy"]}
     følgende skydeøvelser:
 </h2>
 
