@@ -53,8 +53,7 @@
     <#if lang == "da">
         Skibsfarten anmodes om at vise hensyn ved passage
         <#if vessel.minDist?has_content>
-            og holde en afstand på min. ${vessel.minDist}
-          ${(vessel.minDistType == 'm')?then('m', 'sømil')}
+            og holde en afstand på min. ${vessel.minDist} ${(vessel.minDistType == 'm')?then('m', 'sømil')}
         </#if>.
     <#elseif format == 'navtex'>
         MARINERS REQUESTED TO PASS WITH CAUTION

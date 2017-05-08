@@ -12,7 +12,7 @@
 
 <field-template field="part.getDesc('en').details" format="html">
     <#setting locale="en">
-    Water depths down to ${params.water_depth!0?c} m
+    Water depths down to ${params.water_depth!0?c}m
     have been observed
     <@renderPositionList geomParam=part lang="en"/>
     <#if params.locality?has_content>in the entrance to ${params.locality}</#if>.<br>
@@ -37,7 +37,7 @@
     <field-template field="message.promulgation('navtex').text" update="append">
         <#setting locale="en">
         <@line format="navtex">
-            Water depths down to ${params.water_depth!0?c} M OBSERVED
+            Water depths down to ${params.water_depth!0?c}M OBSERVED
             <@renderPositionList geomParam=part format="navtex" lang="en"/>
             <#if params.locality?has_content>IN ENTRANCE TO ${params.locality}</#if>.
         </@line>
