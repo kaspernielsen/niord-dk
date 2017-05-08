@@ -14,7 +14,7 @@
             visende
                 <@lightCharacterFormat light=marking.lightCharacter format=lightFormat/>
             </#if>
-            <#if marking.distance??>ca ${marking.distance} m.</#if>
+            <#if marking.distance??>ca ${marking.distance}m.</#if>
             <#if marking.bearing??>
                 <@renderListValue value=marking.bearing defaultValue="" format=valueFormat lang=lang/>
             </#if>
@@ -29,7 +29,7 @@
             showing
                 <@lightCharacterFormat light=marking.lightCharacter format=lightFormat/>
             </#if>
-            <#if marking.distance??>approx. ${marking.distance} m.</#if>
+            <#if marking.distance??>approx. ${marking.distance}m.</#if>
             <#if marking.bearing??>
                 <@renderListValue value=marking.bearing defaultValue="" format=valueFormat lang=lang/>
             </#if>
