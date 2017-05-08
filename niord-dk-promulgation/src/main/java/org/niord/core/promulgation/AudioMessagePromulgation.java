@@ -65,7 +65,7 @@ public class AudioMessagePromulgation extends BaseMessagePromulgation<AudioMessa
         if (promulgation instanceof AudioMessagePromulgation) {
             super.update(promulgation);
             AudioMessagePromulgation p = (AudioMessagePromulgation)promulgation;
-            p.setText(text);
+            this.text = p.getText();
         }
     }
 
