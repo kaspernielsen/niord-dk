@@ -24,7 +24,7 @@
     <field-template field="part.getDesc('da').details" format="html">
         <#list params.positions![] as pos>
             <@renderAtonType atonParams=pos defaultName="${daDefaultName}" format="long" lang="da"/>
-            <@renderPositionList geomParam=pos lang="da"/> er erstattet af
+            <@renderPositionList geomParam=pos lang="da"/> er erstattet med
             <@renderAtonReplacementType atonParams=pos defaultName="${daDefaultReplacementName}" format="long" lang="da"/>.<br>
         </#list>
     </field-template>
@@ -32,7 +32,7 @@
     <field-template field="part.getDesc('en').details" format="html">
         <#list params.positions![] as pos>
             <@renderAtonType atonParams=pos defaultName="${enDefaultName}" format="long" lang="en"/>
-            <@renderPositionList geomParam=pos lang="en"/> has been replaced by
+            <@renderPositionList geomParam=pos lang="en"/> has been replaced with
             <@renderAtonReplacementType atonParams=pos defaultName="${enDefaultReplacementName}" format="long" lang="en"/>.<br>
         </#list>
     </field-template>
@@ -42,7 +42,7 @@
             <#list params.positions![] as pos>
                 <@line>
                     <@renderAtonType atonParams=pos defaultName="${daDefaultName}" format="long" lang="da"/>
-                    <@renderPositionList geomParam=pos format="audio" lang="da"/> er erstattet af
+                    <@renderPositionList geomParam=pos format="audio" lang="da"/> er erstattet med
                     <@renderAtonReplacementType atonParams=pos defaultName="${daDefaultReplacementName}" format="long" lang="da"/>.
                 </@line>
             </#list>
@@ -54,7 +54,7 @@
             <#list params.positions![] as pos>
                 <@line format="navtex">
                     <@renderAtonType atonParams=pos defaultName="${enDefaultName}" format="short" lang="en"/>
-                    <@renderPositionList geomParam=pos format="navtex" lang="en"/> REPLACED BY
+                    <@renderPositionList geomParam=pos format="navtex" lang="en"/> REPLACED WITH
                     <@renderAtonReplacementType atonParams=pos defaultName="${enDefaultReplacementName}" format="navtex" lang="en"/>.
                 </@line>
             </#list>
