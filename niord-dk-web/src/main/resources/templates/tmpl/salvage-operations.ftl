@@ -4,7 +4,7 @@
 <@defaultSubjectFieldTemplates/>
 
 <field-template field="part.getDesc('da').details" format="html">
-    <@renderDateInterval dateInterval=part.eventDates[0] lang="da"/>
+    <@renderDateIntervals dateIntervals=part.eventDates lang="da" capFirst=true/>
     udføres der bjærgningsarbejde
     <#if params.salvage_type??>
         på <@renderListValue value=params.salvage_type defaultValue="" lang="da"/>
@@ -14,7 +14,7 @@
 </field-template>
 
 <field-template field="part.getDesc('en').details" format="html">
-    <@renderDateInterval dateInterval=part.eventDates[0] lang="en"/>
+    <@renderDateIntervals dateIntervals=part.eventDates lang="en" tz="UTC" capFirst=true/>
     salvage operations is carried out
     <#if params.salvage_type??>
         on <@renderListValue value=params.salvage_type defaultValue="" lang="en"/>
@@ -26,7 +26,7 @@
 <#if promulgate('audio')>
     <field-template field="message.promulgation('audio').text" update="append">
         <@line>
-            <@renderDateInterval dateInterval=part.eventDates[0] lang="da"/>
+            <@renderDateIntervals dateIntervals=part.eventDates format="plain" lang="da" capFirst=true/>
             udføres der bjærgningsarbejde
             <#if params.salvage_type??>
                 på <@renderListValue value=params.salvage_type defaultValue="" lang="da"/>
@@ -40,7 +40,7 @@
 <#if promulgate('navtex')>
     <field-template field="message.promulgation('navtex').text" update="append">
         <@line format="navtex">
-            <@renderDateInterval dateInterval=part.eventDates[0] lang="en" format="navtex"/>
+            <@renderDateIntervals dateIntervals=part.eventDates lang="en" format="navtex"/>
             SALVAGE OPERATION
             <#if params.salvage_type??>
                 ON <@renderListValue value=params.salvage_type lang="en" defaultValue="" format="navtex"/>

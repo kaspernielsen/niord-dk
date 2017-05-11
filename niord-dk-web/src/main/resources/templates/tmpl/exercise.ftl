@@ -19,7 +19,7 @@
 </#if>
 
 <field-template field="part.getDesc('da').details" format="html">
-    <@renderDateInterval dateInterval=part.eventDates[0] lang="da"/>
+    <@renderDateIntervals dateIntervals=part.eventDates lang="da" capFirst=true/>
         vil der blive afholdt
     <#if params.exercise_type??>
         <@renderListValue value=params.exercise_type defaultValue="" lang="da"/>
@@ -30,7 +30,7 @@
 </field-template>
 
 <field-template field="part.getDesc('en').details" format="html">
-    <@renderDateInterval dateInterval=part.eventDates[0] lang="en"/>
+    <@renderDateIntervals dateIntervals=part.eventDates lang="en" tz="UTC" capFirst=true/>
     <#if params.exercise_type??>
         <@renderListValue value=params.exercise_type defaultValue="" lang="en"/>
     </#if>
@@ -43,7 +43,7 @@
 <#if promulgate('audio')>
     <field-template field="message.promulgation('audio').text" update="append">
         <@line>
-            <@renderDateInterval dateInterval=part.eventDates[0] lang="da"/>
+            <@renderDateIntervals dateIntervals=part.eventDates format="plain" lang="da" capFirst=true/>
             vil der blive afholdt
             <#if params.exercise_type??>
                 <@renderListValue value=params.exercise_type defaultValue="" lang="da"/>
@@ -58,7 +58,7 @@
 <#if promulgate('navtex')>
     <field-template field="message.promulgation('navtex').text" update="append">
         <@line format="navtex">
-            <@renderDateInterval dateInterval=part.eventDates[0] lang="en" format="navtex"/>
+            <@renderDateIntervals dateIntervals=part.eventDates lang="en" format="navtex"/>
             <#if params.exercise_type??>
                 <@renderListValue value=params.exercise_type lang="en" defaultValue="" format="navtex"/>
             </#if>

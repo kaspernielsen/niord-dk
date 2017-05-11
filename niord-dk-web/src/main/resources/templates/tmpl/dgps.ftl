@@ -38,7 +38,7 @@
     og frekvens ${params.station.frequency?string["0.0"]} kHz
     <@renderStatus format="long" lang="da"/>
     <#if part.eventDates?has_content && part.eventDates[0].fromDate??>
-        <@renderDateInterval dateInterval=part.eventDates[0] lang="da"/>
+        <@renderDateIntervals dateIntervals=part.eventDates lang="da"/>
     </#if>.
 </field-template>
 
@@ -49,7 +49,7 @@
     and frequency ${params.station.frequency?string["0.0"]} kHz
     <@renderStatus format="long" lang="en"/>
     <#if part.eventDates?has_content && part.eventDates[0].fromDate??>
-        <@renderDateInterval dateInterval=part.eventDates[0] lang="en"/>
+        <@renderDateIntervals dateIntervals=part.eventDates lang="en" tz="UTC"/>
     </#if>.
 </field-template>
 
@@ -62,7 +62,7 @@
             og frekvens ${params.station.frequency?string["0.0"]} kHz
             <@renderStatus format="long" lang="da"/>
             <#if part.eventDates?has_content && part.eventDates[0].fromDate??>
-                <@renderDateInterval dateInterval=part.eventDates[0] lang="da"/>
+                <@renderDateIntervals dateIntervals=part.eventDates format="plain" lang="da"/>
             </#if>.
         </@line>
     </field-template>
@@ -77,7 +77,7 @@
             <@formatPos lat=params.station.coordinates[1] lon=params.station.coordinates[0] format='navtex' />
             <@renderStatus format="normal" lang="en"/>
             <#if part.eventDates?has_content && part.eventDates[0].fromDate??>
-                <@renderDateInterval dateInterval=part.eventDates[0] format="navtex" lang="en"/>
+                <@renderDateIntervals dateIntervals=part.eventDates format="navtex" lang="en"/>
             </#if>.
         </@line>
     </field-template>
