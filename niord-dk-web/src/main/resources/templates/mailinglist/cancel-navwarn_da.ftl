@@ -1,4 +1,4 @@
 
 <#if message??>
-    Annullér danske navigationsadvarsel ${message.shortId!''}
+    Annullér dansk navigationsadvarsel ${message.shortId!''}
 </#if>
