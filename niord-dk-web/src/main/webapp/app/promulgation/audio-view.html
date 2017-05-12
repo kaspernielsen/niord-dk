@@ -1,2 +1,4 @@
 
-<div class="promulgation-text" ng-bind-html="promulgation.text | plain2html | toTrusted"></div>
+<div class="promulgation-text"
+     ng-if="promulgation.text"
+     ng-bind-html="promulgation.text | plain2html | toTrusted"></div>
