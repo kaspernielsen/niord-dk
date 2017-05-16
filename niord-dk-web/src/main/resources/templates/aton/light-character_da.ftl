@@ -49,6 +49,7 @@
                 <#if !col?is_first && col?is_last> og <#elseif !col?is_first>, </#if>
                 <@formatLightCharacterColor col=col multiple=multiple/>
             </#list>
+            blink
         </#if>
 
     <#elseif lightGroup.phase == 'Oc'>
