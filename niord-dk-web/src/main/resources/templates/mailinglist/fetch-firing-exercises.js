@@ -22,8 +22,9 @@ var date = java.util.Calendar.getInstance();
 date.add(java.util.Calendar.DAY_OF_YEAR, 1);
 params.put('firingExercisesDate', date.getTime());
 
-var fromDate = org.niord.core.util.TimeUtils.resetTime(date.getTime());
-var toDate = org.niord.core.util.TimeUtils.endOfDay(date.getTime());
+var timeZone = java.util.TimeZone.getTimeZone('Europe/Copenhagen');
+var fromDate = org.niord.core.util.TimeUtils.resetTime(date.getTime(), timeZone);
+var toDate = org.niord.core.util.TimeUtils.endOfDay(date.getTime(), timeZone);
 
 var seriesIds = java.util.Collections.singleton('dma-fe');
 var statuses = java.util.Collections.singleton(org.niord.model.message.Status.PUBLISHED);
