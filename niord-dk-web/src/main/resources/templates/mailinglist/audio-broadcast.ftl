@@ -10,7 +10,7 @@
 <body>
 
 <h1>
-    Danske Farvandsefterretninger ${.now?string["EEEEEEE 'den' d. MMMMMMMMM yyyy"]}
+    Danske farvandsefterretninger ${.now?string["EEEEEEE 'den' d. MMMMMMMMM yyyy"]}
 </h1>
 
 <h2>
