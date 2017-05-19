@@ -10,11 +10,11 @@
 <body>
 
 <h1>
-    Farvandsefterretningerne ${.now?string["EEEEEEE 'den' d. MMMMMMMMM yyyy"]}
+    Danske Farvandsefterretninger ${.now?string["EEEEEEE 'den' d. MMMMMMMMM yyyy"]}
 </h1>
 
 <h2>
-    Her er Søværnets Operative Kommando med dagens farvandsefterretninger
+    Her er Forsvarets Operationscenter med dagens farvandsefterretninger
 </h2>
 
 <#list messages as msg>
