@@ -6,7 +6,7 @@
     <@defaultSubjectFieldTemplates/>
 
     <field-template field="part.getDesc('da').details" format="html">
-        <@renderDateIntervals dateIntervals=part.eventDates lang="da" capFirst=true capFirst=true/>
+        <@renderDateIntervals dateIntervals=part.eventDates lang="da" capFirst=true/>
         ${daDetails}
         <@renderPositionList geomParam=part lang="da"/>.
         <@renderWorkVessel vessel=params.vessel! lang="da" format="details"/>
