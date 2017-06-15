@@ -16,7 +16,13 @@
     </#if>
 </#macro>
 
-<@defaultSubjectFieldTemplates/>
+<field-template field="part.getDesc('da').subject">
+    Drivende <@renderObject defaultName="genstand" format="short" lang="da"/>
+</field-template>
+
+<field-template field="part.getDesc('en').subject">
+    <@renderObject defaultName="Object" format="short" lang="en"/> Adrift
+</field-template>
 
 <field-template field="part.getDesc('da').details" format="html">
     <@renderObject defaultName="en genstand" format="long" lang="da"/>
