@@ -126,7 +126,7 @@ public class AudioPromulgationService extends BasePromulgationService {
 
         text = PositionUtils.replacePositions(
                 app.getLocale(language),
-                PositionUtils.getAudioFormat(bundle),
+                PositionUtils.getAudioFormat(bundle, 1),
                 text);
 
         // Replace certain standard words, e.g. "pos." with "position"
