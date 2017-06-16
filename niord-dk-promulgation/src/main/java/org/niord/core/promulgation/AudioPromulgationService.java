@@ -21,6 +21,7 @@ import org.niord.core.dictionary.DictionaryService;
 import org.niord.core.message.vo.SystemMessageVo;
 import org.niord.core.promulgation.vo.AudioMessagePromulgationVo;
 import org.niord.core.promulgation.vo.BaseMessagePromulgationVo;
+import org.niord.core.util.PositionAssembler;
 import org.niord.core.util.PositionUtils;
 import org.niord.core.util.TextUtils;
 import org.niord.model.DataFilter;
@@ -119,20 +120,21 @@ public class AudioPromulgationService extends BasePromulgationService {
     /** Transforms a HTML description to an audio description **/
     private String html2audio(String text, String language) {
 
+        // Convert to plain text
+        text = TextUtils.html2txt(text, true);
+
         // Replace positions with audio versions
         ResourceBundle bundle = dictionaryService.getDictionariesAsResourceBundle(
                 new String[]{"template"},
                 app.getLanguage(language));
 
-        text = PositionUtils.replacePositions(
-                app.getLocale(language),
-                PositionUtils.getAudioFormat(bundle, 1),
-                text);
+        PositionAssembler audioPosAssembler = PositionAssembler.newAudioPositionAssembler(app.getLocale(language), bundle);
+        text = PositionUtils.updatePositionFormat(text, audioPosAssembler);
 
         // Replace certain standard words, e.g. "pos." with "position"
         text = text.replaceAll("(?is)\\s+(pos\\.)\\s+", " position ");
 
-        return TextUtils.html2txt(text, true);
+        return text;
     }
 
 
