@@ -24,14 +24,14 @@
     </#if>
 </#macro>
 
-<field-template field="part.getDesc('da').subject">
+<field-template field="part.getDesc('da').subject" format="text">
     <#list params.positions![] as pos>
         ${computeRadioType(pos)}
         <@renderStatus statusParam=pos format="normal" lang="da"/>.
     </#list>
 </field-template>
 
-<field-template field="part.getDesc('en').subject">
+<field-template field="part.getDesc('en').subject" format="text">
     <#list params.positions![] as pos>
         ${computeRadioType(pos)}
         <@renderStatus statusParam=pos format="normal" lang="en"/>.

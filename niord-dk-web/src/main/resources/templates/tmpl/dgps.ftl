@@ -23,11 +23,11 @@
 <#if params.dgps_station?? && params.dgps_station.key??>
     <#assign key=params.dgps_station.key>
 
-<field-template field="part.getDesc('da').subject">
+<field-template field="part.getDesc('da').subject" format="text">
     DGPS <@renderStatus format="normal" lang="da"/>
 </field-template>
 
-<field-template field="part.getDesc('en').subject">
+<field-template field="part.getDesc('en').subject" format="text">
     DGPS <@renderStatus format="normal" lang="en"/>
 </field-template>
 
