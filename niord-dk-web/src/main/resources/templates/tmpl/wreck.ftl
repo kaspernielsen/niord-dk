@@ -16,7 +16,21 @@
     </#if>
 </#macro>
 
-<@defaultSubjectFieldTemplates/>
+<field-template field="part.getDesc('da').subject" format="text">
+    <#switch params.markingType!''>
+        <#case 'marking'>Markeret vrag<#break>
+        <#case 'buoy'>Afmærket vrag<#break>
+        <#default>Ikke markeret vrag
+    </#switch>
+</field-template>
+
+<field-template field="part.getDesc('en').subject" format="text">
+    <#switch params.markingType!''>
+        <#case 'marking'>Marked Wreck<#break>
+        <#case 'buoy'>Buoyed Wreck<#break>
+        <#default>Unmarked Wreck
+    </#switch>
+</field-template>
 
 <field-template field="part.getDesc('da').details" format="html">
     <@renderVesselType defaultName="et skib" format="long" lang="da"/>
