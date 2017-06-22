@@ -16,7 +16,7 @@
         Fyret <@renderLightName lightParam=pos/> <@renderPositionList geomParam=pos lang="da"/>
         er væltet og udgør en sejladshindring.
     </#list>
-    Fundamentet af fyret er <@renderMarkings markings=params.markings! lang="da" format="details" unmarkedText="ikke afmærket"/><br>
+    Fundamentet af fyret er <@renderMarkings markings=params.markings! markingType=params.markingType! lang="da" format="details" unmarkedText="ikke afmærket"/><br>
     Det tilrådes skibsfarten at holde godt klar.
 </field-template>
 
@@ -25,7 +25,7 @@
         The light <@renderLightName lightParam=pos/> <@renderPositionList geomParam=part lang="en"/>
         has been destroyed and makes an obstruction.
     </#list>
-    The light is <@renderMarkings markings=params.markings! lang="en" format="details" unmarkedText="unmarked"/><br>
+    The light is <@renderMarkings markings=params.markings! markingType=params.markingType! lang="en" format="details" unmarkedText="unmarked"/><br>
     Mariners are advised to keep well clear.
 </field-template>
 
@@ -36,7 +36,7 @@
                 Fyret <@renderLightName lightParam=pos/> t <@renderPositionList geomParam=part format="audio" lang="da"/>
                 er væltet og udgør en sejladshindring.
             </#list>
-            Fundamentet af fyret er <@renderMarkings markings=params.markings! lang="da" format="audio"  unmarkedText="ikke afmærket"/>
+            Fundamentet af fyret er <@renderMarkings markings=params.markings! markingType=params.markingType! lang="da" format="audio"  unmarkedText="ikke afmærket"/>
         </@line>
         <@line>
             Det tilrådes skibsfarten at holde godt klar.
@@ -51,7 +51,7 @@
                 LIGHT <@renderLightName lightParam=pos/> <@renderPositionList geomParam=part format="navtex" lang="en"/>
                 DESTROYED.
             </#list>
-            LIGHT <@renderMarkings markings=params.markings! lang="en" format="navtex"  unmarkedText="UNMARKED"/>
+            LIGHT <@renderMarkings markings=params.markings! markingType=params.markingType! lang="en" format="navtex"  unmarkedText="UNMARKED"/>
         </@line>
         <@line format="navtex">
             MARINERS ADVISED TO KEEP CLEAR.
