@@ -19,6 +19,7 @@ package org.niord.core.promulgation;
 import org.apache.commons.lang.StringUtils;
 import org.niord.core.dictionary.DictionaryService;
 import org.niord.core.message.vo.SystemMessageVo;
+import org.niord.core.promulgation.PromulgationType.Requirement;
 import org.niord.core.promulgation.vo.AudioMessagePromulgationVo;
 import org.niord.core.promulgation.vo.BaseMessagePromulgationVo;
 import org.niord.core.util.PositionAssembler;
@@ -110,7 +111,7 @@ public class AudioPromulgationService extends BasePromulgationService {
             audio.setPromulgate(true);
             audio.setText(text.toString());
         } else {
-            audio.setPromulgate(false);
+            audio.setPromulgate(type.getRequirement() == Requirement.MANDATORY);
         }
 
         return audio;
