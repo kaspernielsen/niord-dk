@@ -29,7 +29,7 @@
 <field-template field="part.getDesc('da').details" format="html">
     En ikke kortlagt <@renderObstructionType defaultValue="sejladshindring" lang="da"/>
     er <@renderObstructionReport defaultValue="rapporteret" lang="da" />
-    beliggende <@renderPositionList geomParam=part lang="da"/>.
+    <@renderPositionList geomParam=part lang="da"/>.
     <#if params.obstruction_visible!false>
         <@renderObstructionType defaultValue="Sejladshindringen" format="long" lang="da" capFirst=true/> er synligt over havoverfladen.
     <#else>
@@ -49,7 +49,7 @@
         <@renderObstructionType defaultValue="The obstruction" format="long" lang="en" capFirst=true/> is visible above the sea surface.
     <#else>
         The depth above <@renderObstructionType defaultValue="the obstruction" format="long" lang="en"/> is
-        <#if params.obstruction_depth??>${params.obstruction_depth} m.<#else>unknown.</#if>
+        <#if params.obstruction_depth??>${params.obstruction_depth}m.<#else>unknown.</#if>
     </#if>
     <@renderObstructionType defaultValue="Obstruction" format="long" lang="en" capFirst=true/>
     is <@renderMarkings markings=params.markings! markingType=params.markingType! lang="en" format="details" unmarkedText="unmarked"/><br>
@@ -61,7 +61,7 @@
         <@line>
             En ikke kortlagt <@renderObstructionType defaultValue="sejladshindring" lang="da"/>
             er <@renderObstructionReport defaultValue="rapporteret" lang="da" />
-            beliggende <@renderPositionList geomParam=part format="audio" lang="da"/>.
+            <@renderPositionList geomParam=part format="audio" lang="da"/>.
             <#if params.obstruction_visible!false>
                 <@renderObstructionType defaultValue="Sejladshindringen" format="long" lang="da" capFirst=true/> er synligt over havoverfladen.
             <#else>
