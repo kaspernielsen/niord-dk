@@ -4,13 +4,13 @@
         <#case "F">fast lys<#break>
         <#case "Fl">blink<#break>
         <#case "FFl">fast lys med blink<#break>
-        <#case "LFl">${multiple?then('lange', 'langt')} blink<#break>
-        <#case "Q">hurtig-blink<#break>
-        <#case "VQ">meget ${multiple?then('hurtige blink', 'hurtig-blink')}<#break>
-        <#case "IQ">${multiple?then('afbrudte', 'afbrudt')} hurtig-blink<#break>
-        <#case "IVQ">${multiple?then('afbrudte meget hurtige blink', 'afbrudt meget hurtigt blink')}<#break>
-        <#case "UQ">${multiple?then('ultra-hurtige blink', 'ultra-hurtigt blink')}<#break>
-        <#case "IUQ">${multiple?then('afbrudte ultra-hurtige blink', 'afbrudt ultra-hurtigt blink')}<#break>
+        <#case "LFl">lange blink<#break>
+        <#case "Q">hurtige blink<#break>
+        <#case "VQ">meget hurtige blink<#break>
+        <#case "IQ">afbrudte hurtige blink<#break>
+        <#case "IVQ">afbrudte meget hurtige blink<#break>
+        <#case "UQ">ultra-hurtige blink<#break>
+        <#case "IUQ">afbrudte ultra-hurtige blink<#break>
         <#case "Iso">isofase lys<#break>
         <#case "Oc">formørkelser<#break>
         <#case "Al">vekslende<#break>
