@@ -22,7 +22,7 @@
                 visende
                 <@lightCharacterFormat light=marking.lightCharacter format=lightFormat/>
             </#if>
-            <#if marking.distance?? && marking.distance gt 0>ca ${marking.distance} m.</#if>
+            <#if marking.distance?? && marking.distance gt 0>ca ${marking.distance} m</#if>
             <#if marking.bearing??>
                 <@renderListValue value=marking.bearing defaultValue="" format=bearingFormat lang=lang/>
             </#if>
@@ -30,7 +30,9 @@
             <#if marking?has_next> og <#else>.</#if>
         </#list>
     <#elseif markings?has_content>
-        ${(markingType == 'buoy')?then('buoyed', 'marked')} with
+        <#if format != 'navtex'>
+            ${(markingType == 'buoy')?then('buoyed', 'marked')} with
+        </#if>
         <#list markings as marking>
             <#if format == 'navtex'>${(marking.color??)?then(getListValue(marking.color, '', 'normal', lang), '')}</#if>
             <@renderMarkingType marking=marking format=valueFormat lang=lang/>
@@ -38,7 +40,7 @@
                 showing
                 <@lightCharacterFormat light=marking.lightCharacter format=lightFormat/>
             </#if>
-            <#if marking.distance?? && marking.distance gt 0>approx. ${marking.distance}m.</#if>
+            <#if marking.distance?? && marking.distance gt 0>approx. ${marking.distance}m</#if>
             <#if marking.bearing??>
                 <@renderListValue value=marking.bearing defaultValue="" format=bearingFormat lang=lang/>
             </#if>
