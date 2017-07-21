@@ -193,5 +193,12 @@
     "value"       : "//services.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}",
     "web"         : true,
     "editable"    : true
+  },
+  {
+    "key"         : "lightCharacterUrl",
+    "description" : "Help link for light character input fields",
+    "value"       : "http://www.soefartsstyrelsen.dk/Documents/Publikationer/Afm%C3%A6rkning%20af%20danske%20farvande%209.%20udgave.pdf#search=afm%C3%A6rkning%20af%20danske",
+    "web"         : true,
+    "editable"    : true
   }
 ]
