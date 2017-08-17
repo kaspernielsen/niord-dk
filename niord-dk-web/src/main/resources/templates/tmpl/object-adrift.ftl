@@ -1,19 +1,20 @@
 <#include "common.ftl"/>
 <#include "markings.ftl"/>
 
-<#macro renderObject defaultName format='long' lang='en'>
+<#macro renderObject defaultName format='long' lang='en' capFirst=false>
+    <#assign result=defaultName!''/>
     <#if params.object?has_content>
         <#assign desc=descForLang(params.object, lang)!>
         <#if desc?? && format == 'long'>
-            ${desc.longValue?cap_first}
+            <#assign result=desc.longValue/>
         <#elseif desc??>
-            ${desc.value?cap_first}
-        <#else>
-            ${defaultName?cap_first}
+            <#assign result=desc.value/>
         </#if>
-    <#else>
-        ${defaultName?cap_first}
     </#if>
+    <#if capFirst>
+        <#assign result=result?cap_first/>
+    </#if>
+    ${result}
 </#macro>
 
 <field-template field="part.getDesc('da').subject" format="text">
@@ -21,11 +22,13 @@
 </field-template>
 
 <field-template field="part.getDesc('en').subject" format="text">
-    <@renderObject defaultName="Object" format="short" lang="en"/> Adrift
+    <@line>
+        <@renderObject defaultName="Object" format="short" lang="en" capFirst=true/> adrift
+    </@line>
 </field-template>
 
 <field-template field="part.getDesc('da').details" format="html">
-    <@renderObject defaultName="en genstand" format="long" lang="da"/>
+    <@renderObject defaultName="en genstand" format="long" lang="da" capFirst=true/>
     er observeret drivende <@renderPositionList geomParam=part lang="da"/>
     <#if params.date??><@renderDate date=params.date lang="da"/></#if>.
     <#if params.cancelDate??>
@@ -34,7 +37,7 @@
 </field-template>
 
 <field-template field="part.getDesc('en').details" format="html">
-    <@renderObject defaultName="an object" format="long" lang="en"/>
+    <@renderObject defaultName="an object" format="long" lang="en" capFirst=true/>
     has been observed adrift <@renderPositionList geomParam=part lang="en"/>
     <#if params.date??><@renderDate date=params.date lang="en" tz="UTC"/></#if>.
     <#if params.cancelDate??>
@@ -45,7 +48,7 @@
 <#if promulgate('audio')>
     <field-template field="message.promulgation('audio').text" update="append">
         <@line>
-            <@renderObject defaultName="en genstand" format="long" lang="da"/>
+            <@renderObject defaultName="en genstand" format="long" lang="da" capFirst=true/>
             er observeret drivende <@renderPositionList geomParam=part format="audio" lang="da"/>
             <#if params.date??><@renderDate date=params.date lang="da" format="plain"/></#if>.
         </@line>
