@@ -1,3 +1,4 @@
+/wildfly-*
 target/
 .settings
 .project
