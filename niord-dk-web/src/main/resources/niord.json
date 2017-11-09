@@ -2,7 +2,7 @@
   {
     "key"         : "niord.home",
     "description" : "The root directory for the Niord application",
-    "value"       : "${user.home}/.niord",
+    "value"       : "${user.home}/.niord-dk",
     "web"         : false,
     "editable"    : true
   },
@@ -16,7 +16,7 @@
   {
     "key"         : "authServerUrl",
     "description" : "The Keycloak URL",
-    "value"       : "/auth",
+    "value"       : "http://localhost:8090/auth",
     "web"         : false,
     "editable"    : true
   },
