@@ -13,8 +13,8 @@
             <td colspan="2">
                 <div style="margin-top: 4mm; text-align: center"><img src="/img/company-logo.png" style="width: 5cm"></div>
                 <div style="margin-top: 8mm">
-                    Carl Jacobsens Vej 31<br>
-                    2500 Valby<br>
+                    Fjordvænget 30<br>
+                    4220 Korsør<br>
                 </div>
             </td>
         </tr>

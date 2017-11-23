@@ -5,7 +5,7 @@
         <td valign="top">
             <b>Kontor:</b><br>
             Søfartsstyrelsen<br>
-            Carl Jacobsens Vej 31 2500 Valby<br>
+            Fjordvænget 30 4220 Korsør<br>
             Tlf. 7219 6000<br>
             Fax 7219 6001<br>
             www.soefartsstyrelsen.dk<br>
@@ -14,8 +14,8 @@
         <td valign="top" style="border-left: 0.05em solid gray">
             <b>Efterretninger for Søfarende:</b><br>
             Søfartsstyrelsen<br>
-            Carl Jacobsens Vej 31<br>
-            2500 Valby<br>
+            Fjordvænget 30<br>
+            4220 Korsør<br>
             Tlf. 7219 6173 (mandag - torsdag kl. 0900 - 1600 og fredag kl. 0900 - 1500)<br>
             E-mail: efs@dma.dk<br>
         </td>

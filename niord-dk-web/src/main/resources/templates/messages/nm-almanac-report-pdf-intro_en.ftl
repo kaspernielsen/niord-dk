@@ -5,8 +5,8 @@
         <td valign="top">
             <b>Office:</b><br>
             Danish Maritime Authority<br>
-            Carl Jacobsens Vej 31
-            DK-2500 Valby<br>
+            Fjordvænget 30
+            DK-4220 Korsør<br>
             Tel. +45 7219 6000<br>
             Fax +45 7219 6001<br>
             www.soefartsstyrelsen.dk<br>
@@ -15,8 +15,8 @@
         <td valign="top" style="border-left: 0.05em solid gray">
             <b>Notices to Mariners:</b><br>
             Danish Maritime Authority<br>
-            Carl Jacobsens Vej 31<br>
-            DK-2500 Valby<br>
+            Fjordvænget 30<br>
+            DK-4220 Korsør<br>
             Tel. +45 7219 6173 (Monday - Thursday at 0900 - 1600 and Friday at 0900 - 1500)<br>
             E-mail: efs@dma.dk<br>
         </td>
