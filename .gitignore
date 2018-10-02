@@ -1,4 +1,5 @@
 /wildfly-*
+/niord-dk-web/overlays
 target/
 .settings
 .project
