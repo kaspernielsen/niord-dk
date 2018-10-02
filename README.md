@@ -68,6 +68,7 @@ Import or open the niord-dk project in your favorite IDE. Here we describe  the
 * Under the "Maven Projects" also import the parent niord project.
 * In Run -> Edit configuration..., configure a new local JBoss server based on the Wilfly
   installation produced above.
+  * Configure Wildfly JVM to be launched with system property `-DauthServerUrl=http://localhost:8090/auth`.
 * Deploy "niord-dk-web:war exploded" to the server.
 * If you have only updated web resources, there is no need to re-deploy the web application. Use the "Update resources" 
   function instead.
