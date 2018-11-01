@@ -200,5 +200,13 @@
     "value"       : "http://www.soefartsstyrelsen.dk/Documents/Publikationer/Afm%C3%A6rkning%20af%20danske%20farvande%209.%20udgave.pdf#search=afm%C3%A6rkning%20af%20danske",
     "web"         : true,
     "editable"    : true
+  },
+  {
+    "key"         : "s124ValidateOutbound",
+    "description" : "Validate outbound S-124 GML messages against built-in S-124 XSD schema",
+    "type"        : "Boolean",
+    "value"       : "true",
+    "web"         : false,
+    "editable"    : true
   }
 ]
