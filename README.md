@@ -1,4 +1,4 @@
-# niord-dk
+# niord-dk [![Build Status](https://travis-ci.com/NiordOrg/niord-dk.svg?branch=master)](https://travis-ci.com/NiordOrg/niord-dk)
 
 The niord-dk project contains Denmark-specific extensions for the   
 [niord](https://github.com/NiordOrg) system, i.e. a system
