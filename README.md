@@ -90,8 +90,8 @@ Within a minute or so, this will import domains, areas, categories, etc. needed 
 First clean up a bit:
 * In Niord, under Sysadmin -> Domains, click the "Create in Keycloak" button for the "NW" and "NM" domains. 
   This will create the two domains in Keycloak. 
-* In Keycloak, edit the "Sysadmin" user group. Under "Role Mappings", select first "niord-nw" then "niord-nm" and assign 
-  the "sysadmin" client roles to the group.
+* In Keycloak, edit the "Sysadmin" user group. Under "Role Mappings", in the drop-down "Client Roles" select first 
+"niord-nw" then "niord-nm" and assign the "sysadmin" client roles to the group.
 * While in Keycloak, you may also want to define new user groups for editors and admins, and assign the appropriate 
   client roles for "niord-nw" and "niord-nm" to the groups. 
   Additionally, for admin-related groups (who should be able to manage users in Niord), assign the "manage-clients" and 
