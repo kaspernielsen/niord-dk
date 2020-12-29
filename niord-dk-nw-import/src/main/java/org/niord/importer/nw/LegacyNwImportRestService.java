@@ -17,7 +17,7 @@ package org.niord.importer.nw;
 
 import org.apache.commons.lang.StringUtils;
 import org.jboss.resteasy.annotations.cache.NoCache;
-import org.jboss.security.annotation.SecurityDomain;
+import org.jboss.ejb3.annotation.SecurityDomain;
 import org.niord.core.batch.BatchService;
 import org.niord.core.user.Roles;
 import org.niord.model.IJsonSerializable;

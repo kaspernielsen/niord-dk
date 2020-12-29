@@ -16,7 +16,7 @@
 package org.niord.importer.aton;
 
 import org.apache.commons.fileupload.FileItem;
-import org.jboss.security.annotation.SecurityDomain;
+import org.jboss.ejb3.annotation.SecurityDomain;
 import org.niord.core.aton.AtonNode;
 import org.niord.core.aton.vo.AtonNodeVo;
 import org.niord.core.aton.vo.AtonOsmVo;

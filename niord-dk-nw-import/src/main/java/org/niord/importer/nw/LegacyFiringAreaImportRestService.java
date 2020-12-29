@@ -17,7 +17,7 @@
 package org.niord.importer.nw;
 
 import org.jboss.resteasy.annotations.cache.NoCache;
-import org.jboss.security.annotation.SecurityDomain;
+import org.jboss.ejb3.annotation.SecurityDomain;
 import org.niord.core.area.Area;
 import org.niord.core.schedule.FiringPeriod;
 import org.niord.core.batch.BatchService;

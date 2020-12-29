@@ -10,7 +10,7 @@ echo "** Configure wildfly                        **"
 echo "**********************************************"
 
 # Build a fully configured Wildfly
-git clone https://github.com/NiordOrg/niord-appsrv.git
+git clone https://github.com/kaspernielsen/niord-appsrv.git
 source niord-appsrv/02-wildfly/wildfly-env.sh
 ./niord-appsrv/02-wildfly/install-wildfly.sh
 rm -rf $WILDFLY_PATH/standalone/configuration/standalone_xml_history

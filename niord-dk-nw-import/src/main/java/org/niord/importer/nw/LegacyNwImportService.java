@@ -15,8 +15,8 @@
  */
 package org.niord.importer.nw;
 
-import com.vividsolutions.jts.geom.Geometry;
 import org.apache.commons.lang.StringUtils;
+import org.locationtech.jts.geom.Geometry;
 import org.niord.core.area.Area;
 import org.niord.core.category.Category;
 import org.niord.core.conf.TextResource;
