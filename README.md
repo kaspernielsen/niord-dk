@@ -17,10 +17,10 @@ Denmark.
 
 ## Prerequisites
 
-* Java 8
+* Java 11
 * Maven 3
 * MySQL 5.7.10+ (NB: proper spatial support is a requirement)
-* JBoss Wildfly 10+
+* JBoss Wildfly 21+
 * JBoss Keycloak 3.1+
 
 ## Development Set-Up

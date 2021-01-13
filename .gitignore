@@ -4,6 +4,7 @@ niord-dk-web/overlays/
 .settings
 .project
 .classpath
+private/
 *~
 .DS_Store
 .idea
