@@ -21,6 +21,12 @@
     "editable"    : true
   },
   {
+    "key"         : "authWebUrl",
+    "description" : "The Keycloak Redirect URL",
+    "value"       : "http://localhost:8090/auth",
+    "web"         : false,
+  },
+  {
     "key"         : "documentationUrl",
     "description" : "The URL template to the documentation site",
     "value"       : "http://docs.niord.org",
@@ -140,7 +146,7 @@
   {
     "key"         : "wmsProvider",
     "description" : "The WMS provider",
-    "value"       : "http://kortforsyningen.kms.dk/",
+    "value"       : "https://api.dataforsyningen.dk",
     "web"         : false,
     "editable"    : true
   },
